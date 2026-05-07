@@ -1,6 +1,9 @@
 /**
  * Purpose:
  * Pointer-driven painting with window-level drag tracking and stroke delta recording.
+ *
+ * Notes:
+ * A second pointer on the canvas ends the current stroke so pinch-zoom can run without corrupting paint data.
  */
 "use client";
 
@@ -67,10 +70,24 @@ export function usePixelPainting({
   const strokeRaw = useRef<PixelDelta[]>([]);
   const painting = useRef(false);
   const activeSlotRef = useRef(activeSlot);
+  const endStrokeRef = useRef<() => void>(() => {});
+  const activePointersOnCanvas = useRef(new Set<number>());
 
   useEffect(() => {
     activeSlotRef.current = activeSlot;
   }, [activeSlot]);
+
+  useEffect(() => {
+    const removePointer = (e: PointerEvent) => {
+      activePointersOnCanvas.current.delete(e.pointerId);
+    };
+    window.addEventListener("pointerup", removePointer);
+    window.addEventListener("pointercancel", removePointer);
+    return () => {
+      window.removeEventListener("pointerup", removePointer);
+      window.removeEventListener("pointercancel", removePointer);
+    };
+  }, []);
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
@@ -125,6 +142,8 @@ export function usePixelPainting({
       }
     };
 
+    endStrokeRef.current = endStroke;
+
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", endStroke);
     window.addEventListener("pointercancel", endStroke);
@@ -148,6 +167,14 @@ export function usePixelPainting({
     if (e.button === 0 && deferPrimaryPaint?.()) {
       return;
     }
+
+    activePointersOnCanvas.current.add(e.pointerId);
+    if (activePointersOnCanvas.current.size > 1) {
+      endStrokeRef.current();
+      e.preventDefault();
+      return;
+    }
+
     e.preventDefault();
     try {
       e.currentTarget.setPointerCapture(e.pointerId);

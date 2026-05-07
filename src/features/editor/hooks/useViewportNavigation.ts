@@ -1,9 +1,10 @@
 /**
  * Purpose:
- * React hook for canvas viewport: zoom (wheel), pan (wheel / Space+drag / pan mode / middle mouse).
+ * React hook for canvas viewport: zoom (wheel / two-finger pinch), pan (wheel / Space+drag / pan mode / middle mouse).
  *
  * Notes:
- * Delegates gesture rules to viewportNavigationService.ts.
+ * Delegates gesture rules to viewportNavigationService.ts. Mobile pinch is implemented here because
+ * `touch-action: none` on the canvas disables browser pinch-zoom and wheel events are unreliable on touch devices.
  */
 "use client";
 
@@ -21,6 +22,108 @@ import {
 } from "@/features/editor/services/viewportNavigationService";
 
 const MAX_SCALE = 64;
+
+/**
+ * Applies a new scale while keeping the given screen-space point aligned with the same world pixel.
+ */
+export function zoomViewportTowardScreenPoint(
+  v: ViewportState,
+  newScale: number,
+  mx: number,
+  my: number
+): ViewportState {
+  const worldX = (mx - v.viewOffset.x) / v.scale;
+  const worldY = (my - v.viewOffset.y) / v.scale;
+  return {
+    scale: newScale,
+    viewOffset: {
+      x: mx - worldX * newScale,
+      y: my - worldY * newScale,
+    },
+  };
+}
+
+/**
+ * Two-finger pinch on the viewport element (or children): updates scale toward the pinch midpoint.
+ * Uses window pointermove so both contacts are tracked even when one pointer captured the canvas.
+ */
+export function attachViewportPinchZoom(
+  el: HTMLDivElement,
+  setViewport: Dispatch<SetStateAction<ViewportState>>,
+  getMinScale: () => number
+): () => void {
+  const pointers = new Map<number, { x: number; y: number }>();
+  let prevSeparation = 0;
+
+  const onPointerDown = (e: PointerEvent) => {
+    if (!el.contains(e.target as Node)) {
+      return;
+    }
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size === 2) {
+      const pts = [...pointers.values()];
+      prevSeparation = Math.hypot(
+        pts[0].x - pts[1].x,
+        pts[0].y - pts[1].y
+      );
+    }
+  };
+
+  const onPointerMove = (e: PointerEvent) => {
+    if (!pointers.has(e.pointerId)) {
+      return;
+    }
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size !== 2) {
+      return;
+    }
+
+    e.preventDefault();
+    const pts = [...pointers.values()];
+    const newSep = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+    if (prevSeparation <= 0 || newSep <= 0) {
+      prevSeparation = newSep;
+      return;
+    }
+    const ratio = newSep / prevSeparation;
+    prevSeparation = newSep;
+
+    const rect = el.getBoundingClientRect();
+    const midX = (pts[0].x + pts[1].x) / 2 - rect.left;
+    const midY = (pts[0].y + pts[1].y) / 2 - rect.top;
+    const minScale = Math.max(1e-6, getMinScale());
+
+    setViewport((v) => {
+      const nextScale = Math.min(
+        MAX_SCALE,
+        Math.max(minScale, v.scale * ratio)
+      );
+      return zoomViewportTowardScreenPoint(v, nextScale, midX, midY);
+    });
+  };
+
+  const onPointerUp = (e: PointerEvent) => {
+    if (!pointers.has(e.pointerId)) {
+      return;
+    }
+    pointers.delete(e.pointerId);
+    if (pointers.size < 2) {
+      prevSeparation = 0;
+    }
+  };
+
+  el.addEventListener("pointerdown", onPointerDown, true);
+  window.addEventListener("pointermove", onPointerMove, { passive: false });
+  window.addEventListener("pointerup", onPointerUp);
+  window.addEventListener("pointercancel", onPointerUp);
+
+  return () => {
+    el.removeEventListener("pointerdown", onPointerDown, true);
+    window.removeEventListener("pointermove", onPointerMove);
+    window.removeEventListener("pointerup", onPointerUp);
+    window.removeEventListener("pointercancel", onPointerUp);
+  };
+}
 
 /**
  * Wheel listener: pan via Shift+scroll / horizontal trackpad, else zoom toward cursor.
@@ -54,15 +157,7 @@ export function attachViewportWheel(
         MAX_SCALE,
         Math.max(minScale, v.scale * factor)
       );
-      const worldX = (mx - v.viewOffset.x) / v.scale;
-      const worldY = (my - v.viewOffset.y) / v.scale;
-      return {
-        scale: newScale,
-        viewOffset: {
-          x: mx - worldX * newScale,
-          y: my - worldY * newScale,
-        },
-      };
+      return zoomViewportTowardScreenPoint(v, newScale, mx, my);
     });
   };
 

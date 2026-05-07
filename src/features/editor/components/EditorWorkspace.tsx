@@ -21,6 +21,7 @@ import { EditorActionsBar } from "@/features/editor/components/EditorActionsBar"
 import { PaletteEditModal } from "@/features/editor/components/PaletteEditModal";
 import { useEditorPalette } from "@/features/editor/hooks/useEditorPalette";
 import {
+  attachViewportPinchZoom,
   attachViewportWheel,
   useViewportNavigation,
 } from "@/features/editor/hooks/useViewportNavigation";
@@ -135,7 +136,16 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
     if (!el) {
       return;
     }
-    return attachViewportWheel(el, setViewport, () => minScaleRef.current);
+    const cleanupWheel = attachViewportWheel(el, setViewport, () =>
+      minScaleRef.current
+    );
+    const cleanupPinch = attachViewportPinchZoom(el, setViewport, () =>
+      minScaleRef.current
+    );
+    return () => {
+      cleanupWheel();
+      cleanupPinch();
+    };
   }, [wrapRef, setViewport, cssSize.w, cssSize.h, artwork.width, artwork.height]);
 
   const onCommitStroke = useCallback(
