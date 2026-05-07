@@ -3,7 +3,8 @@
  * Pointer-driven painting with window-level drag tracking and stroke delta recording.
  *
  * Notes:
- * A second pointer on the canvas ends the current stroke so pinch-zoom can run without corrupting paint data.
+ * Painting is locked to the first active pointer until release, preventing multi-touch
+ * drawing from secondary contacts while keeping pointer tracking on the window.
  */
 "use client";
 
@@ -69,29 +70,20 @@ export function usePixelPainting({
 
   const strokeRaw = useRef<PixelDelta[]>([]);
   const painting = useRef(false);
+  const activePaintingPointerId = useRef<number | null>(null);
   const activeSlotRef = useRef(activeSlot);
   const endStrokeRef = useRef<() => void>(() => {});
-  const activePointersOnCanvas = useRef(new Set<number>());
 
   useEffect(() => {
     activeSlotRef.current = activeSlot;
   }, [activeSlot]);
 
   useEffect(() => {
-    const removePointer = (e: PointerEvent) => {
-      activePointersOnCanvas.current.delete(e.pointerId);
-    };
-    window.addEventListener("pointerup", removePointer);
-    window.addEventListener("pointercancel", removePointer);
-    return () => {
-      window.removeEventListener("pointerup", removePointer);
-      window.removeEventListener("pointercancel", removePointer);
-    };
-  }, []);
-
-  useEffect(() => {
     const onMove = (e: PointerEvent) => {
       if (!painting.current) {
+        return;
+      }
+      if (e.pointerId !== activePaintingPointerId.current) {
         return;
       }
       const canvas = canvasRef.current;
@@ -135,6 +127,7 @@ export function usePixelPainting({
         return;
       }
       painting.current = false;
+      activePaintingPointerId.current = null;
       const merged = mergeStrokeDeltas(strokeRaw.current);
       strokeRaw.current = [];
       if (merged.length > 0) {
@@ -142,15 +135,22 @@ export function usePixelPainting({
       }
     };
 
+    const onPointerFinish = (e: PointerEvent) => {
+      if (e.pointerId !== activePaintingPointerId.current) {
+        return;
+      }
+      endStroke();
+    };
+
     endStrokeRef.current = endStroke;
 
     window.addEventListener("pointermove", onMove);
-    window.addEventListener("pointerup", endStroke);
-    window.addEventListener("pointercancel", endStroke);
+    window.addEventListener("pointerup", onPointerFinish);
+    window.addEventListener("pointercancel", onPointerFinish);
     return () => {
       window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerup", endStroke);
-      window.removeEventListener("pointercancel", endStroke);
+      window.removeEventListener("pointerup", onPointerFinish);
+      window.removeEventListener("pointercancel", onPointerFinish);
     };
   }, [
     canvasRef,
@@ -168,9 +168,10 @@ export function usePixelPainting({
       return;
     }
 
-    activePointersOnCanvas.current.add(e.pointerId);
-    if (activePointersOnCanvas.current.size > 1) {
-      endStrokeRef.current();
+    if (
+      activePaintingPointerId.current !== null &&
+      activePaintingPointerId.current !== e.pointerId
+    ) {
       e.preventDefault();
       return;
     }
@@ -196,6 +197,7 @@ export function usePixelPainting({
       primaryPaletteIndex,
       secondaryPaletteIndex
     );
+    activePaintingPointerId.current = e.pointerId;
     painting.current = true;
     strokeRaw.current = [];
     if (x >= 0 && y >= 0 && x < art.width && y < art.height) {
