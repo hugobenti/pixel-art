@@ -3,8 +3,8 @@
  * Pointer-driven painting with window-level drag tracking and stroke delta recording.
  *
  * Notes:
- * Painting is locked to the first active pointer until release, preventing multi-touch
- * drawing from secondary contacts while keeping pointer tracking on the window.
+ * Touch painting stops as soon as a second finger touches the screen (stroke ends).
+ * A new stroke cannot start while more than one touch is active.
  */
 "use client";
 
@@ -79,6 +79,7 @@ export function usePixelPainting({
   const strokeRaw = useRef<PixelDelta[]>([]);
   const painting = useRef(false);
   const activePaintingPointerId = useRef<number | null>(null);
+  const activeTouchPointersRef = useRef<Set<number>>(new Set());
   const activeSlotRef = useRef(activeSlot);
   const endStrokeRef = useRef<() => void>(() => {});
 
@@ -149,6 +150,23 @@ export function usePixelPainting({
       }
     };
 
+    const onGlobalTouchPointerDown = (e: PointerEvent) => {
+      if (e.pointerType !== "touch") {
+        return;
+      }
+      activeTouchPointersRef.current.add(e.pointerId);
+      if (activeTouchPointersRef.current.size > 1 && painting.current) {
+        endStroke();
+      }
+    };
+
+    const onGlobalTouchPointerUp = (e: PointerEvent) => {
+      if (e.pointerType !== "touch") {
+        return;
+      }
+      activeTouchPointersRef.current.delete(e.pointerId);
+    };
+
     const onPointerFinish = (e: PointerEvent) => {
       if (e.pointerId !== activePaintingPointerId.current) {
         return;
@@ -158,10 +176,16 @@ export function usePixelPainting({
 
     endStrokeRef.current = endStroke;
 
+    window.addEventListener("pointerdown", onGlobalTouchPointerDown, true);
+    window.addEventListener("pointerup", onGlobalTouchPointerUp, true);
+    window.addEventListener("pointercancel", onGlobalTouchPointerUp, true);
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onPointerFinish);
     window.addEventListener("pointercancel", onPointerFinish);
     return () => {
+      window.removeEventListener("pointerdown", onGlobalTouchPointerDown, true);
+      window.removeEventListener("pointerup", onGlobalTouchPointerUp, true);
+      window.removeEventListener("pointercancel", onGlobalTouchPointerUp, true);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onPointerFinish);
       window.removeEventListener("pointercancel", onPointerFinish);
@@ -179,6 +203,13 @@ export function usePixelPainting({
       return;
     }
     if (e.button === 0 && deferPrimaryPaint?.()) {
+      return;
+    }
+    if (
+      e.pointerType === "touch" &&
+      activeTouchPointersRef.current.size > 1
+    ) {
+      e.preventDefault();
       return;
     }
 
