@@ -14,6 +14,20 @@ export class PixelCraftDB extends Dexie {
     this.version(1).stores({
       artworks: "id, updatedAt, title",
     });
+    this.version(2)
+      .stores({
+        artworks: "id, updatedAt, title",
+      })
+      .upgrade((tx) =>
+        tx
+          .table("artworks")
+          .toCollection()
+          .modify((record: Partial<Artwork>) => {
+            if (typeof record.referenceImageDataUrl !== "string") {
+              record.referenceImageDataUrl = undefined;
+            }
+          })
+      );
   }
 }
 

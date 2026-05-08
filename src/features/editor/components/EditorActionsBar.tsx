@@ -33,6 +33,10 @@ interface EditorActionsBarProps {
   title: string;
   showPixelGrid: boolean;
   onToggleGrid: () => void;
+  showReferenceImage: boolean;
+  hasReferenceImage: boolean;
+  onToggleReferenceImage: () => void;
+  onLoadReferenceImage: () => void;
   canUndo: boolean;
   canRedo: boolean;
   onUndo: () => void;
@@ -48,6 +52,10 @@ export function EditorActionsBar({
   title,
   showPixelGrid,
   onToggleGrid,
+  showReferenceImage,
+  hasReferenceImage,
+  onToggleReferenceImage,
+  onLoadReferenceImage,
   canUndo,
   canRedo,
   onUndo,
@@ -72,7 +80,7 @@ export function EditorActionsBar({
         <Button
           type="button"
           variant="ghost"
-          className="min-h-10 min-w-[4.5rem] px-3"
+          className="min-h-10 min-w-18 px-3"
           disabled={!canUndo}
           onClick={onUndo}
           title="Undo (Ctrl+Z)"
@@ -82,7 +90,7 @@ export function EditorActionsBar({
         <Button
           type="button"
           variant="ghost"
-          className="min-h-10 min-w-[4.5rem] px-3"
+          className="min-h-10 min-w-18 px-3"
           disabled={!canRedo}
           onClick={onRedo}
           title="Redo (Ctrl+Shift+Z)"
@@ -119,6 +127,25 @@ export function EditorActionsBar({
         >
           ⇄
         </button>
+        <Button
+          type="button"
+          variant="ghost"
+          className="min-h-10 px-3"
+          onClick={onLoadReferenceImage}
+          title="Load reference image"
+        >
+          load image
+        </Button>
+        <Button
+          type="button"
+          variant={showReferenceImage ? "primary" : "ghost"}
+          className="min-h-10 px-3"
+          disabled={!hasReferenceImage}
+          onClick={onToggleReferenceImage}
+          title="Show/hide reference image"
+        >
+          show/hide image
+        </Button>
         <Button
           type="button"
           variant={showPixelGrid ? "primary" : "ghost"}

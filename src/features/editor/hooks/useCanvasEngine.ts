@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * Bind artwork and grid canvases to viewport size and schedule dual-layer renders.
+ * Bind editor canvases to viewport size and schedule artwork/reference/grid renders.
  *
  * Notes (optional):
  * Grid and symmetry-guide colors come from CSS custom properties on :root so they stay aligned with design tokens.
@@ -11,12 +11,16 @@ import { useLayoutEffect, useRef, useState } from "react";
 
 import { renderCanvas } from "@/features/editor/logic/canvasRender";
 import { renderPixelGrid } from "@/features/editor/logic/gridRender";
+import { renderReferenceImage } from "@/features/editor/logic/referenceImageRender";
 import type { Artwork, ViewportState } from "@/features/editor/types/editor.types";
 
 interface UseCanvasEngineParams {
   artwork: Artwork | null;
   viewport: ViewportState;
   showPixelGrid: boolean;
+  showReferenceImage: boolean;
+  referenceImage: HTMLImageElement | null;
+  referenceImageAlpha: number;
   /** Bumps when pixel buffer or history mutates without artwork reference changes. */
   paintRevision: number;
   historyRevision: number;
@@ -36,11 +40,15 @@ export function useCanvasEngine({
   artwork,
   viewport,
   showPixelGrid,
+  showReferenceImage,
+  referenceImage,
+  referenceImageAlpha,
   paintRevision,
   historyRevision,
 }: UseCanvasEngineParams) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const artworkCanvasRef = useRef<HTMLCanvasElement>(null);
+  const referenceImageCanvasRef = useRef<HTMLCanvasElement>(null);
   const gridCanvasRef = useRef<HTMLCanvasElement>(null);
   const [cssSize, setCssSize] = useState({ w: 320, h: 320 });
 
@@ -67,23 +75,39 @@ export function useCanvasEngine({
 
   useLayoutEffect(() => {
     const ac = artworkCanvasRef.current;
+    const rc = referenceImageCanvasRef.current;
     const gc = gridCanvasRef.current;
-    if (!artwork || !ac || !gc) {
+    if (!artwork || !ac || !rc || !gc) {
       return;
     }
 
     ac.width = cssSize.w;
     ac.height = cssSize.h;
+    rc.width = cssSize.w;
+    rc.height = cssSize.h;
     gc.width = cssSize.w;
     gc.height = cssSize.h;
 
     const actx = ac.getContext("2d");
+    const rctx = rc.getContext("2d");
     const gctx = gc.getContext("2d");
-    if (!actx || !gctx) {
+    if (!actx || !rctx || !gctx) {
       return;
     }
 
     renderCanvas(actx, artwork, viewport);
+    if (showReferenceImage && referenceImage) {
+      renderReferenceImage(
+        rctx,
+        referenceImage,
+        artwork.width,
+        artwork.height,
+        viewport,
+        referenceImageAlpha
+      );
+    } else {
+      rctx.clearRect(0, 0, rc.width, rc.height);
+    }
 
     if (showPixelGrid) {
       const gridColor = readRootCssColor(
@@ -118,11 +142,14 @@ export function useCanvasEngine({
     artwork,
     viewport,
     showPixelGrid,
+    showReferenceImage,
+    referenceImage,
+    referenceImageAlpha,
     cssSize.w,
     cssSize.h,
     paintRevision,
     historyRevision,
   ]);
 
-  return { wrapRef, artworkCanvasRef, gridCanvasRef, cssSize };
+  return { wrapRef, artworkCanvasRef, referenceImageCanvasRef, gridCanvasRef, cssSize };
 }

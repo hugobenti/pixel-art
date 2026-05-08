@@ -13,6 +13,8 @@ export interface Artwork {
   thumbnail: string;
   palette: string[];
   pixelData: Uint8Array;
+  /** Optional reduced-size base64 guide image shown as an editor overlay. */
+  referenceImageDataUrl?: string;
 }
 
 export interface ViewportState {

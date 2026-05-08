@@ -1,12 +1,13 @@
 /**
  * Purpose:
- * Viewport wrapper with checkerboard backdrop and stacked artwork + grid canvases (shared size).
+ * Viewport wrapper with checkerboard backdrop and stacked artwork + reference + grid canvases.
  */
 "use client";
 
 import type { RefObject } from "react";
 
 import { PixelGridOverlay } from "@/features/editor/components/PixelGridOverlay";
+import { ReferenceImageOverlay } from "@/features/editor/components/ReferenceImageOverlay";
 
 const viewportShell =
   "relative flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-lg border border-zinc-200 bg-zinc-100";
@@ -20,6 +21,7 @@ const canvasStack =
 interface CanvasContainerProps {
   wrapRef: RefObject<HTMLDivElement | null>;
   artworkCanvasRef: RefObject<HTMLCanvasElement | null>;
+  referenceImageCanvasRef: RefObject<HTMLCanvasElement | null>;
   gridCanvasRef: RefObject<HTMLCanvasElement | null>;
   viewportHandlers: {
     onPointerDown: React.PointerEventHandler<HTMLDivElement>;
@@ -36,6 +38,7 @@ const artworkCanvasClass =
 export function CanvasContainer({
   wrapRef,
   artworkCanvasRef,
+  referenceImageCanvasRef,
   gridCanvasRef,
   viewportHandlers,
   onArtworkPointerDown,
@@ -56,6 +59,7 @@ export function CanvasContainer({
           onPointerDown={onArtworkPointerDown}
           onContextMenu={(e) => e.preventDefault()}
         />
+        <ReferenceImageOverlay canvasRef={referenceImageCanvasRef} />
         <PixelGridOverlay canvasRef={gridCanvasRef} />
       </div>
     </div>

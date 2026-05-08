@@ -66,10 +66,16 @@ export async function getArtwork(id: string): Promise<Artwork | undefined> {
 
 function hydrateArtwork(row: Artwork): Artwork {
   const n = row.width * row.height;
+  const referenceImageDataUrl =
+    typeof row.referenceImageDataUrl === "string" &&
+    row.referenceImageDataUrl.length > 0
+      ? row.referenceImageDataUrl
+      : undefined;
   return {
     ...row,
     pixelData: ensureUint8PixelData(row.pixelData, n),
     palette: [...row.palette],
+    referenceImageDataUrl,
   };
 }
 
@@ -114,6 +120,7 @@ export async function createArtwork(input: CreateArtworkInput): Promise<Artwork>
     thumbnail: "",
     palette,
     pixelData,
+    referenceImageDataUrl: undefined,
   };
 
   await db.artworks.put(artwork);
@@ -130,6 +137,7 @@ export async function saveArtwork(artwork: Artwork): Promise<void> {
     updatedAt: Date.now(),
     pixelData: clonePixelBuffer(artwork.pixelData),
     palette: [...artwork.palette],
+    referenceImageDataUrl: artwork.referenceImageDataUrl,
   };
   await db.artworks.put(toStore);
 }
@@ -159,6 +167,7 @@ export async function cloneArtwork(id: string): Promise<Artwork | undefined> {
     thumbnail: source.thumbnail,
     pixelData: clonePixelBuffer(source.pixelData),
     palette: [...source.palette],
+    referenceImageDataUrl: source.referenceImageDataUrl,
   };
 
   await db.artworks.put(clone);

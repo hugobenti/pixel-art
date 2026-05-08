@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * Interactive pixel editor: viewport, dual canvases, painting, undo/redo, grid overlay, and autosave.
+ * Interactive pixel editor: viewport, layered canvases, painting, undo/redo, overlays, and autosave.
  *
  * Notes:
  * Pixel grid and symmetry-guide colors are defined on :root in globals.css (read by the canvas engine).
@@ -28,6 +28,7 @@ import {
 import { useCanvasEngine } from "@/features/editor/hooks/useCanvasEngine";
 import { useHistory } from "@/features/editor/hooks/useHistory";
 import { usePixelPainting } from "@/features/editor/hooks/usePixelPainting";
+import { useReferenceImage } from "@/features/editor/hooks/useReferenceImage";
 import * as galleryService from "@/features/gallery/services/galleryService";
 
 import type { Artwork } from "@/features/editor/types/editor.types";
@@ -105,16 +106,27 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
   } = useViewportNavigation();
 
   const minScaleRef = useRef(1);
+  const referenceImage = useReferenceImage({
+    initialReferenceImageDataUrl: artwork.referenceImageDataUrl,
+    onReferenceImageChange: (dataUrl) => {
+      setArtwork((prev) => ({ ...prev, referenceImageDataUrl: dataUrl }));
+      schedulePaintBump();
+    },
+  });
 
   const {
     wrapRef,
     artworkCanvasRef,
+    referenceImageCanvasRef,
     gridCanvasRef,
     cssSize,
   } = useCanvasEngine({
     artwork,
     viewport,
     showPixelGrid,
+    showReferenceImage: referenceImage.showReferenceImage,
+    referenceImage: referenceImage.referenceImageElement,
+    referenceImageAlpha: referenceImage.referenceAlpha,
     paintRevision,
     historyRevision,
   });
@@ -242,6 +254,10 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
           title={artwork.title}
           showPixelGrid={showPixelGrid}
           onToggleGrid={() => setShowPixelGrid((v) => !v)}
+          showReferenceImage={referenceImage.showReferenceImage}
+          hasReferenceImage={referenceImage.hasReferenceImage}
+          onToggleReferenceImage={referenceImage.onToggleReferenceImage}
+          onLoadReferenceImage={referenceImage.onLoadReferenceImage}
           canUndo={canUndo}
           canRedo={canRedo}
           onUndo={undo}
@@ -273,6 +289,7 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
         <CanvasContainer
           wrapRef={wrapRef}
           artworkCanvasRef={artworkCanvasRef}
+          referenceImageCanvasRef={referenceImageCanvasRef}
           gridCanvasRef={gridCanvasRef}
           viewportHandlers={zoomPanHandlers}
           onArtworkPointerDown={onArtworkPointerDown}
