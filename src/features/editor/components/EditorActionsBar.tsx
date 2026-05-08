@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * Single toolbar row: navigation, document title, undo/redo, pan, layers, palette, shift overlay, reference image, grid.
+ * Single toolbar row: navigation, document title, undo/redo, pan, zoom, layers, palette, shift overlay, reference image, grid.
  */
 "use client";
 
@@ -29,6 +29,11 @@ const slotHintClass =
 const iconToggleClass =
   "flex h-10 min-w-10 shrink-0 items-center justify-center rounded-lg border border-zinc-300 bg-white px-2 text-base font-semibold text-zinc-800 shadow-sm hover:bg-zinc-50 active:bg-zinc-100";
 
+const zoomPairClass = "flex items-center gap-0.5 rounded-lg border border-zinc-300 bg-white p-0.5 shadow-sm";
+
+const zoomStepBtnClass =
+  "flex h-9 min-w-9 items-center justify-center rounded-md text-lg font-semibold leading-none text-zinc-800 hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-40";
+
 interface EditorActionsBarProps {
   title: string;
   showPixelGrid: boolean;
@@ -46,6 +51,10 @@ interface EditorActionsBarProps {
   onOpenPaletteModal: () => void;
   panMode: boolean;
   onTogglePanMode: () => void;
+  canZoomOut: boolean;
+  canZoomIn: boolean;
+  onZoomOut: () => void;
+  onZoomIn: () => void;
   shiftOverlayOpen: boolean;
   onToggleShiftOverlay: () => void;
   layersDrawerOpen: boolean;
@@ -69,6 +78,10 @@ export function EditorActionsBar({
   onOpenPaletteModal,
   panMode,
   onTogglePanMode,
+  canZoomOut,
+  canZoomIn,
+  onZoomOut,
+  onZoomIn,
   shiftOverlayOpen,
   onToggleShiftOverlay,
   layersDrawerOpen,
@@ -115,6 +128,28 @@ export function EditorActionsBar({
         >
           Pan
         </Button>
+        <div className={zoomPairClass} role="group" aria-label="Zoom canvas">
+          <button
+            type="button"
+            className={zoomStepBtnClass}
+            disabled={!canZoomOut}
+            onClick={onZoomOut}
+            aria-label="Zoom out"
+            title="Zoom out"
+          >
+            −
+          </button>
+          <button
+            type="button"
+            className={zoomStepBtnClass}
+            disabled={!canZoomIn}
+            onClick={onZoomIn}
+            aria-label="Zoom in"
+            title="Zoom in"
+          >
+            +
+          </button>
+        </div>
         <Button
           type="button"
           variant={shiftOverlayOpen ? "primary" : "ghost"}

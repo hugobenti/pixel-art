@@ -3,13 +3,14 @@
  * React hook for canvas viewport: zoom (wheel / two-finger pinch), pan (wheel / Space+drag / pan mode / middle mouse).
  *
  * Notes:
- * Delegates gesture rules to viewportNavigationService.ts. Mobile pinch is implemented here because
+ * Delegates gesture rules to viewportNavigationService.ts. Touch contact counts come from useEditorPointerContacts
+ * (touchPointersRef) — do not duplicate touch tracking here. Mobile pinch is implemented here because
  * `touch-action: none` on the canvas disables browser pinch-zoom and wheel events are unreliable on touch devices.
  * Viewport updates pass through normalizeViewportToPixelGrid for crisp pixel scaling (integer scale + offsets).
  */
 "use client";
 
-import type { Dispatch, SetStateAction } from "react";
+import type { Dispatch, RefObject, SetStateAction } from "react";
 import {
   useCallback,
   useEffect,
@@ -20,6 +21,7 @@ import {
 
 import type { ViewportState } from "@/features/editor/types/editor.types";
 
+import type { NormalizeViewportOptions } from "@/features/editor/logic/viewportPixelAlign";
 import {
   MAX_VIEWPORT_SCALE,
   normalizeViewportToPixelGrid,
@@ -35,6 +37,8 @@ import {
 export interface UseViewportNavigationOptions {
   /** Minimum scale from contain-fit ratio; used when snapping zoom/pan to integer pixels. */
   getMinScale?: () => number;
+  /** Active touch pointer IDs (window capture); shared with painting for single-finger pan/paint rules. */
+  touchPointersRef: RefObject<Set<number>>;
 }
 
 /**
@@ -55,6 +59,29 @@ export function zoomViewportTowardScreenPoint(
       y: my - worldY * newScale,
     },
   };
+}
+
+/**
+ * Zoom toward (mx, my) after snapping candidate scale to the integer grid. If the snapped scale equals
+ * the current scale, returns v unchanged — otherwise fractional candidate scales shift viewOffset even
+ * when rounding yields no zoom change (visible as pan drift on touch / button zoom).
+ */
+export function zoomViewportTowardScreenPointSnapped(
+  v: ViewportState,
+  candidateScale: number,
+  mx: number,
+  my: number,
+  normalizeOpts: NormalizeViewportOptions
+): ViewportState {
+  const snappedPreview = normalizeViewportToPixelGrid(
+    { ...v, scale: candidateScale },
+    normalizeOpts
+  );
+  if (snappedPreview.scale === v.scale) {
+    return v;
+  }
+  const raw = zoomViewportTowardScreenPoint(v, snappedPreview.scale, mx, my);
+  return normalizeViewportToPixelGrid(raw, normalizeOpts);
 }
 
 /**
@@ -112,8 +139,7 @@ export function attachViewportPinchZoom(
         MAX_VIEWPORT_SCALE,
         Math.max(minScale, v.scale * ratio)
       );
-      const raw = zoomViewportTowardScreenPoint(v, nextScale, midX, midY);
-      return normalizeViewportToPixelGrid(raw, {
+      return zoomViewportTowardScreenPointSnapped(v, nextScale, midX, midY, {
         minScale,
         maxScale: MAX_VIEWPORT_SCALE,
       });
@@ -182,8 +208,7 @@ export function attachViewportWheel(
         MAX_VIEWPORT_SCALE,
         Math.max(minScale, v.scale * factor)
       );
-      const raw = zoomViewportTowardScreenPoint(v, newScale, mx, my);
-      return normalizeViewportToPixelGrid(raw, {
+      return zoomViewportTowardScreenPointSnapped(v, newScale, mx, my, {
         minScale,
         maxScale: MAX_VIEWPORT_SCALE,
       });
@@ -194,12 +219,13 @@ export function attachViewportWheel(
   return () => el.removeEventListener("wheel", onWheel);
 }
 
-export function useViewportNavigation(options?: UseViewportNavigationOptions) {
-  const getMinScaleRef = useRef(options?.getMinScale);
+export function useViewportNavigation(options: UseViewportNavigationOptions) {
+  const { touchPointersRef } = options;
+  const getMinScaleRef = useRef(options.getMinScale);
 
   useLayoutEffect(() => {
-    getMinScaleRef.current = options?.getMinScale;
-  }, [options?.getMinScale]);
+    getMinScaleRef.current = options.getMinScale;
+  }, [options.getMinScale]);
 
   const snapViewport = useCallback((v: ViewportState) => {
     const getter = getMinScaleRef.current;
@@ -263,7 +289,6 @@ export function useViewportNavigation(options?: UseViewportNavigationOptions) {
     originOffsetX: 0,
     originOffsetY: 0,
   });
-  const activeTouchPointersRef = useRef<Set<number>>(new Set());
 
   const viewOffsetRef = useRef(viewport.viewOffset);
   useEffect(() => {
@@ -271,12 +296,11 @@ export function useViewportNavigation(options?: UseViewportNavigationOptions) {
   }, [viewport.viewOffset]);
 
   const onPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType === "touch") {
-      activeTouchPointersRef.current.add(e.pointerId);
-      // In pan mode, never pan while a multi-touch gesture is active.
-      if (activeTouchPointersRef.current.size > 1) {
-        panRef.current.active = false;
-      }
+    if (
+      e.pointerType === "touch" &&
+      touchPointersRef.current.size > 1
+    ) {
+      panRef.current.active = false;
     }
 
     if (
@@ -288,7 +312,7 @@ export function useViewportNavigation(options?: UseViewportNavigationOptions) {
     ) {
       return;
     }
-    if (e.pointerType === "touch" && activeTouchPointersRef.current.size !== 1) {
+    if (e.pointerType === "touch" && touchPointersRef.current.size !== 1) {
       return;
     }
     e.preventDefault();
@@ -301,13 +325,13 @@ export function useViewportNavigation(options?: UseViewportNavigationOptions) {
       originOffsetY: viewOffsetRef.current.y,
     };
     e.currentTarget.setPointerCapture(e.pointerId);
-  }, []);
+  }, [touchPointersRef]);
 
   const onPointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     if (!panRef.current.active || e.pointerId !== panRef.current.pointerId) {
       return;
     }
-    if (e.pointerType === "touch" && activeTouchPointersRef.current.size > 1) {
+    if (e.pointerType === "touch" && touchPointersRef.current.size > 1) {
       return;
     }
     const dx = e.clientX - panRef.current.startClientX;
@@ -321,12 +345,9 @@ export function useViewportNavigation(options?: UseViewportNavigationOptions) {
         },
       })
     );
-  }, [snapViewport]);
+  }, [snapViewport, touchPointersRef]);
 
   const onPointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType === "touch") {
-      activeTouchPointersRef.current.delete(e.pointerId);
-    }
     if (!panRef.current.active || e.pointerId !== panRef.current.pointerId) {
       return;
     }
@@ -339,9 +360,6 @@ export function useViewportNavigation(options?: UseViewportNavigationOptions) {
   }, []);
 
   const onPointerCancel = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    if (e.pointerType === "touch") {
-      activeTouchPointersRef.current.delete(e.pointerId);
-    }
     panRef.current.active = false;
     try {
       e.currentTarget.releasePointerCapture(e.pointerId);

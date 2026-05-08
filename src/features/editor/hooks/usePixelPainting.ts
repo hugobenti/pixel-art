@@ -3,11 +3,13 @@
  * Pointer-driven painting with window-level drag tracking and stroke delta recording.
  *
  * Notes:
- * Touch painting stops as soon as a second finger touches the screen (stroke ends).
- * A new stroke cannot start while more than one touch is active.
+ * Touch contacts are counted only via touchPointersRef (useEditorPointerContacts). When a second touch
+ * lands, the stroke ends immediately. Draw permission is represented by painting + activePaintingPointerId:
+ * no active stroke until pointer down with a valid gesture; cleared on up/cancel or multi-touch.
  */
 "use client";
 
+import type { RefObject } from "react";
 import { useEffect, useRef } from "react";
 
 import { screenToWorldCoordinates } from "@/features/editor/logic/coordinateMath";
@@ -34,6 +36,8 @@ interface UsePixelPaintingParams {
   onPixelsChanged: () => void;
   /** When true, primary-button painting is skipped (Space pan / pan mode). */
   deferPrimaryPaint?: () => boolean;
+  /** Shared touch Set from useEditorPointerContacts; hook order must place contacts before painting. */
+  touchPointersRef: RefObject<Set<number>>;
 }
 
 /**
@@ -63,6 +67,7 @@ export function usePixelPainting({
   onCommitStroke,
   onPixelsChanged,
   deferPrimaryPaint,
+  touchPointersRef,
 }: UsePixelPaintingParams) {
   const artworkRef = useRef(artwork);
   const activeLayerIdRef = useRef(activeLayerId);
@@ -77,11 +82,10 @@ export function usePixelPainting({
   }, [artwork, activeLayerId, activeLayerPixelData, viewport]);
 
   const strokeRaw = useRef<PixelDelta[]>([]);
+  /** True while a paint stroke is active for the captured pointer (draw permission). */
   const painting = useRef(false);
   const activePaintingPointerId = useRef<number | null>(null);
-  const activeTouchPointersRef = useRef<Set<number>>(new Set());
   const activeSlotRef = useRef(activeSlot);
-  const endStrokeRef = useRef<() => void>(() => {});
 
   useEffect(() => {
     activeSlotRef.current = activeSlot;
@@ -150,21 +154,14 @@ export function usePixelPainting({
       }
     };
 
-    const onGlobalTouchPointerDown = (e: PointerEvent) => {
+    /** Runs after useEditorPointerContacts capture handler so the Set already includes this pointer. */
+    const onTouchPointerDownEndStrokeIfMulti = (e: PointerEvent) => {
       if (e.pointerType !== "touch") {
         return;
       }
-      activeTouchPointersRef.current.add(e.pointerId);
-      if (activeTouchPointersRef.current.size > 1 && painting.current) {
+      if (touchPointersRef.current.size > 1 && painting.current) {
         endStroke();
       }
-    };
-
-    const onGlobalTouchPointerUp = (e: PointerEvent) => {
-      if (e.pointerType !== "touch") {
-        return;
-      }
-      activeTouchPointersRef.current.delete(e.pointerId);
     };
 
     const onPointerFinish = (e: PointerEvent) => {
@@ -174,18 +171,16 @@ export function usePixelPainting({
       endStroke();
     };
 
-    endStrokeRef.current = endStroke;
-
-    window.addEventListener("pointerdown", onGlobalTouchPointerDown, true);
-    window.addEventListener("pointerup", onGlobalTouchPointerUp, true);
-    window.addEventListener("pointercancel", onGlobalTouchPointerUp, true);
+    window.addEventListener("pointerdown", onTouchPointerDownEndStrokeIfMulti, true);
     window.addEventListener("pointermove", onMove);
     window.addEventListener("pointerup", onPointerFinish);
     window.addEventListener("pointercancel", onPointerFinish);
     return () => {
-      window.removeEventListener("pointerdown", onGlobalTouchPointerDown, true);
-      window.removeEventListener("pointerup", onGlobalTouchPointerUp, true);
-      window.removeEventListener("pointercancel", onGlobalTouchPointerUp, true);
+      window.removeEventListener(
+        "pointerdown",
+        onTouchPointerDownEndStrokeIfMulti,
+        true
+      );
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerup", onPointerFinish);
       window.removeEventListener("pointercancel", onPointerFinish);
@@ -196,6 +191,7 @@ export function usePixelPainting({
     secondaryPaletteIndex,
     onCommitStroke,
     onPixelsChanged,
+    touchPointersRef,
   ]);
 
   const onArtworkPointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
@@ -205,10 +201,7 @@ export function usePixelPainting({
     if (e.button === 0 && deferPrimaryPaint?.()) {
       return;
     }
-    if (
-      e.pointerType === "touch" &&
-      activeTouchPointersRef.current.size > 1
-    ) {
+    if (e.pointerType === "touch" && touchPointersRef.current.size > 1) {
       e.preventDefault();
       return;
     }

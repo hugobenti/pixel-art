@@ -5,6 +5,8 @@
  * Notes:
  * Pixel grid and symmetry-guide colors are defined on :root in globals.css (read by the canvas engine).
  * Contain-fit viewport uses normalizeViewportToPixelGrid so scale and offsets stay integer-aligned with wheel/pinch/pan.
+ * Touch pointer tracking: useEditorPointerContacts runs before viewport navigation and pixel painting (see docs/canvas-pointer-contract.md).
+ * Toolbar zoom uses multiplicative steps plus an integer ±1 fallback when pixel snapping would leave scale unchanged.
  */
 "use client";
 
@@ -24,10 +26,12 @@ import { PaletteEditModal } from "@/features/editor/components/PaletteEditModal"
 import { ShiftDirectionOverlay } from "@/features/editor/components/ShiftDirectionOverlay";
 import { useArtworkLayers } from "@/features/editor/hooks/useArtworkLayers";
 import { useEditorPalette } from "@/features/editor/hooks/useEditorPalette";
+import { useEditorPointerContacts } from "@/features/editor/hooks/useEditorPointerContacts";
 import {
   attachViewportPinchZoom,
   attachViewportWheel,
   useViewportNavigation,
+  zoomViewportTowardScreenPointSnapped,
 } from "@/features/editor/hooks/useViewportNavigation";
 import { useCanvasEngine } from "@/features/editor/hooks/useCanvasEngine";
 import { useHistory } from "@/features/editor/hooks/useHistory";
@@ -46,6 +50,21 @@ import { computeContainFit } from "@/features/editor/logic/viewportFit";
 import { artworkToWebpThumbnail } from "@/features/editor/utils/thumbnail";
 
 const MIN_ZOOM_RATIO_OF_CONTAIN = 0.75;
+
+/** Initial multiplicative step; integer bump applied when rounding yields no change (typical at low scales). */
+const VIEWPORT_ZOOM_FACTOR_IN = 1.08;
+const VIEWPORT_ZOOM_FACTOR_OUT = 0.92;
+
+/** Logs [editor-zoom] in development, or when localStorage DEBUG_EDITOR_ZOOM=1 is set (e.g. mobile prod builds). */
+function editorZoomDebug(payload: Record<string, unknown>) {
+  if (typeof window === "undefined") {
+    return;
+  }
+  const force = window.localStorage?.getItem("DEBUG_EDITOR_ZOOM") === "1";
+  if (process.env.NODE_ENV === "development" || force) {
+    console.log("[editor-zoom]", payload);
+  }
+}
 
 const shellClass =
   "mx-auto flex h-[min(100dvh,100vh)] w-full max-w-6xl flex-col gap-2 px-4 py-4 min-h-0";
@@ -122,6 +141,8 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
   const minScaleRef = useRef(1);
   const getMinScale = useCallback(() => minScaleRef.current, []);
 
+  const { touchPointersRef } = useEditorPointerContacts();
+
   const {
     viewport,
     setViewport,
@@ -129,7 +150,7 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
     panMode,
     setPanMode,
     deferPrimaryPaint,
-  } = useViewportNavigation({ getMinScale });
+  } = useViewportNavigation({ getMinScale, touchPointersRef });
 
   const referenceImage = useReferenceImage({
     initialReferenceImageDataUrl: artwork.referenceImageDataUrl,
@@ -190,6 +211,92 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
     };
   }, [wrapRef, setViewport, cssSize.w, cssSize.h, artwork.width, artwork.height]);
 
+  const zoomViewportAroundCenter = useCallback(
+    (direction: "in" | "out") => {
+      const el = wrapRef.current;
+      if (!el) {
+        editorZoomDebug({
+          phase: "abort",
+          reason: "wrapRef_null",
+          direction,
+        });
+        return;
+      }
+      const rect = el.getBoundingClientRect();
+      const mx = rect.width / 2;
+      const my = rect.height / 2;
+      const minScale = minScaleRef.current;
+      const minScaleFloor = Math.max(1, Math.ceil(minScale));
+      const factor =
+        direction === "in" ? VIEWPORT_ZOOM_FACTOR_IN : VIEWPORT_ZOOM_FACTOR_OUT;
+
+      setViewport((v) => {
+        const multiplicative = Math.min(
+          MAX_VIEWPORT_SCALE,
+          Math.max(minScale, v.scale * factor)
+        );
+        let candidateScale = multiplicative;
+
+        const snappedMultiplicative = normalizeViewportToPixelGrid(
+          { ...v, scale: multiplicative },
+          { minScale, maxScale: MAX_VIEWPORT_SCALE }
+        ).scale;
+
+        let usedIntegerBump = false;
+        if (snappedMultiplicative === v.scale) {
+          usedIntegerBump = true;
+          if (direction === "in") {
+            candidateScale = Math.min(MAX_VIEWPORT_SCALE, v.scale + 1);
+          } else {
+            candidateScale = Math.max(minScaleFloor, v.scale - 1);
+          }
+        }
+
+        const next = zoomViewportTowardScreenPointSnapped(
+          v,
+          candidateScale,
+          mx,
+          my,
+          {
+            minScale,
+            maxScale: MAX_VIEWPORT_SCALE,
+          }
+        );
+
+        editorZoomDebug({
+          phase: "apply",
+          direction,
+          prevScale: v.scale,
+          multiplicativeCandidate: multiplicative,
+          snappedMultiplicative,
+          usedIntegerBump,
+          finalCandidate: candidateScale,
+          nextScale: next.scale,
+          unchanged: next === v,
+          anchor: { mx, my },
+          wrapSize: { w: rect.width, h: rect.height },
+          minScale,
+          minScaleFloor,
+        });
+
+        return next;
+      });
+    },
+    [setViewport, wrapRef]
+  );
+
+  const onZoomIn = useCallback(() => {
+    zoomViewportAroundCenter("in");
+  }, [zoomViewportAroundCenter]);
+
+  const onZoomOut = useCallback(() => {
+    zoomViewportAroundCenter("out");
+  }, [zoomViewportAroundCenter]);
+
+  const minScaleFloor = Math.max(1, Math.ceil(minScaleRef.current));
+  const canZoomIn = viewport.scale < MAX_VIEWPORT_SCALE;
+  const canZoomOut = viewport.scale > minScaleFloor;
+
   const onCommitStroke = useCallback(
     (cmd: import("@/features/editor/types/editor.types").HistoryCommand) => {
       pushCommand(cmd);
@@ -218,6 +325,7 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
     onCommitStroke,
     onPixelsChanged: schedulePaintBump,
     deferPrimaryPaint,
+    touchPointersRef,
   });
 
   const skipInitialAutosave = useRef(true);
@@ -309,6 +417,10 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
           onOpenPaletteModal={() => setPaletteModalOpen(true)}
           panMode={panMode}
           onTogglePanMode={() => setPanMode((v) => !v)}
+          canZoomOut={canZoomOut}
+          canZoomIn={canZoomIn}
+          onZoomOut={onZoomOut}
+          onZoomIn={onZoomIn}
           shiftOverlayOpen={pixelShift.shiftOverlayOpen}
           onToggleShiftOverlay={pixelShift.toggleShiftOverlay}
           layersDrawerOpen={layersDrawerOpen}
