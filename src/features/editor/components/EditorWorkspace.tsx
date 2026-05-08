@@ -19,6 +19,7 @@ import { CanvasContainer } from "@/features/editor/components/CanvasContainer";
 import { ColorSelectionRow } from "@/features/editor/components/ColorSelectionRow";
 import { EditorActionsBar } from "@/features/editor/components/EditorActionsBar";
 import { PaletteEditModal } from "@/features/editor/components/PaletteEditModal";
+import { ShiftDirectionOverlay } from "@/features/editor/components/ShiftDirectionOverlay";
 import { useEditorPalette } from "@/features/editor/hooks/useEditorPalette";
 import {
   attachViewportPinchZoom,
@@ -27,6 +28,7 @@ import {
 } from "@/features/editor/hooks/useViewportNavigation";
 import { useCanvasEngine } from "@/features/editor/hooks/useCanvasEngine";
 import { useHistory } from "@/features/editor/hooks/useHistory";
+import { usePixelShift } from "@/features/editor/hooks/usePixelShift";
 import { usePixelPainting } from "@/features/editor/hooks/usePixelPainting";
 import { useReferenceImage } from "@/features/editor/hooks/useReferenceImage";
 import * as galleryService from "@/features/gallery/services/galleryService";
@@ -166,6 +168,14 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
     [pushCommand]
   );
 
+  const pixelShift = usePixelShift({
+    pixelData: artwork.pixelData,
+    width: artwork.width,
+    height: artwork.height,
+    pushCommand,
+    schedulePaintBump,
+  });
+
   const { onArtworkPointerDown } = usePixelPainting({
     artwork,
     viewport,
@@ -267,6 +277,8 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
           onOpenPaletteModal={() => setPaletteModalOpen(true)}
           panMode={panMode}
           onTogglePanMode={() => setPanMode((v) => !v)}
+          shiftOverlayOpen={pixelShift.shiftOverlayOpen}
+          onToggleShiftOverlay={pixelShift.toggleShiftOverlay}
         />
       </div>
 
@@ -295,6 +307,12 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
           onArtworkPointerDown={onArtworkPointerDown}
         />
       </main>
+
+      <ShiftDirectionOverlay
+        open={pixelShift.shiftOverlayOpen}
+        onClose={pixelShift.closeShiftOverlay}
+        onShift={pixelShift.applyShift}
+      />
     </div>
   );
 }

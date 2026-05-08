@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * Single toolbar row: navigation, document title, undo/redo, palette modal, slot toggle, grid toggle.
+ * Single toolbar row: navigation, document title, undo/redo, pan, palette, shift overlay, reference image, grid.
  */
 "use client";
 
@@ -46,6 +46,8 @@ interface EditorActionsBarProps {
   onOpenPaletteModal: () => void;
   panMode: boolean;
   onTogglePanMode: () => void;
+  shiftOverlayOpen: boolean;
+  onToggleShiftOverlay: () => void;
 }
 
 export function EditorActionsBar({
@@ -65,6 +67,8 @@ export function EditorActionsBar({
   onOpenPaletteModal,
   panMode,
   onTogglePanMode,
+  shiftOverlayOpen,
+  onToggleShiftOverlay,
 }: EditorActionsBarProps) {
   const slotLabel = activeSlot === "primary" ? "Primary" : "Secondary";
 
@@ -106,6 +110,16 @@ export function EditorActionsBar({
           title="Pan mode: drag to move the canvas (or hold Space)"
         >
           Pan
+        </Button>
+        <Button
+          type="button"
+          variant={shiftOverlayOpen ? "primary" : "ghost"}
+          className="min-h-10 px-3"
+          onClick={onToggleShiftOverlay}
+          aria-pressed={shiftOverlayOpen}
+          title="Shift rows/columns (wrap)"
+        >
+          Shift
         </Button>
         <Button
           type="button"
