@@ -4,6 +4,7 @@
  *
  * Notes:
  * Pixel grid and symmetry-guide colors are defined on :root in globals.css (read by the canvas engine).
+ * Contain-fit viewport uses normalizeViewportToPixelGrid so scale and offsets stay integer-aligned with wheel/pinch/pan.
  */
 "use client";
 
@@ -37,6 +38,10 @@ import * as galleryService from "@/features/gallery/services/galleryService";
 
 import type { Artwork } from "@/features/editor/types/editor.types";
 
+import {
+  MAX_VIEWPORT_SCALE,
+  normalizeViewportToPixelGrid,
+} from "@/features/editor/logic/viewportPixelAlign";
 import { computeContainFit } from "@/features/editor/logic/viewportFit";
 import { artworkToWebpThumbnail } from "@/features/editor/utils/thumbnail";
 
@@ -114,6 +119,9 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
     historyRevision,
   } = useHistory({ documentKey: artwork.id, getLayerPixelData });
 
+  const minScaleRef = useRef(1);
+  const getMinScale = useCallback(() => minScaleRef.current, []);
+
   const {
     viewport,
     setViewport,
@@ -121,9 +129,8 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
     panMode,
     setPanMode,
     deferPrimaryPaint,
-  } = useViewportNavigation();
+  } = useViewportNavigation({ getMinScale });
 
-  const minScaleRef = useRef(1);
   const referenceImage = useReferenceImage({
     initialReferenceImageDataUrl: artwork.referenceImageDataUrl,
     onReferenceImageChange: (dataUrl) => {
@@ -156,8 +163,14 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
       artwork.width,
       artwork.height
     );
-    minScaleRef.current = next.scale * MIN_ZOOM_RATIO_OF_CONTAIN;
-    setViewport(next);
+    const minScale = next.scale * MIN_ZOOM_RATIO_OF_CONTAIN;
+    minScaleRef.current = minScale;
+    setViewport(
+      normalizeViewportToPixelGrid(next, {
+        minScale,
+        maxScale: MAX_VIEWPORT_SCALE,
+      })
+    );
   }, [cssSize.w, cssSize.h, artwork.width, artwork.height, setViewport]);
 
   useLayoutEffect(() => {

@@ -5,14 +5,25 @@
  * Notes:
  * Delegates gesture rules to viewportNavigationService.ts. Mobile pinch is implemented here because
  * `touch-action: none` on the canvas disables browser pinch-zoom and wheel events are unreliable on touch devices.
+ * Viewport updates pass through normalizeViewportToPixelGrid for crisp pixel scaling (integer scale + offsets).
  */
 "use client";
 
 import type { Dispatch, SetStateAction } from "react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
 import type { ViewportState } from "@/features/editor/types/editor.types";
 
+import {
+  MAX_VIEWPORT_SCALE,
+  normalizeViewportToPixelGrid,
+} from "@/features/editor/logic/viewportPixelAlign";
 import {
   classifyWheelIntent,
   panPixelsFromWheel,
@@ -21,7 +32,10 @@ import {
   translateViewOffset,
 } from "@/features/editor/services/viewportNavigationService";
 
-const MAX_SCALE = 64;
+export interface UseViewportNavigationOptions {
+  /** Minimum scale from contain-fit ratio; used when snapping zoom/pan to integer pixels. */
+  getMinScale?: () => number;
+}
 
 /**
  * Applies a new scale while keeping the given screen-space point aligned with the same world pixel.
@@ -95,10 +109,14 @@ export function attachViewportPinchZoom(
 
     setViewport((v) => {
       const nextScale = Math.min(
-        MAX_SCALE,
+        MAX_VIEWPORT_SCALE,
         Math.max(minScale, v.scale * ratio)
       );
-      return zoomViewportTowardScreenPoint(v, nextScale, midX, midY);
+      const raw = zoomViewportTowardScreenPoint(v, nextScale, midX, midY);
+      return normalizeViewportToPixelGrid(raw, {
+        minScale,
+        maxScale: MAX_VIEWPORT_SCALE,
+      });
     });
   };
 
@@ -138,10 +156,17 @@ export function attachViewportWheel(
 
     if (classifyWheelIntent(e) === "pan") {
       const { dx, dy } = panPixelsFromWheel(e);
-      setViewport((v) => ({
-        ...v,
-        viewOffset: translateViewOffset(v.viewOffset, dx, dy),
-      }));
+      const minScale = Math.max(1e-6, getMinScale());
+      setViewport((v) => {
+        const raw = {
+          ...v,
+          viewOffset: translateViewOffset(v.viewOffset, dx, dy),
+        };
+        return normalizeViewportToPixelGrid(raw, {
+          minScale,
+          maxScale: MAX_VIEWPORT_SCALE,
+        });
+      });
       return;
     }
 
@@ -154,10 +179,14 @@ export function attachViewportWheel(
 
     setViewport((v) => {
       const newScale = Math.min(
-        MAX_SCALE,
+        MAX_VIEWPORT_SCALE,
         Math.max(minScale, v.scale * factor)
       );
-      return zoomViewportTowardScreenPoint(v, newScale, mx, my);
+      const raw = zoomViewportTowardScreenPoint(v, newScale, mx, my);
+      return normalizeViewportToPixelGrid(raw, {
+        minScale,
+        maxScale: MAX_VIEWPORT_SCALE,
+      });
     });
   };
 
@@ -165,7 +194,22 @@ export function attachViewportWheel(
   return () => el.removeEventListener("wheel", onWheel);
 }
 
-export function useViewportNavigation() {
+export function useViewportNavigation(options?: UseViewportNavigationOptions) {
+  const getMinScaleRef = useRef(options?.getMinScale);
+
+  useLayoutEffect(() => {
+    getMinScaleRef.current = options?.getMinScale;
+  }, [options?.getMinScale]);
+
+  const snapViewport = useCallback((v: ViewportState) => {
+    const getter = getMinScaleRef.current;
+    const minScale = Math.max(1e-6, getter?.() ?? 1);
+    return normalizeViewportToPixelGrid(v, {
+      minScale,
+      maxScale: MAX_VIEWPORT_SCALE,
+    });
+  }, []);
+
   const [viewport, setViewport] = useState<ViewportState>({
     scale: 1,
     viewOffset: { x: 0, y: 0 },
@@ -268,14 +312,16 @@ export function useViewportNavigation() {
     }
     const dx = e.clientX - panRef.current.startClientX;
     const dy = e.clientY - panRef.current.startClientY;
-    setViewport((v) => ({
-      ...v,
-      viewOffset: {
-        x: panRef.current.originOffsetX + dx,
-        y: panRef.current.originOffsetY + dy,
-      },
-    }));
-  }, []);
+    setViewport((v) =>
+      snapViewport({
+        ...v,
+        viewOffset: {
+          x: panRef.current.originOffsetX + dx,
+          y: panRef.current.originOffsetY + dy,
+        },
+      })
+    );
+  }, [snapViewport]);
 
   const onPointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
     if (e.pointerType === "touch") {

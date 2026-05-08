@@ -5,6 +5,9 @@
 
 export const ANIMATION_MS = 180;
 
+/** Long edge cap when rasterizing a layer into the list thumbnail (pixel-perfect downscale). */
+export const LAYER_PREVIEW_MAX_EDGE_PX = 48;
+
 /** Paths under /public/icons — referenced as absolute URLs from the app root. */
 export const LAYER_ICON_SRC = {
   grip: "/icons/layer-grip.svg",
@@ -38,9 +41,11 @@ export const itemIdleClass = "border-zinc-200 bg-white hover:bg-zinc-50";
 export const dragHandleClass =
   "flex h-10 w-10 shrink-0 cursor-grab touch-none items-center justify-center rounded-md border border-zinc-300 text-zinc-600 active:cursor-grabbing sm:h-9 sm:w-9";
 export const previewWrapClass =
-  "flex h-12 w-12 shrink-0 items-center justify-center rounded-md border border-zinc-300 bg-zinc-50 sm:h-14 sm:w-14";
-export const previewCanvasClass =
-  "h-10 w-10 rounded-sm border border-zinc-200 sm:h-12 sm:w-12";
+  "flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-md border border-zinc-300 bg-zinc-100 sm:h-14 sm:w-14";
+export const previewImageClass =
+  "max-h-full max-w-full object-contain rounded-sm shadow-sm";
+export const previewPlaceholderClass =
+  "h-full min-h-[2.25rem] w-full min-w-[2.25rem] rounded-sm border border-dashed border-zinc-300 bg-zinc-50 sm:min-h-[2.75rem] sm:min-w-[2.75rem]";
 export const metadataClass = "min-w-0 flex-1";
 export const layerNameClass = "truncate text-sm font-semibold text-zinc-900";
 export const footerClass =
