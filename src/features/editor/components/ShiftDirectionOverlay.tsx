@@ -23,10 +23,10 @@ const bottomControlsClass = `
 `;
 
 const arrowPadClass = `
-  pointer-events-auto flex flex-col items-center gap-1 rounded-2xl border border-zinc-200 bg-white p-3 shadow-lg
+  pointer-events-auto flex flex-col items-center rounded-full border border-zinc-200 bg-white p-2 shadow-lg w-40 h-40
 `;
 
-const arrowSideRowClass = `flex items-center justify-center gap-2`;
+const arrowSideRowClass = `flex items-center justify-between w-36 gap-2`;
 
 const arrowButtonClass = `
   flex h-12 min-w-12 items-center justify-center rounded-xl px-2 text-xl font-semibold
