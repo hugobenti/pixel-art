@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * One reorderable layer row: grip, preview, name, visibility and rename actions.
+ * One reorderable layer row: grip, preview, name, visibility, duplicate, and rename actions.
  */
 "use client";
 
@@ -35,6 +35,7 @@ interface SortableLayerItemProps {
   height: number;
   onSelectLayer: (layerId: string) => void;
   onToggleVisibility: (layerId: string) => void;
+  onCopyLayer: (layerId: string) => void;
   onRenameLayer: (layerId: string) => void;
   drawerOpen: boolean;
 }
@@ -47,6 +48,7 @@ export function SortableLayerItem({
   height,
   onSelectLayer,
   onToggleVisibility,
+  onCopyLayer,
   onRenameLayer,
   drawerOpen,
 }: SortableLayerItemProps) {
@@ -120,6 +122,24 @@ export function SortableLayerItem({
           >
             <Image
               src={visibilityIconSrc}
+              alt=""
+              width={20}
+              height={20}
+              className={layerIconImgClass}
+            />
+          </button>
+          <button
+            type="button"
+            className={layerIconButtonClass}
+            onClick={(event) => {
+              event.stopPropagation();
+              onCopyLayer(layer.id);
+            }}
+            title="Duplicate layer"
+            aria-label="Duplicate layer"
+          >
+            <Image
+              src={LAYER_ICON_SRC.copy}
               alt=""
               width={20}
               height={20}

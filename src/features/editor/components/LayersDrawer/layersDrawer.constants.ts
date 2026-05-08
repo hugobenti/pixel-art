@@ -12,6 +12,7 @@ export const LAYER_PREVIEW_MAX_EDGE_PX = 48;
 export const LAYER_ICON_SRC = {
   grip: "/icons/layer-grip.svg",
   pencil: "/icons/layer-pencil.svg",
+  copy: "/icons/layer-copy.svg",
   eye: "/icons/layer-eye.svg",
   eyeOff: "/icons/layer-eye-off.svg",
 } as const;

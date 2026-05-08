@@ -355,6 +355,7 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
           onAddLayer={() => {
             layersState.addLayer();
           }}
+          onCopyLayer={layersState.copyLayer}
           onRenameLayer={(layerId) => {
             const current = artwork.layers.find((layer) => layer.id === layerId);
             if (!current) {

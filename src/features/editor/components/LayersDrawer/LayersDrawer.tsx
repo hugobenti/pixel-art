@@ -56,6 +56,7 @@ interface LayersDrawerProps {
   onSelectLayer: (layerId: string) => void;
   onToggleVisibility: (layerId: string) => void;
   onAddLayer: () => void;
+  onCopyLayer: (layerId: string) => void;
   onRenameLayer: (layerId: string) => void;
   onReorderLayers: (activeId: string, overId: string | null) => void;
 }
@@ -70,6 +71,7 @@ export function LayersDrawer({
   onSelectLayer,
   onToggleVisibility,
   onAddLayer,
+  onCopyLayer,
   onRenameLayer,
   onReorderLayers,
 }: LayersDrawerProps) {
@@ -153,6 +155,7 @@ export function LayersDrawer({
                     height={height}
                     onSelectLayer={onSelectLayer}
                     onToggleVisibility={onToggleVisibility}
+                    onCopyLayer={onCopyLayer}
                     onRenameLayer={onRenameLayer}
                     drawerOpen={panelEntered}
                   />

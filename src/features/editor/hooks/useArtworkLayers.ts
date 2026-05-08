@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * Manage editor layer behavior (active layer selection, visibility toggles, and ordering updates).
+ * Manage editor layer behavior (active layer selection, visibility toggles, ordering updates, and duplication).
  */
 "use client";
 
@@ -133,6 +133,33 @@ export function useArtworkLayers({
     return createdLayerId;
   }, [setArtwork, onLayersChanged]);
 
+  const copyLayer = useCallback(
+    (layerId: string) => {
+      setArtwork((prev) => {
+        const idx = prev.layers.findIndex((layer) => layer.id === layerId);
+        if (idx < 0) {
+          return prev;
+        }
+        const source = prev.layers[idx];
+        const duplicated: ArtworkLayer = {
+          id: crypto.randomUUID(),
+          name: `${source.name} copy`,
+          visible: source.visible,
+          pixelData: clonePixelBuffer(source.pixelData),
+        };
+        const nextLayers = [...prev.layers];
+        nextLayers.splice(idx, 0, duplicated);
+        return {
+          ...prev,
+          layers: nextLayers,
+          activeLayerId: duplicated.id,
+        };
+      });
+      onLayersChanged();
+    },
+    [setArtwork, onLayersChanged]
+  );
+
   const renameLayer = useCallback(
     (layerId: string, nextName: string) => {
       const trimmed = nextName.trim();
@@ -190,6 +217,7 @@ export function useArtworkLayers({
     toggleLayerVisibility,
     reorderLayers,
     addLayer,
+    copyLayer,
     renameLayer,
     withUpdatedActiveLayerPixels,
   };
