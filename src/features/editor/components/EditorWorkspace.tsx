@@ -35,6 +35,8 @@ import type { Artwork } from "@/features/editor/types/editor.types";
 import { computeContainFit } from "@/features/editor/logic/viewportFit";
 import { artworkToWebpThumbnail } from "@/features/editor/utils/thumbnail";
 
+const MIN_ZOOM_RATIO_OF_CONTAIN = 0.75;
+
 const shellClass =
   "mx-auto flex h-[min(100dvh,100vh)] w-full max-w-6xl flex-col gap-2 px-4 py-4 min-h-0";
 
@@ -127,7 +129,7 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
       artwork.width,
       artwork.height
     );
-    minScaleRef.current = next.scale;
+    minScaleRef.current = next.scale * MIN_ZOOM_RATIO_OF_CONTAIN;
     setViewport(next);
   }, [cssSize.w, cssSize.h, artwork.width, artwork.height, setViewport]);
 
