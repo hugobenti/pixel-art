@@ -16,6 +16,12 @@
 :root {
   --foreground: #171717;
   --background: var(--color-mist-300);
+  /** Editorial pixel grid overlay (canvas reads these via getComputedStyle). */
+  --color-editor-grid-line: color-mix(in srgb, var(--foreground) 52%, transparent);
+  /** Horizontal symmetry guide through the canvas mid-height (red). */
+  --color-editor-grid-center-horizontal: #ef4444;
+  /** Vertical symmetry guide through the canvas mid-width (blue). */
+  --color-editor-grid-center-vertical: #3b82f6;
 }
 
 html {

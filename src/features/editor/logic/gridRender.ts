@@ -1,6 +1,9 @@
 /**
  * Purpose:
  * Draw the editorial pixel grid overlay in world space with viewport-aligned transforms and culling.
+ *
+ * Notes (optional):
+ * Symmetry guides use the artwork mid-lines in world space (half-width / half-height), drawn after the base grid.
  */
 
 import type { ViewportState } from "@/features/editor/types/editor.types";
@@ -9,7 +12,13 @@ import { getVisibleWorldBounds } from "@/features/editor/logic/coordinateMath";
 
 export interface PixelGridRenderOptions {
   color?: string;
+  /** Stroke color for the horizontal mid-line (symmetry guide). */
+  centerHorizontalColor?: string;
+  /** Stroke color for the vertical mid-line (symmetry guide). */
+  centerVerticalColor?: string;
   lineWidthWorld?: number;
+  /** Optional extra thickness multiplier for center guides (defaults to 1.45). */
+  centerLineWidthFactor?: number;
 }
 
 /**
@@ -39,11 +48,11 @@ export function renderPixelGrid(
     worldHeight
   );
 
-  const lineWidth =
-    options.lineWidthWorld ?? Math.max(1 / viewport.scale, 1e-6);
+  const baseLineWidth =
+    options.lineWidthWorld ?? Math.max(1.2 / viewport.scale, 1e-6);
 
   ctx.strokeStyle = options.color ?? "rgba(0, 0, 0, 0.22)";
-  ctx.lineWidth = lineWidth;
+  ctx.lineWidth = baseLineWidth;
 
   const startX = Math.max(0, bounds.minX);
   const endX = Math.min(worldWidth, bounds.maxX + 1);
@@ -60,6 +69,39 @@ export function renderPixelGrid(
     ctx.lineTo(endX, y);
   }
   ctx.stroke();
+
+  const centerFactor = options.centerLineWidthFactor ?? 1.45;
+  const centerLineWidth = Math.max(baseLineWidth * centerFactor, 1e-6);
+  const cx = worldWidth / 2;
+  const cy = worldHeight / 2;
+
+  if (
+    options.centerVerticalColor &&
+    worldWidth > 0 &&
+    cx >= startX &&
+    cx <= endX
+  ) {
+    ctx.beginPath();
+    ctx.strokeStyle = options.centerVerticalColor;
+    ctx.lineWidth = centerLineWidth;
+    ctx.moveTo(cx, startY);
+    ctx.lineTo(cx, endY);
+    ctx.stroke();
+  }
+
+  if (
+    options.centerHorizontalColor &&
+    worldHeight > 0 &&
+    cy >= startY &&
+    cy <= endY
+  ) {
+    ctx.beginPath();
+    ctx.strokeStyle = options.centerHorizontalColor;
+    ctx.lineWidth = centerLineWidth;
+    ctx.moveTo(startX, cy);
+    ctx.lineTo(endX, cy);
+    ctx.stroke();
+  }
 
   ctx.restore();
 }

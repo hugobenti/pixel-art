@@ -1,6 +1,9 @@
 /**
  * Purpose:
  * Bind artwork and grid canvases to viewport size and schedule dual-layer renders.
+ *
+ * Notes (optional):
+ * Grid and symmetry-guide colors come from CSS custom properties on :root so they stay aligned with design tokens.
  */
 "use client";
 
@@ -8,25 +11,31 @@ import { useLayoutEffect, useRef, useState } from "react";
 
 import { renderCanvas } from "@/features/editor/logic/canvasRender";
 import { renderPixelGrid } from "@/features/editor/logic/gridRender";
-import type { Artwork } from "@/features/editor/types/editor.types";
-import type { ViewportState } from "@/features/editor/types/editor.types";
+import type { Artwork, ViewportState } from "@/features/editor/types/editor.types";
 
 interface UseCanvasEngineParams {
   artwork: Artwork | null;
   viewport: ViewportState;
   showPixelGrid: boolean;
-  /** CSS color string for grid strokes (canvas API). */
-  gridStrokeColor: string;
   /** Bumps when pixel buffer or history mutates without artwork reference changes. */
   paintRevision: number;
   historyRevision: number;
+}
+
+function readRootCssColor(varName: string, fallback: string): string {
+  if (typeof document === "undefined") {
+    return fallback;
+  }
+  const raw = getComputedStyle(document.documentElement)
+    .getPropertyValue(varName)
+    .trim();
+  return raw.length > 0 ? raw : fallback;
 }
 
 export function useCanvasEngine({
   artwork,
   viewport,
   showPixelGrid,
-  gridStrokeColor,
   paintRevision,
   historyRevision,
 }: UseCanvasEngineParams) {
@@ -77,12 +86,28 @@ export function useCanvasEngine({
     renderCanvas(actx, artwork, viewport);
 
     if (showPixelGrid) {
+      const gridColor = readRootCssColor(
+        "--color-editor-grid-line",
+        "rgba(0, 0, 0, 0.35)"
+      );
+      const centerH = readRootCssColor(
+        "--color-editor-grid-center-horizontal",
+        "rgb(239, 68, 68)"
+      );
+      const centerV = readRootCssColor(
+        "--color-editor-grid-center-vertical",
+        "rgb(59, 130, 246)"
+      );
       renderPixelGrid(
         gctx,
         artwork.width,
         artwork.height,
         viewport,
-        { color: gridStrokeColor },
+        {
+          color: gridColor,
+          centerHorizontalColor: centerH,
+          centerVerticalColor: centerV,
+        },
         cssSize.w,
         cssSize.h
       );
@@ -93,7 +118,6 @@ export function useCanvasEngine({
     artwork,
     viewport,
     showPixelGrid,
-    gridStrokeColor,
     cssSize.w,
     cssSize.h,
     paintRevision,

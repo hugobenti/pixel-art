@@ -3,7 +3,7 @@
  * Interactive pixel editor: viewport, dual canvases, painting, undo/redo, grid overlay, and autosave.
  *
  * Notes:
- * Grid stroke color is fixed for the app’s light theme (no system dark-mode sync).
+ * Pixel grid and symmetry-guide colors are defined on :root in globals.css (read by the canvas engine).
  */
 "use client";
 
@@ -54,8 +54,6 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
   const [showPixelGrid, setShowPixelGrid] = useState(true);
   const [paintRevision, setPaintRevision] = useState(0);
   const [paletteModalOpen, setPaletteModalOpen] = useState(false);
-
-  const gridStrokeColor = "rgba(0, 0, 0, 0.22)";
 
   const artworkRef = useRef(artwork);
   useEffect(() => {
@@ -117,7 +115,6 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
     artwork,
     viewport,
     showPixelGrid,
-    gridStrokeColor,
     paintRevision,
     historyRevision,
   });
