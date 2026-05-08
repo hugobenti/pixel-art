@@ -6,7 +6,10 @@
 
 import { useCallback, useState, type FormEvent } from "react";
 
-import type { CreateArtworkInput } from "@/features/gallery/services/galleryService";
+import {
+  DEFAULT_PALETTE,
+  type CreateArtworkInput,
+} from "@/features/gallery/services/galleryService";
 
 type UseCreateArtworkFormOptions = {
   onCreate: (input: CreateArtworkInput) => Promise<unknown>;
@@ -16,7 +19,9 @@ export function useCreateArtworkForm({ onCreate }: UseCreateArtworkFormOptions) 
   const [title, setTitle] = useState("Untitled");
   const [width, setWidth] = useState("64");
   const [height, setHeight] = useState("64");
-  const [backgroundColor, setBackgroundColor] = useState("#000000");
+  const [backgroundColor, setBackgroundColor] = useState(
+    DEFAULT_PALETTE[1] ?? "#FFFFFF"
+  );
   const [busy, setBusy] = useState(false);
 
   const handleSubmit = useCallback(

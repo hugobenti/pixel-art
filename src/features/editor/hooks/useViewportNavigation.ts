@@ -219,6 +219,7 @@ export function useViewportNavigation() {
     originOffsetX: 0,
     originOffsetY: 0,
   });
+  const activeTouchPointersRef = useRef<Set<number>>(new Set());
 
   const viewOffsetRef = useRef(viewport.viewOffset);
   useEffect(() => {
@@ -226,6 +227,14 @@ export function useViewportNavigation() {
   }, [viewport.viewOffset]);
 
   const onPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === "touch") {
+      activeTouchPointersRef.current.add(e.pointerId);
+      // In pan mode, never pan while a multi-touch gesture is active.
+      if (activeTouchPointersRef.current.size > 1) {
+        panRef.current.active = false;
+      }
+    }
+
     if (
       !shouldStartPanGesture({
         pointerButton: e.button,
@@ -233,6 +242,9 @@ export function useViewportNavigation() {
         panMode: panModeRef.current,
       })
     ) {
+      return;
+    }
+    if (e.pointerType === "touch" && activeTouchPointersRef.current.size !== 1) {
       return;
     }
     e.preventDefault();
@@ -251,6 +263,9 @@ export function useViewportNavigation() {
     if (!panRef.current.active || e.pointerId !== panRef.current.pointerId) {
       return;
     }
+    if (e.pointerType === "touch" && activeTouchPointersRef.current.size > 1) {
+      return;
+    }
     const dx = e.clientX - panRef.current.startClientX;
     const dy = e.clientY - panRef.current.startClientY;
     setViewport((v) => ({
@@ -263,6 +278,9 @@ export function useViewportNavigation() {
   }, []);
 
   const onPointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === "touch") {
+      activeTouchPointersRef.current.delete(e.pointerId);
+    }
     if (!panRef.current.active || e.pointerId !== panRef.current.pointerId) {
       return;
     }
@@ -275,6 +293,9 @@ export function useViewportNavigation() {
   }, []);
 
   const onPointerCancel = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === "touch") {
+      activeTouchPointersRef.current.delete(e.pointerId);
+    }
     panRef.current.active = false;
     try {
       e.currentTarget.releasePointerCapture(e.pointerId);

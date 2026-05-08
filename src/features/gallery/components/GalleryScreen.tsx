@@ -1,9 +1,13 @@
 /**
  * Purpose:
  * Client shell for the gallery route: loads IndexedDB entries and hosts creation modal.
+ *
+ * Notes:
+ * After creating an artwork, the app navigates to the editor for that id.
  */
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/features/shared/components/Button";
@@ -20,6 +24,7 @@ const titleClass = "text-2xl font-semibold text-zinc-900";
 const shellClass = "mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-10";
 
 export function GalleryScreen() {
+  const router = useRouter();
   const {
     artworks,
     loading,
@@ -77,6 +82,7 @@ export function GalleryScreen() {
           const created = await createArtwork(input);
           if (created) {
             setModalOpen(false);
+            router.push(`/editor/${created.id}`);
           }
         }}
       />
