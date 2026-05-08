@@ -23,6 +23,8 @@ import type { ColorSlot } from "@/features/editor/logic/paletteMutations";
 
 interface UsePixelPaintingParams {
   artwork: Artwork;
+  activeLayerId: string | null;
+  activeLayerPixelData: Uint8Array | null;
   viewport: ViewportState;
   canvasRef: React.RefObject<HTMLCanvasElement | null>;
   activeSlot: ColorSlot;
@@ -51,6 +53,8 @@ function paletteIndexForButtons(
 
 export function usePixelPainting({
   artwork,
+  activeLayerId,
+  activeLayerPixelData,
   viewport,
   canvasRef,
   activeSlot,
@@ -61,12 +65,16 @@ export function usePixelPainting({
   deferPrimaryPaint,
 }: UsePixelPaintingParams) {
   const artworkRef = useRef(artwork);
+  const activeLayerIdRef = useRef(activeLayerId);
+  const activeLayerPixelDataRef = useRef(activeLayerPixelData);
   const viewportRef = useRef(viewport);
 
   useEffect(() => {
     artworkRef.current = artwork;
+    activeLayerIdRef.current = activeLayerId;
+    activeLayerPixelDataRef.current = activeLayerPixelData;
     viewportRef.current = viewport;
-  }, [artwork, viewport]);
+  }, [artwork, activeLayerId, activeLayerPixelData, viewport]);
 
   const strokeRaw = useRef<PixelDelta[]>([]);
   const painting = useRef(false);
@@ -88,7 +96,12 @@ export function usePixelPainting({
       }
       const canvas = canvasRef.current;
       const art = artworkRef.current;
+      const layerId = activeLayerIdRef.current;
+      const pixelData = activeLayerPixelDataRef.current;
       if (!canvas) {
+        return;
+      }
+      if (!layerId || !pixelData) {
         return;
       }
       const rect = canvas.getBoundingClientRect();
@@ -109,12 +122,13 @@ export function usePixelPainting({
         return;
       }
       const index = x + y * art.width;
-      const prev = art.pixelData[index];
+      const prev = pixelData[index];
       if (prev === pi) {
         return;
       }
-      art.pixelData[index] = pi;
+      pixelData[index] = pi;
       strokeRaw.current.push({
+        layerId,
         index,
         previousPaletteIndex: prev,
         newPaletteIndex: pi,
@@ -184,7 +198,12 @@ export function usePixelPainting({
     }
     const canvas = canvasRef.current;
     const art = artworkRef.current;
+    const layerId = activeLayerIdRef.current;
+    const pixelData = activeLayerPixelDataRef.current;
     if (!canvas) {
+      return;
+    }
+    if (!layerId || !pixelData) {
       return;
     }
     const rect = canvas.getBoundingClientRect();
@@ -202,10 +221,11 @@ export function usePixelPainting({
     strokeRaw.current = [];
     if (x >= 0 && y >= 0 && x < art.width && y < art.height) {
       const index = x + y * art.width;
-      const prev = art.pixelData[index];
+      const prev = pixelData[index];
       if (prev !== pi) {
-        art.pixelData[index] = pi;
+        pixelData[index] = pi;
         strokeRaw.current.push({
+          layerId,
           index,
           previousPaletteIndex: prev,
           newPaletteIndex: pi,

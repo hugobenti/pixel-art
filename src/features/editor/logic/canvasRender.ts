@@ -7,10 +7,10 @@ import type { Artwork, ViewportState } from "@/features/editor/types/editor.type
 
 export function renderCanvas(
   ctx: CanvasRenderingContext2D,
-  artwork: Pick<Artwork, "width" | "height" | "pixelData" | "palette">,
+  artwork: Pick<Artwork, "width" | "height" | "layers" | "palette">,
   viewport: ViewportState
 ): void {
-  const { width, height, pixelData, palette } = artwork;
+  const { width, height, layers, palette } = artwork;
 
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
@@ -20,14 +20,21 @@ export function renderCanvas(
   ctx.translate(viewport.viewOffset.x, viewport.viewOffset.y);
   ctx.scale(viewport.scale, viewport.scale);
 
-  for (let y = 0; y < height; y++) {
-    for (let x = 0; x < width; x++) {
-      const pixelIndex = x + y * width;
-      const paletteIndex = pixelData[pixelIndex];
-      const color = palette[paletteIndex] ?? "transparent";
+  for (let layerIndex = layers.length - 1; layerIndex >= 0; layerIndex--) {
+    const layer = layers[layerIndex];
+    if (!layer.visible) {
+      continue;
+    }
+    const pixelData = layer.pixelData;
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        const pixelIndex = x + y * width;
+        const paletteIndex = pixelData[pixelIndex];
+        const color = palette[paletteIndex] ?? "transparent";
 
-      ctx.fillStyle = color;
-      ctx.fillRect(x, y, 1, 1);
+        ctx.fillStyle = color;
+        ctx.fillRect(x, y, 1, 1);
+      }
     }
   }
 

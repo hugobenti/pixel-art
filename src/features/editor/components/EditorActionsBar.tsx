@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * Single toolbar row: navigation, document title, undo/redo, pan, palette, shift overlay, reference image, grid.
+ * Single toolbar row: navigation, document title, undo/redo, pan, layers, palette, shift overlay, reference image, grid.
  */
 "use client";
 
@@ -48,6 +48,8 @@ interface EditorActionsBarProps {
   onTogglePanMode: () => void;
   shiftOverlayOpen: boolean;
   onToggleShiftOverlay: () => void;
+  layersDrawerOpen: boolean;
+  onToggleLayersDrawer: () => void;
 }
 
 export function EditorActionsBar({
@@ -69,6 +71,8 @@ export function EditorActionsBar({
   onTogglePanMode,
   shiftOverlayOpen,
   onToggleShiftOverlay,
+  layersDrawerOpen,
+  onToggleLayersDrawer,
 }: EditorActionsBarProps) {
   const slotLabel = activeSlot === "primary" ? "Primary" : "Secondary";
 
@@ -120,6 +124,16 @@ export function EditorActionsBar({
           title="Shift rows/columns (wrap)"
         >
           Shift
+        </Button>
+        <Button
+          type="button"
+          variant={layersDrawerOpen ? "primary" : "ghost"}
+          className="min-h-10 px-3"
+          onClick={onToggleLayersDrawer}
+          aria-pressed={layersDrawerOpen}
+          title="Open layers panel"
+        >
+          Layers
         </Button>
         <Button
           type="button"

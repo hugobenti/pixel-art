@@ -14,7 +14,8 @@ import {
 import type { HistoryCommand } from "@/features/editor/types/editor.types";
 
 interface UsePixelShiftParams {
-  pixelData: Uint8Array;
+  pixelData: Uint8Array | null;
+  layerId: string | null;
   width: number;
   height: number;
   pushCommand: (cmd: HistoryCommand) => void;
@@ -23,6 +24,7 @@ interface UsePixelShiftParams {
 
 export function usePixelShift({
   pixelData,
+  layerId,
   width,
   height,
   pushCommand,
@@ -40,7 +42,11 @@ export function usePixelShift({
 
   const applyShift = useCallback(
     (direction: ShiftDirection) => {
+      if (!pixelData || !layerId) {
+        return;
+      }
       const cmd = computeShiftCommand(
+        layerId,
         pixelData,
         width,
         height,
@@ -52,7 +58,7 @@ export function usePixelShift({
       pushCommand(cmd);
       schedulePaintBump();
     },
-    [pixelData, width, height, pushCommand, schedulePaintBump]
+    [pixelData, layerId, width, height, pushCommand, schedulePaintBump]
   );
 
   return {

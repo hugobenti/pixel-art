@@ -7,7 +7,7 @@
  * color to the palette when it is not already present (up to MAX_PALETTE_ENTRIES).
  */
 import { db } from "@/features/shared/db/dexie.config";
-import type { Artwork } from "@/features/editor/types/editor.types";
+import type { Artwork, ArtworkLayer } from "@/features/editor/types/editor.types";
 import { normalizeHexColor } from "@/features/shared/utils/colorConverter";
 import { clonePixelBuffer, ensureUint8PixelData } from "@/features/shared/utils/binaryHelpers";
 
@@ -37,6 +37,26 @@ export const DEFAULT_PALETTE: string[] = [
 
 function newId(): string {
   return crypto.randomUUID();
+}
+
+function cloneLayerWithSize(
+  layer: ArtworkLayer,
+  pixelCount: number
+): ArtworkLayer {
+  return {
+    ...layer,
+    visible: layer.visible !== false,
+    pixelData: ensureUint8PixelData(layer.pixelData, pixelCount),
+  };
+}
+
+function buildFallbackLayer(pixelCount: number): ArtworkLayer {
+  return {
+    id: newId(),
+    name: "Background",
+    visible: true,
+    pixelData: new Uint8Array(pixelCount),
+  };
 }
 
 function validateDimensions(width: number, height: number): void {
@@ -71,9 +91,26 @@ function hydrateArtwork(row: Artwork): Artwork {
     row.referenceImageDataUrl.length > 0
       ? row.referenceImageDataUrl
       : undefined;
+  const legacyPixels = ensureUint8PixelData(row.pixelData, n);
+  const layers =
+    Array.isArray(row.layers) && row.layers.length > 0
+      ? row.layers.map((layer) => cloneLayerWithSize(layer, n))
+      : [
+          {
+            id: newId(),
+            name: "Background",
+            visible: true,
+            pixelData: legacyPixels,
+          },
+        ];
+  const activeLayerId =
+    layers.find((layer) => layer.id === row.activeLayerId)?.id ?? layers[0].id;
+
   return {
     ...row,
-    pixelData: ensureUint8PixelData(row.pixelData, n),
+    pixelData: undefined,
+    layers,
+    activeLayerId,
     palette: [...row.palette],
     referenceImageDataUrl,
   };
@@ -109,6 +146,12 @@ export async function createArtwork(input: CreateArtworkInput): Promise<Artwork>
   const now = Date.now();
   const pixelData = new Uint8Array(input.width * input.height);
   pixelData.fill(bgIndex);
+  const baseLayer: ArtworkLayer = {
+    id: newId(),
+    name: "Background",
+    visible: true,
+    pixelData,
+  };
 
   const artwork: Artwork = {
     id: newId(),
@@ -119,7 +162,8 @@ export async function createArtwork(input: CreateArtworkInput): Promise<Artwork>
     updatedAt: now,
     thumbnail: "",
     palette,
-    pixelData,
+    layers: [baseLayer],
+    activeLayerId: baseLayer.id,
     referenceImageDataUrl: undefined,
   };
 
@@ -132,10 +176,23 @@ export async function saveArtwork(artwork: Artwork): Promise<void> {
   if (artwork.palette.length > MAX_PALETTE_ENTRIES) {
     throw new Error(`Palette cannot exceed ${MAX_PALETTE_ENTRIES} colors.`);
   }
+  const pixelCount = artwork.width * artwork.height;
+  const normalizedLayers =
+    artwork.layers.length > 0
+      ? artwork.layers.map((layer) => cloneLayerWithSize(layer, pixelCount))
+      : [buildFallbackLayer(pixelCount)];
+  const activeLayerId =
+    normalizedLayers.find((layer) => layer.id === artwork.activeLayerId)?.id ??
+    normalizedLayers[0].id;
   const toStore: Artwork = {
     ...artwork,
     updatedAt: Date.now(),
-    pixelData: clonePixelBuffer(artwork.pixelData),
+    layers: normalizedLayers.map((layer) => ({
+      ...layer,
+      pixelData: clonePixelBuffer(layer.pixelData),
+    })),
+    activeLayerId,
+    pixelData: undefined,
     palette: [...artwork.palette],
     referenceImageDataUrl: artwork.referenceImageDataUrl,
   };
@@ -165,8 +222,13 @@ export async function cloneArtwork(id: string): Promise<Artwork | undefined> {
     createdAt: now,
     updatedAt: now,
     thumbnail: source.thumbnail,
-    pixelData: clonePixelBuffer(source.pixelData),
+    layers: source.layers.map((layer) => ({
+      ...layer,
+      pixelData: clonePixelBuffer(layer.pixelData),
+    })),
     palette: [...source.palette],
+    activeLayerId: source.activeLayerId,
+    pixelData: undefined,
     referenceImageDataUrl: source.referenceImageDataUrl,
   };
 

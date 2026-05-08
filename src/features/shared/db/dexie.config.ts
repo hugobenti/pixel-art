@@ -28,6 +28,23 @@ export class PixelCraftDB extends Dexie {
             }
           })
       );
+    this.version(3)
+      .stores({
+        artworks: "id, updatedAt, title",
+      })
+      .upgrade((tx) =>
+        tx
+          .table("artworks")
+          .toCollection()
+          .modify((record: Partial<Artwork>) => {
+            if (!Array.isArray(record.layers)) {
+              record.layers = [];
+            }
+            if (typeof record.activeLayerId !== "string") {
+              record.activeLayerId = "";
+            }
+          })
+      );
   }
 }
 

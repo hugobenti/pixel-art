@@ -12,7 +12,7 @@ const DEFAULT_SIZE = 150;
  * Renders the artwork into a square thumbnail with letterboxing and returns a WebP data URL.
  */
 export function artworkToWebpThumbnail(
-  artwork: Pick<Artwork, "width" | "height" | "pixelData" | "palette">,
+  artwork: Pick<Artwork, "width" | "height" | "layers" | "palette">,
   size = DEFAULT_SIZE
 ): string {
   const canvas = document.createElement("canvas");

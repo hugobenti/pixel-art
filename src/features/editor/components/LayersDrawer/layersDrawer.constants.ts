@@ -1,0 +1,53 @@
+/**
+ * Purpose:
+ * Layout class strings and public asset paths for the layers drawer UI.
+ */
+
+export const ANIMATION_MS = 180;
+
+/** Paths under /public/icons — referenced as absolute URLs from the app root. */
+export const LAYER_ICON_SRC = {
+  grip: "/icons/layer-grip.svg",
+  pencil: "/icons/layer-pencil.svg",
+  eye: "/icons/layer-eye.svg",
+  eyeOff: "/icons/layer-eye-off.svg",
+} as const;
+
+export const layerIconImgClass = "h-5 w-5 object-contain pointer-events-none";
+
+export const rootClass =
+  "fixed inset-0 z-50 flex items-stretch justify-end";
+export const backdropBaseClass =
+  "absolute inset-0 bg-black/45 transition-opacity";
+export const backdropOpenClass = "opacity-100";
+export const backdropClosedClass = "opacity-0";
+export const panelBaseClass =
+  "relative z-10 flex h-full max-h-[100dvh] w-[90%] flex-col overflow-hidden border-l border-zinc-300 bg-white pb-[env(safe-area-inset-bottom)] shadow-2xl transition-transform ease-out sm:w-1/2 sm:max-w-[720px]";
+export const panelOpenClass = "translate-x-0";
+export const panelClosedClass = "translate-x-full";
+export const headerClass =
+  "flex shrink-0 items-center justify-between gap-2 border-b border-zinc-200 px-3 py-3 sm:px-4";
+export const titleClass = "text-base font-semibold text-zinc-900";
+export const listWrapClass =
+  "min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-3 touch-pan-y sm:px-4";
+export const listClass = "flex flex-col gap-2";
+export const itemClass =
+  "flex w-full min-w-0 cursor-pointer items-center gap-2 rounded-lg border px-2 py-2 text-left transition-colors sm:gap-3 sm:px-3";
+export const itemActiveClass = "border-zinc-900 bg-zinc-100";
+export const itemIdleClass = "border-zinc-200 bg-white hover:bg-zinc-50";
+export const dragHandleClass =
+  "flex h-10 w-10 shrink-0 cursor-grab touch-none items-center justify-center rounded-md border border-zinc-300 text-zinc-600 active:cursor-grabbing sm:h-9 sm:w-9";
+export const previewWrapClass =
+  "flex h-12 w-12 shrink-0 items-center justify-center rounded-md border border-zinc-300 bg-zinc-50 sm:h-14 sm:w-14";
+export const previewCanvasClass =
+  "h-10 w-10 rounded-sm border border-zinc-200 sm:h-12 sm:w-12";
+export const metadataClass = "min-w-0 flex-1";
+export const layerNameClass = "truncate text-sm font-semibold text-zinc-900";
+export const footerClass =
+  "hidden shrink-0 border-t border-zinc-200 px-3 py-3 text-xs text-zinc-600 sm:block sm:px-4";
+export const actionsRowClass =
+  "flex shrink-0 flex-wrap items-center gap-2 border-b border-zinc-200 px-3 py-3 sm:px-4";
+export const layerIconButtonClass =
+  "inline-flex h-10 w-10 shrink-0 touch-manipulation items-center justify-center rounded-md border border-zinc-300 text-zinc-700 transition-colors hover:bg-zinc-100 active:bg-zinc-100 sm:h-9 sm:w-9";
+export const layerActionsClass =
+  "ml-auto flex shrink-0 items-center gap-1 sm:gap-2";

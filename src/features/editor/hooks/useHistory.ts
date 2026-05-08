@@ -3,7 +3,7 @@
  * Undo/redo stacks over atomic pixel delta commands (no full-buffer snapshots).
  *
  * Notes:
- * Pixel indices mutate a shared Uint8Array for performance; callers keep one buffer per artwork.
+ * Deltas target layer IDs so undo/redo can mutate the correct per-layer pixel buffer.
  */
 "use client";
 
@@ -11,11 +11,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import type { HistoryCommand } from "@/features/editor/types/editor.types";
 
-export function useHistory(pixelData: Uint8Array, documentKey: string) {
-  const pixelRef = useRef(pixelData);
+interface UseHistoryParams {
+  documentKey: string;
+  getLayerPixelData: (layerId: string) => Uint8Array | null;
+}
+
+export function useHistory({ documentKey, getLayerPixelData }: UseHistoryParams) {
+  const getLayerPixelsRef = useRef(getLayerPixelData);
   useEffect(() => {
-    pixelRef.current = pixelData;
-  }, [pixelData]);
+    getLayerPixelsRef.current = getLayerPixelData;
+  }, [getLayerPixelData]);
 
   const undoStack = useRef<HistoryCommand[]>([]);
   const redoStack = useRef<HistoryCommand[]>([]);
@@ -56,9 +61,12 @@ export function useHistory(pixelData: Uint8Array, documentKey: string) {
     if (!cmd) {
       return;
     }
-    const buf = pixelRef.current;
     for (let i = cmd.deltas.length - 1; i >= 0; i--) {
       const d = cmd.deltas[i];
+      const buf = getLayerPixelsRef.current(d.layerId);
+      if (!buf) {
+        continue;
+      }
       buf[d.index] = d.previousPaletteIndex;
     }
     redoStack.current.push(cmd);
@@ -70,8 +78,11 @@ export function useHistory(pixelData: Uint8Array, documentKey: string) {
     if (!cmd) {
       return;
     }
-    const buf = pixelRef.current;
     for (const d of cmd.deltas) {
+      const buf = getLayerPixelsRef.current(d.layerId);
+      if (!buf) {
+        continue;
+      }
       buf[d.index] = d.newPaletteIndex;
     }
     undoStack.current.push(cmd);

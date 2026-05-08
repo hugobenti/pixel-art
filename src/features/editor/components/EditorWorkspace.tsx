@@ -18,8 +18,10 @@ import {
 import { CanvasContainer } from "@/features/editor/components/CanvasContainer";
 import { ColorSelectionRow } from "@/features/editor/components/ColorSelectionRow";
 import { EditorActionsBar } from "@/features/editor/components/EditorActionsBar";
+import { LayersDrawer } from "@/features/editor/components/LayersDrawer";
 import { PaletteEditModal } from "@/features/editor/components/PaletteEditModal";
 import { ShiftDirectionOverlay } from "@/features/editor/components/ShiftDirectionOverlay";
+import { useArtworkLayers } from "@/features/editor/hooks/useArtworkLayers";
 import { useEditorPalette } from "@/features/editor/hooks/useEditorPalette";
 import {
   attachViewportPinchZoom,
@@ -57,6 +59,7 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
   const [showPixelGrid, setShowPixelGrid] = useState(true);
   const [paintRevision, setPaintRevision] = useState(0);
   const [paletteModalOpen, setPaletteModalOpen] = useState(false);
+  const [layersDrawerOpen, setLayersDrawerOpen] = useState(false);
 
   const artworkRef = useRef(artwork);
   useEffect(() => {
@@ -89,6 +92,19 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
     Math.max(0, artwork.palette.length - 1)
   );
 
+  const layersState = useArtworkLayers({
+    artwork,
+    setArtwork,
+    onLayersChanged: schedulePaintBump,
+  });
+
+  const getLayerPixelData = useCallback(
+    (layerId: string) =>
+      artworkRef.current.layers.find((layer) => layer.id === layerId)?.pixelData ??
+      null,
+    []
+  );
+
   const {
     pushCommand,
     undo,
@@ -96,7 +112,7 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
     canUndo,
     canRedo,
     historyRevision,
-  } = useHistory(artwork.pixelData, artwork.id);
+  } = useHistory({ documentKey: artwork.id, getLayerPixelData });
 
   const {
     viewport,
@@ -169,7 +185,8 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
   );
 
   const pixelShift = usePixelShift({
-    pixelData: artwork.pixelData,
+    pixelData: layersState.activeLayer?.pixelData ?? null,
+    layerId: layersState.activeLayer?.id ?? null,
     width: artwork.width,
     height: artwork.height,
     pushCommand,
@@ -178,6 +195,8 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
 
   const { onArtworkPointerDown } = usePixelPainting({
     artwork,
+    activeLayerId: layersState.activeLayer?.id ?? null,
+    activeLayerPixelData: layersState.activeLayer?.pixelData ?? null,
     viewport,
     canvasRef: artworkCanvasRef,
     activeSlot: paletteUi.activeSlot,
@@ -279,6 +298,8 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
           onTogglePanMode={() => setPanMode((v) => !v)}
           shiftOverlayOpen={pixelShift.shiftOverlayOpen}
           onToggleShiftOverlay={pixelShift.toggleShiftOverlay}
+          layersDrawerOpen={layersDrawerOpen}
+          onToggleLayersDrawer={() => setLayersDrawerOpen((v) => !v)}
         />
       </div>
 
@@ -307,6 +328,34 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
           onArtworkPointerDown={onArtworkPointerDown}
         />
       </main>
+
+      {layersDrawerOpen ? (
+        <LayersDrawer
+          layers={artwork.layers}
+          activeLayerId={artwork.activeLayerId}
+          palette={artwork.palette}
+          width={artwork.width}
+          height={artwork.height}
+          onClose={() => setLayersDrawerOpen(false)}
+          onSelectLayer={layersState.setActiveLayerId}
+          onToggleVisibility={layersState.toggleLayerVisibility}
+          onAddLayer={() => {
+            layersState.addLayer();
+          }}
+          onRenameLayer={(layerId) => {
+            const current = artwork.layers.find((layer) => layer.id === layerId);
+            if (!current) {
+              return;
+            }
+            const nextName = window.prompt("Layer name", current.name);
+            if (typeof nextName !== "string") {
+              return;
+            }
+            layersState.renameLayer(layerId, nextName);
+          }}
+          onReorderLayers={layersState.reorderLayers}
+        />
+      ) : null}
 
       <ShiftDirectionOverlay
         open={pixelShift.shiftOverlayOpen}

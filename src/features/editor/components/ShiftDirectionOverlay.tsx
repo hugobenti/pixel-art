@@ -15,7 +15,7 @@ interface ShiftDirectionOverlayProps {
 }
 
 const backdropClass = `
-  fixed inset-0 z-40 bg-zinc-900/30
+  fixed inset-0 z-40 bg-zinc-900/30 
 `;
 
 const bottomControlsClass = `
@@ -23,13 +23,13 @@ const bottomControlsClass = `
 `;
 
 const arrowPadClass = `
-  pointer-events-auto flex flex-col items-center rounded-full border border-zinc-200 bg-white p-2 shadow-lg w-40 h-40
+  pointer-events-auto flex flex-col items-center rounded-full border border-zinc-200 bg-mist-800 opacity-90 p-2 shadow-lg w-40 h-40
 `;
 
 const arrowSideRowClass = `flex items-center justify-between w-36 gap-2`;
 
 const arrowButtonClass = `
-  flex h-12 min-w-12 items-center justify-center rounded-xl px-2 text-xl font-semibold
+  flex h-12 min-w-12 items-center justify-center rounded-xl px-2 text-xl font-semibold bg-white
 `;
 
 export function ShiftDirectionOverlay({

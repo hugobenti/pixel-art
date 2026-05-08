@@ -85,8 +85,12 @@ export function useEditorPalette({
         Math.max(0, idx),
         artwork.palette.length - 1
       );
+      const layerBuffers = artwork.layers.map((layer) => layer.pixelData);
+      if (layerBuffers.length === 0) {
+        return;
+      }
       const result = removePaletteAt(
-        artwork.pixelData,
+        layerBuffers[0],
         artwork.palette,
         index,
         primaryIndex,
@@ -95,19 +99,28 @@ export function useEditorPalette({
       if (!result) {
         return;
       }
+      for (let i = 1; i < layerBuffers.length; i++) {
+        removePaletteAt(
+          layerBuffers[i],
+          artwork.palette,
+          index,
+          primaryIndex,
+          secondaryIndex
+        );
+      }
       setPrimaryIndex(result.primaryIndex);
       setSecondaryIndex(result.secondaryIndex);
       setFocusedSwatchIndex((f) => Math.min(f, result.palette.length - 1));
       setArtwork((a) => ({
         ...a,
         palette: result.palette,
-        pixelData: a.pixelData,
+        layers: a.layers,
       }));
       onPaletteOrPixelsDirty();
     },
     [
       artwork.palette,
-      artwork.pixelData,
+      artwork.layers,
       primaryIndex,
       secondaryIndex,
       setArtwork,

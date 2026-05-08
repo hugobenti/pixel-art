@@ -36,7 +36,10 @@ export function EditorScreen({ artworkId }: EditorScreenProps) {
       }
       setArtwork({
         ...row,
-        pixelData: clonePixelBuffer(row.pixelData),
+        layers: row.layers.map((layer) => ({
+          ...layer,
+          pixelData: clonePixelBuffer(layer.pixelData),
+        })),
         palette: [...row.palette],
       });
     })();

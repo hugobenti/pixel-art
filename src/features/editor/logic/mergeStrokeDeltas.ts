@@ -8,13 +8,14 @@ import type { PixelDelta } from "@/features/editor/types/editor.types";
 export function mergeStrokeDeltas(raw: PixelDelta[]): PixelDelta[] {
   const map = new Map<
     number,
-    { previousPaletteIndex: number; newPaletteIndex: number }
+    { layerId: string; previousPaletteIndex: number; newPaletteIndex: number }
   >();
 
   for (const d of raw) {
     const existing = map.get(d.index);
     if (!existing) {
       map.set(d.index, {
+        layerId: d.layerId,
         previousPaletteIndex: d.previousPaletteIndex,
         newPaletteIndex: d.newPaletteIndex,
       });
@@ -24,6 +25,7 @@ export function mergeStrokeDeltas(raw: PixelDelta[]): PixelDelta[] {
   }
 
   return [...map.entries()].map(([index, v]) => ({
+    layerId: v.layerId,
     index,
     previousPaletteIndex: v.previousPaletteIndex,
     newPaletteIndex: v.newPaletteIndex,
