@@ -7,6 +7,7 @@
 import Link from "next/link";
 
 import { Button } from "@/features/shared/components/Button";
+import { ButtonGroup } from "@/features/shared/components/ButtonGroup";
 
 import type { ColorSlot } from "@/features/editor/logic/paletteMutations";
 
@@ -25,14 +26,6 @@ const titleClass =
 
 const slotHintClass =
   "shrink-0 rounded-md bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-700";
-
-const iconToggleClass =
-  "flex h-10 min-w-10 shrink-0 items-center justify-center rounded-lg border border-zinc-300 bg-white px-2 text-base font-semibold text-zinc-800 shadow-sm hover:bg-zinc-50 active:bg-zinc-100";
-
-const zoomPairClass = "flex items-center gap-0.5 rounded-lg border border-zinc-300 bg-white p-0.5 shadow-sm";
-
-const zoomStepBtnClass =
-  "flex h-9 min-w-9 items-center justify-center rounded-md text-lg font-semibold leading-none text-zinc-800 hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-40";
 
 interface EditorActionsBarProps {
   title: string;
@@ -128,28 +121,30 @@ export function EditorActionsBar({
         >
           Pan
         </Button>
-        <div className={zoomPairClass} role="group" aria-label="Zoom canvas">
-          <button
+        <ButtonGroup aria-label="Zoom canvas">
+          <Button
             type="button"
-            className={zoomStepBtnClass}
+            variant="ghost"
+            size="step"
             disabled={!canZoomOut}
             onClick={onZoomOut}
             aria-label="Zoom out"
             title="Zoom out"
           >
             −
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
-            className={zoomStepBtnClass}
+            variant="ghost"
+            size="step"
             disabled={!canZoomIn}
             onClick={onZoomIn}
             aria-label="Zoom in"
             title="Zoom in"
           >
             +
-          </button>
-        </div>
+          </Button>
+        </ButtonGroup>
         <Button
           type="button"
           variant={shiftOverlayOpen ? "primary" : "ghost"}
@@ -181,15 +176,16 @@ export function EditorActionsBar({
         <span className={slotHintClass} aria-live="polite">
           {slotLabel}
         </span>
-        <button
+        <Button
           type="button"
-          className={iconToggleClass}
+          variant="outline"
+          size="icon"
           onClick={onToggleActiveSlot}
           aria-label={`Switch painting slot; active ${slotLabel}`}
           title="Switch primary / secondary color"
         >
           ⇄
-        </button>
+        </Button>
         <Button
           type="button"
           variant="ghost"

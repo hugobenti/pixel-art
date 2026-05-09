@@ -3,7 +3,7 @@
  * Right-side animated drawer to inspect, reorder, hide/show, and select artwork layers.
  *
  * Notes:
- * Icon glyphs live under public/icons and are referenced via LAYER_ICON_SRC. Motion timing lives in useLayersDrawerPanel.
+ * Shell uses shared SideDrawer; layer list/DnD stay here; timing in useLayersDrawerPanel.
  */
 "use client";
 
@@ -24,22 +24,14 @@ import {
 } from "@dnd-kit/sortable";
 
 import { Button } from "@/features/shared/components/Button";
+import { SideDrawer } from "@/features/shared/components/SideDrawer";
 
 import {
   actionsRowClass,
   ANIMATION_MS,
-  backdropBaseClass,
-  backdropClosedClass,
-  backdropOpenClass,
   footerClass,
-  headerClass,
   listClass,
   listWrapClass,
-  panelBaseClass,
-  panelClosedClass,
-  panelOpenClass,
-  rootClass,
-  titleClass,
 } from "@/features/editor/components/LayersDrawer/layersDrawer.constants";
 import { LayerRenameModal } from "@/features/editor/components/LayersDrawer/LayerRenameModal";
 import { useLayerRenameDialog } from "@/features/editor/components/LayersDrawer/hooks/useLayerRenameDialog";
@@ -116,10 +108,6 @@ export function LayersDrawer({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [handleClose, renameSessionOpen, dismissRename]);
 
-  const motionStyle = { transitionDuration: `${ANIMATION_MS}ms` } as const;
-  const backdropClass = `${backdropBaseClass} ${panelEntered ? backdropOpenClass : backdropClosedClass}`;
-  const panelClass = `${panelBaseClass} ${panelEntered ? panelOpenClass : panelClosedClass}`;
-
   const handleDragEnd = (event: DragEndEvent) => {
     if (!event.over) {
       return;
@@ -128,17 +116,14 @@ export function LayersDrawer({
   };
 
   return (
-    <div className={`${rootClass} pointer-events-auto`} aria-hidden={false} aria-modal="true" role="dialog">
-      <button
-        type="button"
-        className={backdropClass}
-        style={motionStyle}
-        onClick={handleClose}
-        aria-label="Close layers panel"
-      />
-      <aside className={panelClass} style={motionStyle}>
-        <header className={headerClass}>
-          <h2 className={titleClass}>Layers</h2>
+    <>
+      <SideDrawer
+        entered={panelEntered}
+        onBackdropClick={handleClose}
+        title="Layers"
+        motionDurationMs={ANIMATION_MS}
+        backdropAriaLabel="Close layers panel"
+        headerRight={
           <Button
             type="button"
             variant="ghost"
@@ -147,17 +132,21 @@ export function LayersDrawer({
           >
             Close
           </Button>
-        </header>
-        <div className={actionsRowClass}>
-          <Button
-            type="button"
-            variant="primary"
-            className="min-h-10 w-full touch-manipulation px-3 sm:min-h-9 sm:w-auto"
-            onClick={onAddLayer}
-          >
-            Add layer
-          </Button>
-        </div>
+        }
+        belowHeader={
+          <div className={actionsRowClass}>
+            <Button
+              type="button"
+              variant="primary"
+              className="min-h-10 w-full touch-manipulation px-3 sm:min-h-9 sm:w-auto"
+              onClick={onAddLayer}
+            >
+              Add layer
+            </Button>
+          </div>
+        }
+        footer={<footer className={footerClass}>Top items render in front of lower items.</footer>}
+      >
         <div className={listWrapClass}>
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={layers.map((layer) => layer.id)} strategy={verticalListSortingStrategy}>
@@ -181,14 +170,13 @@ export function LayersDrawer({
             </SortableContext>
           </DndContext>
         </div>
-        <footer className={footerClass}>Top items render in front of lower items.</footer>
-      </aside>
+      </SideDrawer>
 
       <LayerRenameModal
         session={layerRename.session}
         onDismiss={layerRename.dismiss}
         onConfirm={layerRename.confirm}
       />
-    </div>
+    </>
   );
 }

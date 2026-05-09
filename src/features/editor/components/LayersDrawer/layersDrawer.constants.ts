@@ -19,19 +19,6 @@ export const LAYER_ICON_SRC = {
 
 export const layerIconImgClass = "h-5 w-5 object-contain pointer-events-none";
 
-export const rootClass =
-  "fixed inset-0 z-50 flex items-stretch justify-end";
-export const backdropBaseClass =
-  "absolute inset-0 bg-black/45 transition-opacity";
-export const backdropOpenClass = "opacity-100";
-export const backdropClosedClass = "opacity-0";
-export const panelBaseClass =
-  "relative z-10 flex h-full max-h-[100dvh] w-[90%] flex-col overflow-hidden border-l border-zinc-300 bg-white pb-[env(safe-area-inset-bottom)] shadow-2xl transition-transform ease-out sm:w-1/2 sm:max-w-[720px]";
-export const panelOpenClass = "translate-x-0";
-export const panelClosedClass = "translate-x-full";
-export const headerClass =
-  "flex shrink-0 items-center justify-between gap-2 border-b border-zinc-200 px-3 py-3 sm:px-4";
-export const titleClass = "text-base font-semibold text-zinc-900";
 export const listWrapClass =
   "min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 py-3 touch-pan-y sm:px-4";
 export const listClass = "flex flex-col gap-2";

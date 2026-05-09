@@ -8,14 +8,9 @@ import { useState } from "react";
 
 import { Button } from "@/features/shared/components/Button";
 import { Input } from "@/features/shared/components/Input";
+import { Modal } from "@/features/shared/components/Modal";
 
 import type { LayerRenameSession } from "@/features/editor/components/LayersDrawer/hooks/useLayerRenameDialog";
-
-const backdropClass =
-  "fixed inset-0 z-[60] flex items-center justify-center bg-black/40 px-4";
-
-const panelClass =
-  "w-full max-w-sm rounded-xl border border-zinc-200 bg-white p-4 shadow-lg";
 
 const titleClass = "text-base font-semibold text-zinc-900";
 
@@ -61,57 +56,49 @@ function LayerRenameModalForm({
   };
 
   return (
-    <div
-      className={backdropClass}
-      role="presentation"
-      onMouseDown={(e) => {
-        if (e.target === e.currentTarget) {
-          onDismiss();
-        }
-      }}
+    <Modal
+      open
+      onClose={onDismiss}
+      placement="center"
+      size="sm"
+      layer="elevated"
+      backdropBlur={false}
+      overlayProps={{ "aria-labelledby": "layer-rename-title" }}
     >
-      <div
-        className={panelClass}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="layer-rename-title"
-        onMouseDown={(e) => e.stopPropagation()}
-      >
-        <h3 id="layer-rename-title" className={titleClass}>
-          Rename layer
-        </h3>
-        <div className={fieldWrapClass}>
-          <Input
-            autoFocus
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                submit();
-              }
-              if (e.key === "Escape") {
-                e.preventDefault();
-                onDismiss();
-              }
-            }}
-            aria-label="Layer name"
-          />
-        </div>
-        <div className={actionsClass}>
-          <Button type="button" variant="ghost" onClick={onDismiss}>
-            Cancel
-          </Button>
-          <Button
-            type="button"
-            variant="primary"
-            disabled={!canSave}
-            onClick={submit}
-          >
-            Save
-          </Button>
-        </div>
+      <h3 id="layer-rename-title" className={titleClass}>
+        Rename layer
+      </h3>
+      <div className={fieldWrapClass}>
+        <Input
+          autoFocus
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              submit();
+            }
+            if (e.key === "Escape") {
+              e.preventDefault();
+              onDismiss();
+            }
+          }}
+          aria-label="Layer name"
+        />
       </div>
-    </div>
+      <div className={actionsClass}>
+        <Button type="button" variant="ghost" onClick={onDismiss}>
+          Cancel
+        </Button>
+        <Button
+          type="button"
+          variant="primary"
+          disabled={!canSave}
+          onClick={submit}
+        >
+          Save
+        </Button>
+      </div>
+    </Modal>
   );
 }
