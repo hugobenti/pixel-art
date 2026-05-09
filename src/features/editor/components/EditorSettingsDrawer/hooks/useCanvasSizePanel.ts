@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * Drill-in state, numeric inputs, validation, crop confirmation, and apply for canvas resize in settings.
+ * Drill-in navigation and state for editor settings subpanels (canvas resize, image detail, etc.).
  */
 "use client";
 
@@ -10,7 +10,7 @@ import { resizeArtworkDimensions } from "@/features/editor/logic/resizeCanvas";
 import type { Artwork } from "@/features/editor/types/editor.types";
 import { validateDimensions } from "@/features/gallery/services/galleryService";
 
-export type EditorSettingsView = "menu" | "canvasSize";
+export type EditorSettingsView = "menu" | "canvasSize" | "imageDetail";
 
 interface UseCanvasSizePanelParams {
   artwork: Artwork;
@@ -30,6 +30,10 @@ export function useCanvasSizePanel({
     setHeightStr(String(artwork.height));
     setSettingsView("canvasSize");
   }, [artwork.width, artwork.height]);
+
+  const openImageDetail = useCallback(() => {
+    setSettingsView("imageDetail");
+  }, []);
 
   const backToMenu = useCallback(() => {
     setSettingsView("menu");
@@ -71,6 +75,7 @@ export function useCanvasSizePanel({
     setWidthStr,
     setHeightStr,
     openCanvasSize,
+    openImageDetail,
     backToMenu,
     applyCanvasSize,
   };

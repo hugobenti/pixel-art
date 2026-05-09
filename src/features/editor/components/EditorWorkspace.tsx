@@ -351,6 +351,10 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
         <EditorSettingsDrawer
           artwork={artwork}
           onApplyCanvasSize={handleApplyCanvasSize}
+          viewport={viewport}
+          viewportCssWidth={cssSize.w}
+          viewportCssHeight={cssSize.h}
+          paintRevision={paintRevision}
           showPixelGrid={showPixelGrid}
           onToggleGrid={() => setShowPixelGrid((v) => !v)}
           showReferenceImage={referenceImage.showReferenceImage}

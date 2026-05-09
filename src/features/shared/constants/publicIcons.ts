@@ -19,4 +19,5 @@ export const PUBLIC_ICONS = {
   cog: "/icons/cog.svg",
   grid: "/icons/grid.svg",
   upload: "/icons/upload.svg",
+  dashboard: "/icons/dashboard.svg",
 } as const;

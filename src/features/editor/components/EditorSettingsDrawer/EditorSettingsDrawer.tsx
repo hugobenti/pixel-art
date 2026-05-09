@@ -1,9 +1,9 @@
 /**
  * Purpose:
- * Right-side drawer with icon-led rows for grid, reference image, canvas size, and uploads.
+ * Right-side drawer with icon-led rows for grid, reference image, canvas size, image detail stats, and uploads.
  *
  * Notes:
- * Canvas size uses an in-drawer drill-in screen (no stacked modal). Reuses SideDrawer motion timing.
+ * Canvas size and image detail use in-drawer drill-in screens (no stacked modal). Reuses SideDrawer motion timing.
  */
 "use client";
 
@@ -18,15 +18,20 @@ import {
 import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
 
 import { EditorSettingsCanvasSizePanel } from "@/features/editor/components/EditorSettingsDrawer/EditorSettingsCanvasSizePanel";
+import { EditorSettingsImageDetailPanel } from "@/features/editor/components/EditorSettingsDrawer/EditorSettingsImageDetailPanel";
 import { ANIMATION_MS } from "@/features/editor/components/LayersDrawer/layersDrawer.constants";
 import { useCanvasSizePanel } from "@/features/editor/components/EditorSettingsDrawer/hooks/useCanvasSizePanel";
 import { useEditorSettingsDrawer } from "@/features/editor/components/EditorSettingsDrawer/hooks/useEditorSettingsDrawer";
 
-import type { Artwork } from "@/features/editor/types/editor.types";
+import type { Artwork, ViewportState } from "@/features/editor/types/editor.types";
 
 interface EditorSettingsDrawerProps {
   artwork: Artwork;
   onApplyCanvasSize: (next: Artwork) => void;
+  viewport: ViewportState;
+  viewportCssWidth: number;
+  viewportCssHeight: number;
+  paintRevision: number;
   showPixelGrid: boolean;
   onToggleGrid: () => void;
   showReferenceImage: boolean;
@@ -59,6 +64,10 @@ const shellBodyClass = "flex min-h-0 flex-1 flex-col overflow-hidden";
 export function EditorSettingsDrawer({
   artwork,
   onApplyCanvasSize,
+  viewport,
+  viewportCssWidth,
+  viewportCssHeight,
+  paintRevision,
   showPixelGrid,
   onToggleGrid,
   showReferenceImage,
@@ -74,12 +83,13 @@ export function EditorSettingsDrawer({
     setWidthStr,
     setHeightStr,
     openCanvasSize,
+    openImageDetail,
     backToMenu,
     applyCanvasSize,
   } = useCanvasSizePanel({ artwork, onApplyResized: onApplyCanvasSize });
 
   const interceptEscape = useCallback(() => {
-    if (settingsView === "canvasSize") {
+    if (settingsView === "canvasSize" || settingsView === "imageDetail") {
       backToMenu();
       return true;
     }
@@ -94,12 +104,17 @@ export function EditorSettingsDrawer({
   const gridLabel = showPixelGrid ? "Hide grid" : "Show grid";
   const imageLabel = showReferenceImage ? "Hide reference image" : "Show reference image";
 
-  const drawerTitle = settingsView === "menu" ? "Settings" : "Canvas size";
+  const drawerTitle =
+    settingsView === "menu"
+      ? "Settings"
+      : settingsView === "canvasSize"
+        ? "Canvas size"
+        : "Image detail";
 
   const sizeHint = `${artwork.width} × ${artwork.height}`;
 
   const headerLeft =
-    settingsView === "canvasSize" ? (
+    settingsView === "canvasSize" || settingsView === "imageDetail" ? (
       <SideDrawerBackButton onClick={backToMenu} aria-label="Back to settings" />
     ) : undefined;
 
@@ -177,9 +192,22 @@ export function EditorSettingsDrawer({
                 </span>
                 <span className={menuHintClass}>{sizeHint}</span>
               </button>
+              <button
+                type="button"
+                className={menuRowClass}
+                onClick={() => {
+                  openImageDetail();
+                }}
+              >
+                <span className={rowLeadClass}>
+                  <PublicMaskIcon src={PUBLIC_ICONS.dashboard} className={menuIconClass} />
+                  <span>Image detail</span>
+                </span>
+                <span className={menuHintClass}>Visible area</span>
+              </button>
             </nav>
           </div>
-        ) : (
+        ) : settingsView === "canvasSize" ? (
           <EditorSettingsCanvasSizePanel
             widthStr={widthStr}
             heightStr={heightStr}
@@ -187,6 +215,14 @@ export function EditorSettingsDrawer({
             onHeightChange={setHeightStr}
             onCancel={backToMenu}
             onApply={applyCanvasSize}
+          />
+        ) : (
+          <EditorSettingsImageDetailPanel
+            artwork={artwork}
+            viewport={viewport}
+            viewportCssWidth={viewportCssWidth}
+            viewportCssHeight={viewportCssHeight}
+            paintRevision={paintRevision}
           />
         )}
       </div>
