@@ -59,7 +59,7 @@ function buildFallbackLayer(pixelCount: number): ArtworkLayer {
   };
 }
 
-function validateDimensions(width: number, height: number): void {
+export function validateDimensions(width: number, height: number): void {
   if (
     !Number.isFinite(width) ||
     !Number.isFinite(height) ||

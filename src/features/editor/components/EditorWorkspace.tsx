@@ -126,7 +126,10 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
     canUndo,
     canRedo,
     historyRevision,
-  } = useHistory({ documentKey: artwork.id, getLayerPixelData });
+  } = useHistory({
+    documentKey: `${artwork.id}:${artwork.width}x${artwork.height}`,
+    getLayerPixelData,
+  });
 
   const minScaleRef = useRef(1);
   const getMinScale = useCallback(() => minScaleRef.current, []);
@@ -236,6 +239,11 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
     [pushCommand]
   );
 
+  const handleApplyCanvasSize = useCallback((next: Artwork) => {
+    setArtwork(next);
+    schedulePaintBump();
+  }, [schedulePaintBump]);
+
   const pixelShift = usePixelShift({
     pixelData: layersState.activeLayer?.pixelData ?? null,
     layerId: layersState.activeLayer?.id ?? null,
@@ -341,6 +349,8 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
 
       {settingsDrawerOpen ? (
         <EditorSettingsDrawer
+          artwork={artwork}
+          onApplyCanvasSize={handleApplyCanvasSize}
           showPixelGrid={showPixelGrid}
           onToggleGrid={() => setShowPixelGrid((v) => !v)}
           showReferenceImage={referenceImage.showReferenceImage}

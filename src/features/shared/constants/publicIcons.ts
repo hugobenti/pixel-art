@@ -4,6 +4,8 @@
  */
 
 export const PUBLIC_ICONS = {
+  chevronLeft: "/icons/chevron-left.svg",
+  xMark: "/icons/x-mark.svg",
   eye: "/icons/eye.svg",
   eyeOff: "/icons/eye-off.svg",
   grip: "/icons/grip.svg",

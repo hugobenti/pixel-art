@@ -24,7 +24,7 @@ import {
 } from "@dnd-kit/sortable";
 
 import { Button } from "@/features/shared/components/Button";
-import { SideDrawer } from "@/features/shared/components/SideDrawer";
+import { SideDrawer, SideDrawerCloseButton } from "@/features/shared/components/SideDrawer";
 
 import {
   actionsRowClass,
@@ -124,14 +124,7 @@ export function LayersDrawer({
         motionDurationMs={ANIMATION_MS}
         backdropAriaLabel="Close layers panel"
         headerRight={
-          <Button
-            type="button"
-            variant="ghost"
-            className="min-h-10 shrink-0 touch-manipulation px-3 sm:min-h-9 sm:px-2"
-            onClick={handleClose}
-          >
-            Close
-          </Button>
+          <SideDrawerCloseButton onClick={handleClose} aria-label="Close layers panel" />
         }
         belowHeader={
           <div className={actionsRowClass}>
