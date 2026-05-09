@@ -6,6 +6,7 @@
  * Touch contacts are counted only via touchPointersRef (useEditorPointerContacts). When a second touch
  * lands, the stroke ends immediately. Draw permission is represented by painting + activePaintingPointerId:
  * no active stroke until pointer down with a valid gesture; cleared on up/cancel or multi-touch.
+ * Painting on a hidden active layer is ignored; parent may toast via `onHiddenActiveLayerPaintAttempt`.
  */
 "use client";
 
@@ -26,6 +27,8 @@ import type { ColorSlot } from "@/features/editor/logic/paletteMutations";
 interface UsePixelPaintingParams {
   artwork: Artwork;
   activeLayerId: string | null;
+  /** When false and `activeLayerId` is set, paint gestures are ignored (layer hidden in UI). */
+  activeLayerVisible: boolean;
   activeLayerPixelData: Uint8Array | null;
   viewport: ViewportState;
   canvasRef: React.RefObject<HTMLCanvasElement | null>;
@@ -38,6 +41,8 @@ interface UsePixelPaintingParams {
   deferPrimaryPaint?: () => boolean;
   /** Shared touch Set from useEditorPointerContacts; hook order must place contacts before painting. */
   touchPointersRef: RefObject<Set<number>>;
+  /** Fires when the user tries to paint while the active layer is hidden. */
+  onHiddenActiveLayerPaintAttempt?: () => void;
 }
 
 /**
@@ -58,6 +63,7 @@ function paletteIndexForButtons(
 export function usePixelPainting({
   artwork,
   activeLayerId,
+  activeLayerVisible,
   activeLayerPixelData,
   viewport,
   canvasRef,
@@ -68,18 +74,21 @@ export function usePixelPainting({
   onPixelsChanged,
   deferPrimaryPaint,
   touchPointersRef,
+  onHiddenActiveLayerPaintAttempt,
 }: UsePixelPaintingParams) {
   const artworkRef = useRef(artwork);
   const activeLayerIdRef = useRef(activeLayerId);
+  const activeLayerVisibleRef = useRef(activeLayerVisible);
   const activeLayerPixelDataRef = useRef(activeLayerPixelData);
   const viewportRef = useRef(viewport);
 
   useEffect(() => {
     artworkRef.current = artwork;
     activeLayerIdRef.current = activeLayerId;
+    activeLayerVisibleRef.current = activeLayerVisible;
     activeLayerPixelDataRef.current = activeLayerPixelData;
     viewportRef.current = viewport;
-  }, [artwork, activeLayerId, activeLayerPixelData, viewport]);
+  }, [artwork, activeLayerId, activeLayerVisible, activeLayerPixelData, viewport]);
 
   const strokeRaw = useRef<PixelDelta[]>([]);
   /** True while a paint stroke is active for the captured pointer (draw permission). */
@@ -106,7 +115,7 @@ export function usePixelPainting({
       if (!canvas) {
         return;
       }
-      if (!layerId || !pixelData) {
+      if (!layerId || !pixelData || !activeLayerVisibleRef.current) {
         return;
       }
       const rect = canvas.getBoundingClientRect();
@@ -228,6 +237,10 @@ export function usePixelPainting({
       return;
     }
     if (!layerId || !pixelData) {
+      return;
+    }
+    if (!activeLayerVisibleRef.current) {
+      onHiddenActiveLayerPaintAttempt?.();
       return;
     }
     const rect = canvas.getBoundingClientRect();

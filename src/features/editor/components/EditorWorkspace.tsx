@@ -44,8 +44,11 @@ import {
 } from "@/features/editor/hooks/useViewportNavigation";
 import * as galleryService from "@/features/gallery/services/galleryService";
 
+import { useToast } from "@/features/shared/components/Toast/hooks/useToast";
+
 import type { Artwork } from "@/features/editor/types/editor.types";
 
+import { EDITOR_TOAST_HIDDEN_LAYER_MESSAGE } from "@/features/editor/constants/editorToastMessages";
 import { clampPaletteIndex } from "@/features/editor/logic/paletteMutations";
 import {
   MAX_VIEWPORT_SCALE,
@@ -67,6 +70,7 @@ interface EditorWorkspaceProps {
 }
 
 export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
+  const { showToast } = useToast();
   const [artwork, setArtwork] = useState<Artwork>(initialArtwork);
 
   const [showPixelGrid, setShowPixelGrid] = useState(true);
@@ -244,6 +248,14 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
     schedulePaintBump();
   }, [schedulePaintBump]);
 
+  const onHiddenActiveLayerPaintAttempt = useCallback(() => {
+    showToast({
+      message: EDITOR_TOAST_HIDDEN_LAYER_MESSAGE,
+      tone: "error",
+      skipDuplicateActiveToast: true,
+    });
+  }, [showToast]);
+
   const pixelShift = usePixelShift({
     pixelData: layersState.activeLayer?.pixelData ?? null,
     layerId: layersState.activeLayer?.id ?? null,
@@ -256,6 +268,7 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
   const { onArtworkPointerDown } = usePixelPainting({
     artwork,
     activeLayerId: layersState.activeLayer?.id ?? null,
+    activeLayerVisible: layersState.activeLayer?.visible ?? true,
     activeLayerPixelData: layersState.activeLayer?.pixelData ?? null,
     viewport,
     canvasRef: artworkCanvasRef,
@@ -266,6 +279,7 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
     onPixelsChanged: schedulePaintBump,
     deferPrimaryPaint,
     touchPointersRef,
+    onHiddenActiveLayerPaintAttempt,
   });
 
   return (

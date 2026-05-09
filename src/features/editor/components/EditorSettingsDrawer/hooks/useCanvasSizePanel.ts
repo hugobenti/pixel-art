@@ -8,6 +8,7 @@ import { useCallback, useState } from "react";
 
 import { resizeArtworkDimensions } from "@/features/editor/logic/resizeCanvas";
 import type { Artwork } from "@/features/editor/types/editor.types";
+import { useToast } from "@/features/shared/components/Toast/hooks/useToast";
 import { validateDimensions } from "@/features/gallery/services/galleryService";
 
 export type EditorSettingsView = "menu" | "canvasSize" | "imageDetail";
@@ -21,6 +22,7 @@ export function useCanvasSizePanel({
   artwork,
   onApplyResized,
 }: UseCanvasSizePanelParams) {
+  const { showToast } = useToast();
   const [settingsView, setSettingsView] = useState<EditorSettingsView>("menu");
   const [widthStr, setWidthStr] = useState(String(artwork.width));
   const [heightStr, setHeightStr] = useState(String(artwork.height));
@@ -43,11 +45,18 @@ export function useCanvasSizePanel({
     const w = Number.parseInt(widthStr, 10);
     const h = Number.parseInt(heightStr, 10);
     if (!Number.isFinite(w) || !Number.isFinite(h)) {
+      showToast({
+        message: "Enter valid width and height.",
+        tone: "error",
+      });
       return;
     }
     try {
       validateDimensions(w, h);
-    } catch {
+    } catch (e) {
+      const message =
+        e instanceof Error ? e.message : "Dimensions are out of range.";
+      showToast({ message, tone: "error" });
       return;
     }
     const losesPixels = w < artwork.width || h < artwork.height;
@@ -66,7 +75,7 @@ export function useCanvasSizePanel({
     }
     onApplyResized(next);
     setSettingsView("menu");
-  }, [widthStr, heightStr, artwork, onApplyResized]);
+  }, [widthStr, heightStr, artwork, onApplyResized, showToast]);
 
   return {
     settingsView,
