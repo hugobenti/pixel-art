@@ -12,6 +12,9 @@ import { CSS } from "@dnd-kit/utilities";
 
 import type { ArtworkLayer } from "@/features/editor/types/editor.types";
 
+import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
+import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
+
 import { LayerPreview } from "@/features/editor/components/LayersDrawer/LayerPreview";
 import {
   dragHandleClass,
@@ -68,10 +71,6 @@ export function SortableLayerItem({
     }
   };
 
-  const visibilityIconSrc = layer.visible
-    ? LAYER_ICON_SRC.eye
-    : LAYER_ICON_SRC.eyeOff;
-
   return (
     <div ref={setNodeRef} style={style}>
       <div
@@ -120,11 +119,8 @@ export function SortableLayerItem({
             title={layer.visible ? "Hide layer" : "Show layer"}
             aria-label={layer.visible ? "Hide layer" : "Show layer"}
           >
-            <Image
-              src={visibilityIconSrc}
-              alt=""
-              width={20}
-              height={20}
+            <PublicMaskIcon
+              src={layer.visible ? PUBLIC_ICONS.eye : PUBLIC_ICONS.eyeOff}
               className={layerIconImgClass}
             />
           </button>

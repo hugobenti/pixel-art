@@ -1,13 +1,14 @@
 /**
  * Purpose:
- * Single toolbar row: navigation, document title, undo/redo, pan, zoom, layers, palette, shift overlay, reference image, grid.
+ * Single toolbar row: navigation, document title, icon toolbar (undo/redo/pan/zoom/… ), and settings (drawer).
  */
 "use client";
 
 import Link from "next/link";
 
 import { Button } from "@/features/shared/components/Button";
-import { ButtonGroup } from "@/features/shared/components/ButtonGroup";
+import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
+import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
 
 import type { ColorSlot } from "@/features/editor/logic/paletteMutations";
 
@@ -24,24 +25,14 @@ const backLinkClass =
 const titleClass =
   "min-w-0 truncate text-base font-semibold text-zinc-900";
 
-const slotHintClass =
-  "shrink-0 rounded-md bg-zinc-100 px-2 py-1 text-xs font-medium text-zinc-700";
-
 interface EditorActionsBarProps {
   title: string;
-  showPixelGrid: boolean;
-  onToggleGrid: () => void;
-  showReferenceImage: boolean;
-  hasReferenceImage: boolean;
-  onToggleReferenceImage: () => void;
-  onLoadReferenceImage: () => void;
   canUndo: boolean;
   canRedo: boolean;
   onUndo: () => void;
   onRedo: () => void;
   activeSlot: ColorSlot;
   onToggleActiveSlot: () => void;
-  onOpenPaletteModal: () => void;
   panMode: boolean;
   onTogglePanMode: () => void;
   canZoomOut: boolean;
@@ -52,23 +43,18 @@ interface EditorActionsBarProps {
   onToggleShiftOverlay: () => void;
   layersDrawerOpen: boolean;
   onToggleLayersDrawer: () => void;
+  settingsDrawerOpen: boolean;
+  onToggleSettingsDrawer: () => void;
 }
 
 export function EditorActionsBar({
   title,
-  showPixelGrid,
-  onToggleGrid,
-  showReferenceImage,
-  hasReferenceImage,
-  onToggleReferenceImage,
-  onLoadReferenceImage,
   canUndo,
   canRedo,
   onUndo,
   onRedo,
   activeSlot,
   onToggleActiveSlot,
-  onOpenPaletteModal,
   panMode,
   onTogglePanMode,
   canZoomOut,
@@ -79,8 +65,13 @@ export function EditorActionsBar({
   onToggleShiftOverlay,
   layersDrawerOpen,
   onToggleLayersDrawer,
+  settingsDrawerOpen,
+  onToggleSettingsDrawer,
 }: EditorActionsBarProps) {
   const slotLabel = activeSlot === "primary" ? "Primary" : "Secondary";
+
+  const slotToggleButtonClass =
+    "min-h-10 min-w-[12ch] shrink-0 touch-manipulation px-3";
 
   return (
     <div className={barClass}>
@@ -94,57 +85,58 @@ export function EditorActionsBar({
         <Button
           type="button"
           variant="ghost"
-          className="min-h-10 min-w-18 px-3"
+          size="icon"
           disabled={!canUndo}
           onClick={onUndo}
+          aria-label="Undo"
           title="Undo (Ctrl+Z)"
         >
-          Undo
+          <PublicMaskIcon src={PUBLIC_ICONS.undo} />
         </Button>
         <Button
           type="button"
           variant="ghost"
-          className="min-h-10 min-w-18 px-3"
+          size="icon"
           disabled={!canRedo}
           onClick={onRedo}
+          aria-label="Redo"
           title="Redo (Ctrl+Shift+Z)"
         >
-          Redo
+          <PublicMaskIcon src={PUBLIC_ICONS.redo} />
         </Button>
         <Button
           type="button"
           variant={panMode ? "primary" : "ghost"}
-          className="min-h-10 px-3"
+          size="icon"
           onClick={onTogglePanMode}
           aria-pressed={panMode}
+          aria-label="Pan mode"
           title="Pan mode: drag to move the canvas (or hold Space)"
         >
-          Pan
+          <PublicMaskIcon src={PUBLIC_ICONS.pan} />
         </Button>
-        <ButtonGroup aria-label="Zoom canvas">
-          <Button
-            type="button"
-            variant="ghost"
-            size="step"
-            disabled={!canZoomOut}
-            onClick={onZoomOut}
-            aria-label="Zoom out"
-            title="Zoom out"
-          >
-            −
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="step"
-            disabled={!canZoomIn}
-            onClick={onZoomIn}
-            aria-label="Zoom in"
-            title="Zoom in"
-          >
-            +
-          </Button>
-        </ButtonGroup>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          disabled={!canZoomOut}
+          onClick={onZoomOut}
+          aria-label="Zoom out"
+          title="Zoom out"
+        >
+          <PublicMaskIcon src={PUBLIC_ICONS.zoomOut} />
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          disabled={!canZoomIn}
+          onClick={onZoomIn}
+          aria-label="Zoom in"
+          title="Zoom in"
+        >
+          <PublicMaskIcon src={PUBLIC_ICONS.zoomIn} />
+        </Button>
         <Button
           type="button"
           variant={shiftOverlayOpen ? "primary" : "ghost"}
@@ -167,52 +159,24 @@ export function EditorActionsBar({
         </Button>
         <Button
           type="button"
-          variant="ghost"
-          className="min-h-10 px-3"
-          onClick={onOpenPaletteModal}
-        >
-          Edit palette
-        </Button>
-        <span className={slotHintClass} aria-live="polite">
-          {slotLabel}
-        </span>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
+          variant={activeSlot === "primary" ? "primary" : "outline"}
+          className={slotToggleButtonClass}
           onClick={onToggleActiveSlot}
-          aria-label={`Switch painting slot; active ${slotLabel}`}
-          title="Switch primary / secondary color"
+          aria-label={`Painting slot: ${slotLabel}. Click to switch.`}
+          title="Switch primary / secondary painting slot"
         >
-          ⇄
+          {slotLabel}
         </Button>
         <Button
           type="button"
-          variant="ghost"
-          className="min-h-10 px-3"
-          onClick={onLoadReferenceImage}
-          title="Load reference image"
+          variant={settingsDrawerOpen ? "primary" : "outline"}
+          size="icon"
+          onClick={onToggleSettingsDrawer}
+          aria-pressed={settingsDrawerOpen}
+          aria-label="Editor settings"
+          title="Editor settings"
         >
-          load image
-        </Button>
-        <Button
-          type="button"
-          variant={showReferenceImage ? "primary" : "ghost"}
-          className="min-h-10 px-3"
-          disabled={!hasReferenceImage}
-          onClick={onToggleReferenceImage}
-          title="Show/hide reference image"
-        >
-          show/hide image
-        </Button>
-        <Button
-          type="button"
-          variant={showPixelGrid ? "primary" : "ghost"}
-          className="min-h-10 px-3"
-          onClick={onToggleGrid}
-          title="Toggle grid (G)"
-        >
-          {showPixelGrid ? "Hide grid" : "Show grid"}
+          <PublicMaskIcon src={PUBLIC_ICONS.cog} />
         </Button>
       </div>
     </div>

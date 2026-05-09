@@ -22,6 +22,7 @@ import {
 import { CanvasContainer } from "@/features/editor/components/CanvasContainer";
 import { ColorSelectionRow } from "@/features/editor/components/ColorSelectionRow";
 import { EditorActionsBar } from "@/features/editor/components/EditorActionsBar";
+import { EditorSettingsDrawer } from "@/features/editor/components/EditorSettingsDrawer";
 import { LayersDrawer } from "@/features/editor/components/LayersDrawer";
 import { PaletteEditModal } from "@/features/editor/components/PaletteEditModal";
 import { ShiftDirectionOverlay } from "@/features/editor/components/ShiftDirectionOverlay";
@@ -72,6 +73,7 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
   const [paintRevision, setPaintRevision] = useState(0);
   const [paletteModalOpen, setPaletteModalOpen] = useState(false);
   const [layersDrawerOpen, setLayersDrawerOpen] = useState(false);
+  const [settingsDrawerOpen, setSettingsDrawerOpen] = useState(false);
 
   const artworkRef = useRef(artwork);
   useEffect(() => {
@@ -267,22 +269,16 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
           secondaryIndex={secondaryPaint}
           focusedSwatchIndex={paletteUi.focusedSwatchIndex}
           onSwatchPick={paletteUi.assignSwatchToActiveSlot}
+          onOpenPaletteModal={() => setPaletteModalOpen(true)}
         />
         <EditorActionsBar
           title={artwork.title}
-          showPixelGrid={showPixelGrid}
-          onToggleGrid={() => setShowPixelGrid((v) => !v)}
-          showReferenceImage={referenceImage.showReferenceImage}
-          hasReferenceImage={referenceImage.hasReferenceImage}
-          onToggleReferenceImage={referenceImage.onToggleReferenceImage}
-          onLoadReferenceImage={referenceImage.onLoadReferenceImage}
           canUndo={canUndo}
           canRedo={canRedo}
           onUndo={undo}
           onRedo={redo}
           activeSlot={paletteUi.activeSlot}
           onToggleActiveSlot={paletteUi.toggleActiveSlot}
-          onOpenPaletteModal={() => setPaletteModalOpen(true)}
           panMode={panMode}
           onTogglePanMode={() => setPanMode((v) => !v)}
           canZoomOut={canZoomOut}
@@ -293,6 +289,8 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
           onToggleShiftOverlay={pixelShift.toggleShiftOverlay}
           layersDrawerOpen={layersDrawerOpen}
           onToggleLayersDrawer={() => setLayersDrawerOpen((v) => !v)}
+          settingsDrawerOpen={settingsDrawerOpen}
+          onToggleSettingsDrawer={() => setSettingsDrawerOpen((v) => !v)}
         />
       </div>
 
@@ -338,6 +336,18 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
           onCopyLayer={layersState.copyLayer}
           onRenameLayer={layersState.renameLayer}
           onReorderLayers={layersState.reorderLayers}
+        />
+      ) : null}
+
+      {settingsDrawerOpen ? (
+        <EditorSettingsDrawer
+          showPixelGrid={showPixelGrid}
+          onToggleGrid={() => setShowPixelGrid((v) => !v)}
+          showReferenceImage={referenceImage.showReferenceImage}
+          hasReferenceImage={referenceImage.hasReferenceImage}
+          onToggleReferenceImage={referenceImage.onToggleReferenceImage}
+          onLoadReferenceImage={referenceImage.onLoadReferenceImage}
+          onClose={() => setSettingsDrawerOpen(false)}
         />
       ) : null}
 

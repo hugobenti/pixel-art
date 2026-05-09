@@ -3,18 +3,18 @@
  * Layout class strings and public asset paths for the layers drawer UI.
  */
 
+import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
+
 export const ANIMATION_MS = 180;
 
 /** Long edge cap when rasterizing a layer into the list thumbnail (pixel-perfect downscale). */
 export const LAYER_PREVIEW_MAX_EDGE_PX = 48;
 
-/** Paths under /public/icons — referenced as absolute URLs from the app root. */
+/** Grip / pencil / copy assets for layer rows (still loaded via `next/image`). */
 export const LAYER_ICON_SRC = {
-  grip: "/icons/layer-grip.svg",
-  pencil: "/icons/layer-pencil.svg",
-  copy: "/icons/layer-copy.svg",
-  eye: "/icons/layer-eye.svg",
-  eyeOff: "/icons/layer-eye-off.svg",
+  grip: PUBLIC_ICONS.grip,
+  pencil: PUBLIC_ICONS.pencil,
+  copy: PUBLIC_ICONS.copy,
 } as const;
 
 export const layerIconImgClass = "h-5 w-5 object-contain pointer-events-none";
