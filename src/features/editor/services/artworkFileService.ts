@@ -129,10 +129,16 @@ function validateParsedArtwork(value: unknown): ImportedArtworkData {
   if (typeof file.title !== "string") {
     throw new Error("Invalid artwork title.");
   }
-  if (!Number.isInteger(file.width) || !Number.isInteger(file.height)) {
+  if (
+    typeof file.width !== "number" ||
+    typeof file.height !== "number" ||
+    !Number.isInteger(file.width) ||
+    !Number.isInteger(file.height)
+  ) {
     throw new Error("Invalid artwork dimensions.");
   }
-  validateDimensions(file.width, file.height);
+  const { width, height } = file;
+  validateDimensions(width, height);
 
   if (!Array.isArray(file.palette) || file.palette.length === 0) {
     throw new Error("Artwork palette is missing.");
@@ -146,7 +152,7 @@ function validateParsedArtwork(value: unknown): ImportedArtworkData {
     }
   }
 
-  const pixelCount = file.width * file.height;
+  const pixelCount = width * height;
   if (!Array.isArray(file.layers) || file.layers.length === 0) {
     throw new Error("Artwork layers are missing.");
   }
@@ -222,8 +228,8 @@ function validateParsedArtwork(value: unknown): ImportedArtworkData {
 
   return {
     title: file.title.trim() || "Untitled",
-    width: file.width,
-    height: file.height,
+    width,
+    height,
     palette: [...file.palette],
     layers,
     activeLayerId,
