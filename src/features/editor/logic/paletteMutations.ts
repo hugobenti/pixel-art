@@ -9,6 +9,17 @@ import { MAX_PALETTE_ENTRIES } from "@/features/gallery/services/galleryService"
 
 export type ColorSlot = "primary" | "secondary";
 
+/**
+ * Clamps a palette slot index to valid palette bounds (0 … length − 1).
+ */
+export function clampPaletteIndex(index: number, paletteLength: number): number {
+  if (paletteLength <= 0) {
+    return 0;
+  }
+  const max = paletteLength - 1;
+  return Math.min(Math.max(0, index), max);
+}
+
 export function setPaletteColorAt(
   palette: string[],
   index: number,
@@ -77,9 +88,8 @@ export function removePaletteAt(
     s -= 1;
   }
 
-  const maxI = nextPalette.length - 1;
-  p = Math.min(Math.max(0, p), maxI);
-  s = Math.min(Math.max(0, s), maxI);
+  p = clampPaletteIndex(p, nextPalette.length);
+  s = clampPaletteIndex(s, nextPalette.length);
 
   return { palette: nextPalette, primaryIndex: p, secondaryIndex: s };
 }

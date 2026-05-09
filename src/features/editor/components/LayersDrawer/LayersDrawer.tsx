@@ -41,6 +41,8 @@ import {
   rootClass,
   titleClass,
 } from "@/features/editor/components/LayersDrawer/layersDrawer.constants";
+import { LayerRenameModal } from "@/features/editor/components/LayersDrawer/LayerRenameModal";
+import { useLayerRenameDialog } from "@/features/editor/components/LayersDrawer/hooks/useLayerRenameDialog";
 import { SortableLayerItem } from "@/features/editor/components/LayersDrawer/SortableLayerItem";
 import { useLayersDrawerPanel } from "@/features/editor/components/LayersDrawer/useLayersDrawerPanel";
 
@@ -57,7 +59,7 @@ interface LayersDrawerProps {
   onToggleVisibility: (layerId: string) => void;
   onAddLayer: () => void;
   onCopyLayer: (layerId: string) => void;
-  onRenameLayer: (layerId: string) => void;
+  onRenameLayer: (layerId: string, nextName: string) => void;
   onReorderLayers: (activeId: string, overId: string | null) => void;
 }
 
@@ -77,6 +79,17 @@ export function LayersDrawer({
 }: LayersDrawerProps) {
   const { panelEntered, handleClose } = useLayersDrawerPanel({ onClose });
 
+  const layerRename = useLayerRenameDialog(onRenameLayer);
+  const { session: renameSessionOpen, dismiss: dismissRename } = layerRename;
+
+  const handleRenameClick = (layerId: string) => {
+    const layer = layers.find((l) => l.id === layerId);
+    if (!layer) {
+      return;
+    }
+    layerRename.requestRename(layerId, layer.name);
+  };
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: { distance: 8 },
@@ -92,12 +105,16 @@ export function LayersDrawer({
   useEffect(() => {
     const onKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key === "Escape") {
+        if (renameSessionOpen) {
+          dismissRename();
+          return;
+        }
         handleClose();
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [handleClose]);
+  }, [handleClose, renameSessionOpen, dismissRename]);
 
   const motionStyle = { transitionDuration: `${ANIMATION_MS}ms` } as const;
   const backdropClass = `${backdropBaseClass} ${panelEntered ? backdropOpenClass : backdropClosedClass}`;
@@ -156,7 +173,7 @@ export function LayersDrawer({
                     onSelectLayer={onSelectLayer}
                     onToggleVisibility={onToggleVisibility}
                     onCopyLayer={onCopyLayer}
-                    onRenameLayer={onRenameLayer}
+                    onRenameClick={handleRenameClick}
                     drawerOpen={panelEntered}
                   />
                 ))}
@@ -166,6 +183,12 @@ export function LayersDrawer({
         </div>
         <footer className={footerClass}>Top items render in front of lower items.</footer>
       </aside>
+
+      <LayerRenameModal
+        session={layerRename.session}
+        onDismiss={layerRename.dismiss}
+        onConfirm={layerRename.confirm}
+      />
     </div>
   );
 }

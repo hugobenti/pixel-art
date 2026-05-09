@@ -22,6 +22,13 @@
   --color-editor-grid-center-horizontal: #ef4444;
   /** Vertical symmetry guide through the canvas mid-width (blue). */
   --color-editor-grid-center-vertical: #3b82f6;
+  /**
+   * Secondary fallbacks when primary vars are unset (e.g. SSR guard); mirror tokens above.
+   * Consumed by useCanvasEngine via getPropertyValue — keep in sync with editorCanvasFallbacks.ts for gridRender.
+   */
+  --editor-canvas-fallback-grid-line: rgba(0, 0, 0, 0.35);
+  --editor-canvas-fallback-center-horizontal: var(--color-editor-grid-center-horizontal);
+  --editor-canvas-fallback-center-vertical: var(--color-editor-grid-center-vertical);
 }
 
 html {

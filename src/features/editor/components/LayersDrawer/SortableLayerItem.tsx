@@ -36,7 +36,7 @@ interface SortableLayerItemProps {
   onSelectLayer: (layerId: string) => void;
   onToggleVisibility: (layerId: string) => void;
   onCopyLayer: (layerId: string) => void;
-  onRenameLayer: (layerId: string) => void;
+  onRenameClick: (layerId: string) => void;
   drawerOpen: boolean;
 }
 
@@ -49,7 +49,7 @@ export function SortableLayerItem({
   onSelectLayer,
   onToggleVisibility,
   onCopyLayer,
-  onRenameLayer,
+  onRenameClick,
   drawerOpen,
 }: SortableLayerItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
@@ -151,7 +151,7 @@ export function SortableLayerItem({
             className={layerIconButtonClass}
             onClick={(event) => {
               event.stopPropagation();
-              onRenameLayer(layer.id);
+              onRenameClick(layer.id);
             }}
             title="Rename layer"
             aria-label="Rename layer"

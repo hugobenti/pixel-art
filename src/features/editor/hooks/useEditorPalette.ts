@@ -10,6 +10,7 @@ import type { Dispatch, SetStateAction } from "react";
 import type { Artwork } from "@/features/editor/types/editor.types";
 import {
   appendPaletteColor,
+  clampPaletteIndex,
   type ColorSlot,
   removePaletteAt,
   setPaletteColorAt,
@@ -32,10 +33,12 @@ export function useEditorPalette({
 
   const [focusedSwatchIndex, setFocusedSwatchIndex] = useState(0);
 
-  const selectSwatchForEditing = useCallback((index: number) => {
-    const max = Math.max(0, artwork.palette.length - 1);
-    setFocusedSwatchIndex(Math.min(Math.max(0, index), max));
-  }, [artwork.palette.length]);
+  const selectSwatchForEditing = useCallback(
+    (index: number) => {
+      setFocusedSwatchIndex(clampPaletteIndex(index, artwork.palette.length));
+    },
+    [artwork.palette.length]
+  );
 
   const toggleActiveSlot = useCallback(() => {
     setActiveSlot((s) => (s === "primary" ? "secondary" : "primary"));

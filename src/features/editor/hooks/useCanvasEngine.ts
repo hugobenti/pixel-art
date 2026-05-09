@@ -9,6 +9,7 @@
 
 import { useLayoutEffect, useRef, useState } from "react";
 
+import { EDITOR_ROOT_CSS_VARS } from "@/features/editor/constants/editorRootCssVars";
 import { renderCanvas } from "@/features/editor/logic/canvasRender";
 import { renderPixelGrid } from "@/features/editor/logic/gridRender";
 import { renderReferenceImage } from "@/features/editor/logic/referenceImageRender";
@@ -26,14 +27,16 @@ interface UseCanvasEngineParams {
   historyRevision: number;
 }
 
-function readRootCssColor(varName: string, fallback: string): string {
+function readRootCssColor(primaryVar: string, fallbackVar: string): string {
   if (typeof document === "undefined") {
-    return fallback;
+    return "";
   }
-  const raw = getComputedStyle(document.documentElement)
-    .getPropertyValue(varName)
-    .trim();
-  return raw.length > 0 ? raw : fallback;
+  const root = document.documentElement;
+  const primary = getComputedStyle(root).getPropertyValue(primaryVar).trim();
+  if (primary.length > 0) {
+    return primary;
+  }
+  return getComputedStyle(root).getPropertyValue(fallbackVar).trim();
 }
 
 export function useCanvasEngine({
@@ -111,16 +114,16 @@ export function useCanvasEngine({
 
     if (showPixelGrid) {
       const gridColor = readRootCssColor(
-        "--color-editor-grid-line",
-        "rgba(0, 0, 0, 0.35)"
+        EDITOR_ROOT_CSS_VARS.gridLine,
+        EDITOR_ROOT_CSS_VARS.gridLineFallback
       );
       const centerH = readRootCssColor(
-        "--color-editor-grid-center-horizontal",
-        "rgb(239, 68, 68)"
+        EDITOR_ROOT_CSS_VARS.centerHorizontal,
+        EDITOR_ROOT_CSS_VARS.centerHorizontalFallback
       );
       const centerV = readRootCssColor(
-        "--color-editor-grid-center-vertical",
-        "rgb(59, 130, 246)"
+        EDITOR_ROOT_CSS_VARS.centerVertical,
+        EDITOR_ROOT_CSS_VARS.centerVerticalFallback
       );
       renderPixelGrid(
         gctx,
