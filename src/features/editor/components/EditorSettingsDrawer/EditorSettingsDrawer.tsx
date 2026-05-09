@@ -187,7 +187,7 @@ export function EditorSettingsDrawer({
                 }}
               >
                 <span className={rowLeadClass}>
-                  <PublicMaskIcon src={PUBLIC_ICONS.pan} className={menuIconClass} />
+                  <PublicMaskIcon src={PUBLIC_ICONS.panArrows} className={menuIconClass} />
                   <span>Canvas size</span>
                 </span>
                 <span className={menuHintClass}>{sizeHint}</span>

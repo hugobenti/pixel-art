@@ -7,6 +7,7 @@
  * lands, the stroke ends immediately. Draw permission is represented by painting + activePaintingPointerId:
  * no active stroke until pointer down with a valid gesture; cleared on up/cancel or multi-touch.
  * Painting on a hidden active layer is ignored; parent may toast via `onHiddenActiveLayerPaintAttempt`.
+ * Bucket mode flood-fills using the visible composite color (all visible layers), with 4-way connectivity.
  */
 "use client";
 
@@ -39,6 +40,8 @@ interface UsePixelPaintingParams {
   onPixelsChanged: () => void;
   /** When true, primary-button painting is skipped (Space pan / pan mode). */
   deferPrimaryPaint?: () => boolean;
+  /** True enables one-shot flood fill on pointer down. */
+  bucketMode?: boolean;
   /** Shared touch Set from useEditorPointerContacts; hook order must place contacts before painting. */
   touchPointersRef: RefObject<Set<number>>;
   /** Fires when the user tries to paint while the active layer is hidden. */
@@ -60,6 +63,30 @@ function paletteIndexForButtons(
   return activeSlot === "primary" ? primary : secondary;
 }
 
+function sameCompositeColor(
+  artwork: Artwork,
+  activeLayerId: string,
+  originalActivePixels: Uint8Array,
+  pixelOffset: number,
+  targetCompositePaletteIndex: number | null
+): boolean {
+  for (let i = 0; i < artwork.layers.length; i++) {
+    const layer = artwork.layers[i];
+    if (!layer.visible) {
+      continue;
+    }
+    const paletteIndex =
+      layer.id === activeLayerId
+        ? originalActivePixels[pixelOffset]
+        : layer.pixelData[pixelOffset];
+    const color = artwork.palette[paletteIndex] ?? "transparent";
+    if (color !== "transparent") {
+      return paletteIndex === targetCompositePaletteIndex;
+    }
+  }
+  return targetCompositePaletteIndex === null;
+}
+
 export function usePixelPainting({
   artwork,
   activeLayerId,
@@ -73,6 +100,7 @@ export function usePixelPainting({
   onCommitStroke,
   onPixelsChanged,
   deferPrimaryPaint,
+  bucketMode = false,
   touchPointersRef,
   onHiddenActiveLayerPaintAttempt,
 }: UsePixelPaintingParams) {
@@ -95,10 +123,15 @@ export function usePixelPainting({
   const painting = useRef(false);
   const activePaintingPointerId = useRef<number | null>(null);
   const activeSlotRef = useRef(activeSlot);
+  const bucketModeRef = useRef(bucketMode);
 
   useEffect(() => {
     activeSlotRef.current = activeSlot;
   }, [activeSlot]);
+
+  useEffect(() => {
+    bucketModeRef.current = bucketMode;
+  }, [bucketMode]);
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
@@ -253,11 +286,85 @@ export function usePixelPainting({
       primaryPaletteIndex,
       secondaryPaletteIndex
     );
-    activePaintingPointerId.current = e.pointerId;
-    painting.current = true;
-    strokeRaw.current = [];
     if (x >= 0 && y >= 0 && x < art.width && y < art.height) {
       const index = x + y * art.width;
+      if (bucketModeRef.current) {
+        const originalActivePixels = new Uint8Array(pixelData);
+        let targetCompositePaletteIndex: number | null = null;
+        for (let i = 0; i < art.layers.length; i++) {
+          const layer = art.layers[i];
+          if (!layer.visible) {
+            continue;
+          }
+          const paletteIndex =
+            layer.id === layerId ? originalActivePixels[index] : layer.pixelData[index];
+          const color = art.palette[paletteIndex] ?? "transparent";
+          if (color !== "transparent") {
+            targetCompositePaletteIndex = paletteIndex;
+            break;
+          }
+        }
+        if (targetCompositePaletteIndex === pi) {
+          return;
+        }
+
+        const queue = [index];
+        const visited = new Uint8Array(art.width * art.height);
+        const deltas: PixelDelta[] = [];
+        while (queue.length > 0) {
+          const current = queue.pop();
+          if (current === undefined) {
+            continue;
+          }
+          if (visited[current] === 1) {
+            continue;
+          }
+          visited[current] = 1;
+          if (
+            !sameCompositeColor(
+              art,
+              layerId,
+              originalActivePixels,
+              current,
+              targetCompositePaletteIndex
+            )
+          ) {
+            continue;
+          }
+          const prev = pixelData[current];
+          if (prev !== pi) {
+            pixelData[current] = pi;
+            deltas.push({
+              layerId,
+              index: current,
+              previousPaletteIndex: prev,
+              newPaletteIndex: pi,
+            });
+          }
+          const cx = current % art.width;
+          const cy = Math.floor(current / art.width);
+          if (cx > 0) {
+            queue.push(current - 1);
+          }
+          if (cx + 1 < art.width) {
+            queue.push(current + 1);
+          }
+          if (cy > 0) {
+            queue.push(current - art.width);
+          }
+          if (cy + 1 < art.height) {
+            queue.push(current + art.width);
+          }
+        }
+        if (deltas.length > 0) {
+          onPixelsChanged();
+          onCommitStroke({ deltas });
+        }
+        return;
+      }
+      activePaintingPointerId.current = e.pointerId;
+      painting.current = true;
+      strokeRaw.current = [];
       const prev = pixelData[index];
       if (prev !== pi) {
         pixelData[index] = pi;

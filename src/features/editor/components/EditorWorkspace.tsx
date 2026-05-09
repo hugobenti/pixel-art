@@ -78,6 +78,7 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
   const [paletteModalOpen, setPaletteModalOpen] = useState(false);
   const [layersDrawerOpen, setLayersDrawerOpen] = useState(false);
   const [settingsDrawerOpen, setSettingsDrawerOpen] = useState(false);
+  const [bucketMode, setBucketMode] = useState(false);
 
   const artworkRef = useRef(artwork);
   useEffect(() => {
@@ -248,6 +249,26 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
     schedulePaintBump();
   }, [schedulePaintBump]);
 
+  const togglePanMode = useCallback(() => {
+    setPanMode((value) => {
+      const next = !value;
+      if (next) {
+        setBucketMode(false);
+      }
+      return next;
+    });
+  }, [setPanMode]);
+
+  const toggleBucketMode = useCallback(() => {
+    setBucketMode((value) => {
+      const next = !value;
+      if (next) {
+        setPanMode(false);
+      }
+      return next;
+    });
+  }, [setPanMode]);
+
   const onHiddenActiveLayerPaintAttempt = useCallback(() => {
     showToast({
       message: EDITOR_TOAST_HIDDEN_LAYER_MESSAGE,
@@ -280,6 +301,7 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
     deferPrimaryPaint,
     touchPointersRef,
     onHiddenActiveLayerPaintAttempt,
+    bucketMode,
   });
 
   return (
@@ -302,7 +324,9 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
           activeSlot={paletteUi.activeSlot}
           onToggleActiveSlot={paletteUi.toggleActiveSlot}
           panMode={panMode}
-          onTogglePanMode={() => setPanMode((v) => !v)}
+          onTogglePanMode={togglePanMode}
+          bucketMode={bucketMode}
+          onToggleBucketMode={toggleBucketMode}
           canZoomOut={canZoomOut}
           canZoomIn={canZoomIn}
           onZoomOut={onZoomOut}

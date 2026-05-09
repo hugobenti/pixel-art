@@ -35,6 +35,8 @@ interface EditorActionsBarProps {
   onToggleActiveSlot: () => void;
   panMode: boolean;
   onTogglePanMode: () => void;
+  bucketMode: boolean;
+  onToggleBucketMode: () => void;
   canZoomOut: boolean;
   canZoomIn: boolean;
   onZoomOut: () => void;
@@ -57,6 +59,8 @@ export function EditorActionsBar({
   onToggleActiveSlot,
   panMode,
   onTogglePanMode,
+  bucketMode,
+  onToggleBucketMode,
   canZoomOut,
   canZoomIn,
   onZoomOut,
@@ -117,6 +121,17 @@ export function EditorActionsBar({
         </Button>
         <Button
           type="button"
+          variant={bucketMode ? "primary" : "ghost"}
+          size="icon"
+          onClick={onToggleBucketMode}
+          aria-pressed={bucketMode}
+          aria-label="Paint bucket mode"
+          title="Paint bucket mode"
+        >
+          <PublicMaskIcon src={PUBLIC_ICONS.bucket} />
+        </Button>
+        <Button
+          type="button"
           variant="ghost"
           size="icon"
           disabled={!canZoomOut}
@@ -140,22 +155,24 @@ export function EditorActionsBar({
         <Button
           type="button"
           variant={shiftOverlayOpen ? "primary" : "ghost"}
-          className="min-h-10 px-3"
+          size="icon"
           onClick={onToggleShiftOverlay}
           aria-pressed={shiftOverlayOpen}
+          aria-label="Shift pixels"
           title="Shift rows/columns (wrap)"
         >
-          Shift
+          <PublicMaskIcon src={PUBLIC_ICONS.panArrows} />
         </Button>
         <Button
           type="button"
           variant={layersDrawerOpen ? "primary" : "ghost"}
-          className="min-h-10 px-3"
+          size="icon"
           onClick={onToggleLayersDrawer}
           aria-pressed={layersDrawerOpen}
+          aria-label="Layers"
           title="Open layers panel"
         >
-          Layers
+          <PublicMaskIcon src={PUBLIC_ICONS.layers} />
         </Button>
         <Button
           type="button"
