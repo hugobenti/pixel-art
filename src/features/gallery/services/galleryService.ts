@@ -8,6 +8,7 @@
  */
 import { db } from "@/features/shared/db/dexie.config";
 import type { Artwork, ArtworkLayer } from "@/features/editor/types/editor.types";
+import type { ImportedArtworkData } from "@/features/editor/services/artworkFileService";
 import { normalizeHexColor } from "@/features/shared/utils/colorConverter";
 import { clonePixelBuffer, ensureUint8PixelData } from "@/features/shared/utils/binaryHelpers";
 
@@ -165,6 +166,47 @@ export async function createArtwork(input: CreateArtworkInput): Promise<Artwork>
     layers: [baseLayer],
     activeLayerId: baseLayer.id,
     referenceImageDataUrl: undefined,
+  };
+
+  await db.artworks.put(artwork);
+  return hydrateArtwork(artwork);
+}
+
+export async function createArtworkFromImport(
+  imported: ImportedArtworkData
+): Promise<Artwork> {
+  validateDimensions(imported.width, imported.height);
+  if (imported.palette.length === 0) {
+    throw new Error("Imported palette is empty.");
+  }
+  if (imported.palette.length > MAX_PALETTE_ENTRIES) {
+    throw new Error(`Palette cannot exceed ${MAX_PALETTE_ENTRIES} colors.`);
+  }
+
+  const now = Date.now();
+  const layers =
+    imported.layers.length > 0
+      ? imported.layers.map((layer) => ({
+          ...layer,
+          pixelData: clonePixelBuffer(layer.pixelData),
+          visible: layer.visible !== false,
+        }))
+      : [buildFallbackLayer(imported.width * imported.height)];
+  const activeLayerId =
+    layers.find((layer) => layer.id === imported.activeLayerId)?.id ?? layers[0].id;
+
+  const artwork: Artwork = {
+    id: newId(),
+    title: imported.title.trim() || "Untitled",
+    width: imported.width,
+    height: imported.height,
+    createdAt: now,
+    updatedAt: now,
+    thumbnail: "",
+    palette: [...imported.palette],
+    layers,
+    activeLayerId,
+    referenceImageDataUrl: imported.referenceImageDataUrl,
   };
 
   await db.artworks.put(artwork);

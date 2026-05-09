@@ -11,7 +11,11 @@ import type { Artwork } from "@/features/editor/types/editor.types";
 import { useToast } from "@/features/shared/components/Toast/hooks/useToast";
 import { validateDimensions } from "@/features/gallery/services/galleryService";
 
-export type EditorSettingsView = "menu" | "canvasSize" | "imageDetail";
+export type EditorSettingsView =
+  | "menu"
+  | "canvasSize"
+  | "imageDetail"
+  | "importExport";
 
 interface UseCanvasSizePanelParams {
   artwork: Artwork;
@@ -35,6 +39,10 @@ export function useCanvasSizePanel({
 
   const openImageDetail = useCallback(() => {
     setSettingsView("imageDetail");
+  }, []);
+
+  const openImportExport = useCallback(() => {
+    setSettingsView("importExport");
   }, []);
 
   const backToMenu = useCallback(() => {
@@ -85,6 +93,7 @@ export function useCanvasSizePanel({
     setHeightStr,
     openCanvasSize,
     openImageDetail,
+    openImportExport,
     backToMenu,
     applyCanvasSize,
   };

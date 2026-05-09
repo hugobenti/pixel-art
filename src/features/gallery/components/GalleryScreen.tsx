@@ -3,7 +3,7 @@
  * Client shell for the gallery route: loads IndexedDB entries and hosts creation modal.
  *
  * Notes:
- * After creating an artwork, the app navigates to the editor for that id.
+ * After creating or importing an artwork, the app navigates to the editor for that id.
  */
 "use client";
 
@@ -14,6 +14,7 @@ import { Button } from "@/features/shared/components/Button";
 
 import { CreateArtworkModal } from "@/features/gallery/components/CreateArtworkModal";
 import { GalleryGrid } from "@/features/gallery/components/GalleryGrid";
+import { useGalleryImport } from "@/features/gallery/hooks/useGalleryImport";
 import { useGalleryStore } from "@/features/gallery/store/useGalleryStore";
 
 const headerClass =
@@ -22,6 +23,7 @@ const headerClass =
 const titleClass = "text-2xl font-semibold text-zinc-900";
 
 const shellClass = "mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-10";
+const headerActionsClass = "flex flex-wrap items-center gap-2";
 
 export function GalleryScreen() {
   const router = useRouter();
@@ -31,6 +33,7 @@ export function GalleryScreen() {
     error,
     loadArtworks,
     createArtwork,
+    importArtwork,
     renameArtwork,
     cloneArtwork,
     deleteArtwork,
@@ -42,6 +45,13 @@ export function GalleryScreen() {
     void loadArtworks();
   }, [loadArtworks]);
 
+  const { importInputRef, openImportPicker, onImportFile } = useGalleryImport({
+    importArtwork,
+    onImported: (created) => {
+      router.push(`/editor/${created.id}`);
+    },
+  });
+
   return (
     <div className={shellClass}>
       <header className={headerClass}>
@@ -51,9 +61,24 @@ export function GalleryScreen() {
             Local artworks stored in your browser (IndexedDB).
           </p>
         </div>
-        <Button type="button" onClick={() => setModalOpen(true)}>
-          New artwork
-        </Button>
+        <div className={headerActionsClass}>
+          <input
+            ref={importInputRef}
+            type="file"
+            accept=".json,application/json"
+            className="hidden"
+            onChange={(event) => {
+              void onImportFile(event.target.files?.[0] ?? null);
+              event.currentTarget.value = "";
+            }}
+          />
+          <Button type="button" variant="outline" onClick={openImportPicker}>
+            Import JSON
+          </Button>
+          <Button type="button" onClick={() => setModalOpen(true)}>
+            New artwork
+          </Button>
+        </div>
       </header>
 
       {error ? (

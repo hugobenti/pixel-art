@@ -1,9 +1,10 @@
 /**
  * Purpose:
- * Right-side drawer with icon-led rows for grid, reference image, canvas size, image detail stats, and uploads.
+ * Right-side drawer with icon-led rows for grid, reference image, canvas size, image detail stats, and file transfer.
  *
  * Notes:
- * Canvas size and image detail use in-drawer drill-in screens (no stacked modal). Reuses SideDrawer motion timing.
+ * Canvas size, image detail, and import/export use in-drawer drill-in screens (no stacked modal).
+ * Reuses SideDrawer motion timing.
  */
 "use client";
 
@@ -19,9 +20,11 @@ import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
 
 import { EditorSettingsCanvasSizePanel } from "@/features/editor/components/EditorSettingsDrawer/EditorSettingsCanvasSizePanel";
 import { EditorSettingsImageDetailPanel } from "@/features/editor/components/EditorSettingsDrawer/EditorSettingsImageDetailPanel";
+import { EditorSettingsImportExportPanel } from "@/features/editor/components/EditorSettingsDrawer/EditorSettingsImportExportPanel";
 import { ANIMATION_MS } from "@/features/editor/components/LayersDrawer/layersDrawer.constants";
 import { useCanvasSizePanel } from "@/features/editor/components/EditorSettingsDrawer/hooks/useCanvasSizePanel";
 import { useEditorSettingsDrawer } from "@/features/editor/components/EditorSettingsDrawer/hooks/useEditorSettingsDrawer";
+import { useImportExportPanel } from "@/features/editor/components/EditorSettingsDrawer/hooks/useImportExportPanel";
 
 import type { Artwork, ViewportState } from "@/features/editor/types/editor.types";
 
@@ -84,12 +87,19 @@ export function EditorSettingsDrawer({
     setHeightStr,
     openCanvasSize,
     openImageDetail,
+    openImportExport,
     backToMenu,
     applyCanvasSize,
   } = useCanvasSizePanel({ artwork, onApplyResized: onApplyCanvasSize });
 
+  const { exportJson, exportPng } = useImportExportPanel({ artwork });
+
   const interceptEscape = useCallback(() => {
-    if (settingsView === "canvasSize" || settingsView === "imageDetail") {
+    if (
+      settingsView === "canvasSize" ||
+      settingsView === "imageDetail" ||
+      settingsView === "importExport"
+    ) {
       backToMenu();
       return true;
     }
@@ -109,12 +119,16 @@ export function EditorSettingsDrawer({
       ? "Settings"
       : settingsView === "canvasSize"
         ? "Canvas size"
-        : "Image detail";
+        : settingsView === "imageDetail"
+          ? "Image detail"
+          : "Export";
 
   const sizeHint = `${artwork.width} × ${artwork.height}`;
 
   const headerLeft =
-    settingsView === "canvasSize" || settingsView === "imageDetail" ? (
+    settingsView === "canvasSize" ||
+    settingsView === "imageDetail" ||
+    settingsView === "importExport" ? (
       <SideDrawerBackButton onClick={backToMenu} aria-label="Back to settings" />
     ) : undefined;
 
@@ -196,6 +210,19 @@ export function EditorSettingsDrawer({
                 type="button"
                 className={menuRowClass}
                 onClick={() => {
+                  openImportExport();
+                }}
+              >
+                <span className={rowLeadClass}>
+                  <PublicMaskIcon src={PUBLIC_ICONS.upload} className={menuIconClass} />
+                  <span>Export</span>
+                </span>
+                <span className={menuHintClass}>Download files</span>
+              </button>
+              <button
+                type="button"
+                className={menuRowClass}
+                onClick={() => {
                   openImageDetail();
                 }}
               >
@@ -216,13 +243,20 @@ export function EditorSettingsDrawer({
             onCancel={backToMenu}
             onApply={applyCanvasSize}
           />
-        ) : (
+        ) : settingsView === "imageDetail" ? (
           <EditorSettingsImageDetailPanel
             artwork={artwork}
             viewport={viewport}
             viewportCssWidth={viewportCssWidth}
             viewportCssHeight={viewportCssHeight}
             paintRevision={paintRevision}
+          />
+        ) : (
+          <EditorSettingsImportExportPanel
+            onExportPng={() => {
+              void exportPng();
+            }}
+            onExportJson={exportJson}
           />
         )}
       </div>

@@ -5,6 +5,7 @@
 import { create } from "zustand";
 
 import type { Artwork } from "@/features/editor/types/editor.types";
+import type { ImportedArtworkData } from "@/features/editor/services/artworkFileService";
 import * as galleryService from "@/features/gallery/services/galleryService";
 
 interface GalleryState {
@@ -13,6 +14,7 @@ interface GalleryState {
   error: string | null;
   loadArtworks: () => Promise<void>;
   createArtwork: (input: galleryService.CreateArtworkInput) => Promise<Artwork | null>;
+  importArtwork: (input: ImportedArtworkData) => Promise<Artwork | null>;
   renameArtwork: (id: string, title: string) => Promise<void>;
   cloneArtwork: (id: string) => Promise<Artwork | undefined>;
   deleteArtwork: (id: string) => Promise<void>;
@@ -42,6 +44,19 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       return created;
     } catch (e) {
       const message = e instanceof Error ? e.message : "Could not create artwork.";
+      set({ error: message });
+      return null;
+    }
+  },
+
+  importArtwork: async (input) => {
+    set({ error: null });
+    try {
+      const created = await galleryService.createArtworkFromImport(input);
+      await get().loadArtworks();
+      return created;
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Could not import artwork.";
       set({ error: message });
       return null;
     }
