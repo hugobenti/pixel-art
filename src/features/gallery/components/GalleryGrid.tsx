@@ -5,26 +5,18 @@
 "use client";
 
 import { gallery } from "@/content/gallery";
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
-
 import { ArtworkCard } from "@/features/gallery/components/ArtworkCard";
+import type { IGalleryGridProps } from "./GalleryGrid.type";
 
 const gridClass =
   "grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
-
-interface GalleryGridProps {
-  artworks: Artwork[];
-  onRename: (id: string, title: string) => Promise<void>;
-  onClone: (id: string) => Promise<void>;
-  onDelete: (id: string) => Promise<void>;
-}
 
 export function GalleryGrid({
   artworks,
   onRename,
   onClone,
   onDelete,
-}: GalleryGridProps) {
+}: IGalleryGridProps) {
   if (artworks.length === 0) {
     return (
       <p className="rounded-xl border border-dashed border-line-strong p-12 text-center text-muted">

@@ -9,10 +9,11 @@
  */
 import { shared } from "@/content/shared";
 import { db } from "@/features/shared/db/dexie.config";
-import type { Artwork, ArtworkLayer } from "@/features/shared/artwork/artwork.types";
-import type { ImportedArtworkData } from "@/features/shared/artwork/artworkFileService";
+import type { IArtwork, IArtworkLayer } from "@/features/shared/artwork/artwork.type";
+import type { IImportedArtworkData } from "@/features/shared/artwork/artworkFileService.type";
 import { normalizeHexColor } from "@/features/shared/utils/colorConverter";
 import { clonePixelBuffer, ensureUint8PixelData } from "@/features/shared/utils/binaryHelpers";
+import type { ICreateArtworkInput } from "./artworkService.type";
 
 const CANON_HEX6 = /^#[0-9A-F]{6}$/;
 
@@ -43,9 +44,9 @@ function newId(): string {
 }
 
 function cloneLayerWithSize(
-  layer: ArtworkLayer,
+  layer: IArtworkLayer,
   pixelCount: number
-): ArtworkLayer {
+): IArtworkLayer {
   return {
     ...layer,
     visible: layer.visible !== false,
@@ -53,7 +54,7 @@ function cloneLayerWithSize(
   };
 }
 
-function buildFallbackLayer(pixelCount: number): ArtworkLayer {
+function buildFallbackLayer(pixelCount: number): IArtworkLayer {
   return {
     id: newId(),
     name: shared.artwork.backgroundLayer,
@@ -75,17 +76,17 @@ export function validateDimensions(width: number, height: number): void {
   }
 }
 
-export async function listArtworks(): Promise<Artwork[]> {
+export async function listArtworks(): Promise<IArtwork[]> {
   const rows = await db.artworks.orderBy("updatedAt").reverse().toArray();
   return rows.map(hydrateArtwork);
 }
 
-export async function getArtwork(id: string): Promise<Artwork | undefined> {
+export async function getArtwork(id: string): Promise<IArtwork | undefined> {
   const row = await db.artworks.get(id);
   return row ? hydrateArtwork(row) : undefined;
 }
 
-function hydrateArtwork(row: Artwork): Artwork {
+function hydrateArtwork(row: IArtwork): IArtwork {
   const n = row.width * row.height;
   const referenceImageDataUrl =
     typeof row.referenceImageDataUrl === "string" &&
@@ -117,15 +118,7 @@ function hydrateArtwork(row: Artwork): Artwork {
   };
 }
 
-export interface CreateArtworkInput {
-  title: string;
-  width: number;
-  height: number;
-  /** CSS hex for the initial canvas fill (e.g. `#RRGGBB`). Added to the palette if missing. */
-  backgroundColor: string;
-}
-
-export async function createArtwork(input: CreateArtworkInput): Promise<Artwork> {
+export async function createArtwork(input: ICreateArtworkInput): Promise<IArtwork> {
   validateDimensions(input.width, input.height);
   const bgHex = normalizeHexColor(input.backgroundColor.trim());
   if (!CANON_HEX6.test(bgHex)) {
@@ -147,14 +140,14 @@ export async function createArtwork(input: CreateArtworkInput): Promise<Artwork>
   const now = Date.now();
   const pixelData = new Uint8Array(input.width * input.height);
   pixelData.fill(bgIndex);
-  const baseLayer: ArtworkLayer = {
+  const baseLayer: IArtworkLayer = {
     id: newId(),
     name: shared.artwork.backgroundLayer,
     visible: true,
     pixelData,
   };
 
-  const artwork: Artwork = {
+  const artwork: IArtwork = {
     id: newId(),
     title: input.title.trim() || shared.artwork.untitled,
     width: input.width,
@@ -173,8 +166,8 @@ export async function createArtwork(input: CreateArtworkInput): Promise<Artwork>
 }
 
 export async function createArtworkFromImport(
-  imported: ImportedArtworkData
-): Promise<Artwork> {
+  imported: IImportedArtworkData
+): Promise<IArtwork> {
   validateDimensions(imported.width, imported.height);
   if (imported.palette.length === 0) {
     throw new Error(shared.artwork.errors.importedPaletteEmpty);
@@ -195,7 +188,7 @@ export async function createArtworkFromImport(
   const activeLayerId =
     layers.find((layer) => layer.id === imported.activeLayerId)?.id ?? layers[0].id;
 
-  const artwork: Artwork = {
+  const artwork: IArtwork = {
     id: newId(),
     title: imported.title.trim() || shared.artwork.untitled,
     width: imported.width,
@@ -213,7 +206,7 @@ export async function createArtworkFromImport(
   return hydrateArtwork(artwork);
 }
 
-export async function saveArtwork(artwork: Artwork): Promise<void> {
+export async function saveArtwork(artwork: IArtwork): Promise<void> {
   validateDimensions(artwork.width, artwork.height);
   if (artwork.palette.length > MAX_PALETTE_ENTRIES) {
     throw new Error(shared.artwork.errors.paletteTooLarge(MAX_PALETTE_ENTRIES));
@@ -226,7 +219,7 @@ export async function saveArtwork(artwork: Artwork): Promise<void> {
   const activeLayerId =
     normalizedLayers.find((layer) => layer.id === artwork.activeLayerId)?.id ??
     normalizedLayers[0].id;
-  const toStore: Artwork = {
+  const toStore: IArtwork = {
     ...artwork,
     updatedAt: Date.now(),
     layers: normalizedLayers.map((layer) => ({
@@ -252,12 +245,12 @@ export async function renameArtwork(id: string, title: string): Promise<void> {
   });
 }
 
-export async function cloneArtwork(id: string): Promise<Artwork | undefined> {
+export async function cloneArtwork(id: string): Promise<IArtwork | undefined> {
   const source = await getArtwork(id);
   if (!source) return undefined;
 
   const now = Date.now();
-  const clone: Artwork = {
+  const clone: IArtwork = {
     ...source,
     id: newId(),
     title: shared.artwork.copyTitle(source.title),

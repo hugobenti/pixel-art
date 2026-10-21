@@ -6,7 +6,7 @@
  * New cells use fillPaletteIndexForExpansion (white swatch when present, else index 0).
  * Validation delegates to artworkService.validateDimensions.
  */
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
+import type { IArtwork } from "@/features/shared/artwork/artwork.type";
 import { validateDimensions } from "@/features/shared/artwork/artworkService";
 import { normalizeHexColor } from "@/features/shared/utils/colorConverter";
 
@@ -53,10 +53,10 @@ export function resizeLayerPixelData(
  * Throws if dimensions are invalid. Returns the same reference when size is unchanged.
  */
 export function resizeArtworkDimensions(
-  artwork: Artwork,
+  artwork: IArtwork,
   newWidth: number,
   newHeight: number
-): Artwork {
+): IArtwork {
   validateDimensions(newWidth, newHeight);
   if (newWidth === artwork.width && newHeight === artwork.height) {
     return artwork;

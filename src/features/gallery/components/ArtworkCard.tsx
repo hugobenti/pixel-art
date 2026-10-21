@@ -13,26 +13,18 @@ import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
 import { Card } from "@/features/shared/components/Card";
 import { Input } from "@/features/shared/components/Input";
-
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
+import type { IArtworkCardProps } from "./ArtworkCard.type";
 
 const cardInnerClass = "flex flex-col gap-3 p-4";
 
 const metaRowClass = "flex flex-wrap items-center gap-2";
-
-interface ArtworkCardProps {
-  artwork: Artwork;
-  onRename: (id: string, title: string) => Promise<void>;
-  onClone: (id: string) => Promise<void>;
-  onDelete: (id: string) => Promise<void>;
-}
 
 export function ArtworkCard({
   artwork,
   onRename,
   onClone,
   onDelete,
-}: ArtworkCardProps) {
+}: IArtworkCardProps) {
   const [renaming, setRenaming] = useState(false);
   const [title, setTitle] = useState(artwork.title);
 

@@ -10,8 +10,7 @@ import { editor } from "@/content/editor";
 import { Button } from "@/features/shared/components/Button";
 import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
 import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
-
-import type { ColorSlot } from "@/features/editor/logic/paletteMutations";
+import type { IEditorActionsBarProps } from "./EditorActionsBar.type";
 
 const barClass =
   "flex flex-wrap items-center gap-2 border-b border-line py-2";
@@ -25,30 +24,6 @@ const backLinkClass =
 
 const titleClass =
   "min-w-0 truncate text-base font-semibold text-fg";
-
-interface EditorActionsBarProps {
-  title: string;
-  canUndo: boolean;
-  canRedo: boolean;
-  onUndo: () => void;
-  onRedo: () => void;
-  activeSlot: ColorSlot;
-  onToggleActiveSlot: () => void;
-  panMode: boolean;
-  onTogglePanMode: () => void;
-  bucketMode: boolean;
-  onToggleBucketMode: () => void;
-  canZoomOut: boolean;
-  canZoomIn: boolean;
-  onZoomOut: () => void;
-  onZoomIn: () => void;
-  shiftOverlayOpen: boolean;
-  onToggleShiftOverlay: () => void;
-  layersDrawerOpen: boolean;
-  onToggleLayersDrawer: () => void;
-  settingsDrawerOpen: boolean;
-  onToggleSettingsDrawer: () => void;
-}
 
 export function EditorActionsBar({
   title,
@@ -72,7 +47,7 @@ export function EditorActionsBar({
   onToggleLayersDrawer,
   settingsDrawerOpen,
   onToggleSettingsDrawer,
-}: EditorActionsBarProps) {
+}: IEditorActionsBarProps) {
   const slotLabel =
     activeSlot === "primary" ? editor.toolbar.slot.primary : editor.toolbar.slot.secondary;
 

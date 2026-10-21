@@ -10,8 +10,6 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
 import { editor } from "@/content/editor";
-import type { ArtworkLayer } from "@/features/shared/artwork/artwork.types";
-
 import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
 import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
 
@@ -31,19 +29,7 @@ import {
   previewWrapClass,
   selectButtonClass,
 } from "@/features/editor/components/LayersDrawer/layersDrawer.constants";
-
-interface SortableLayerItemProps {
-  layer: ArtworkLayer;
-  isActive: boolean;
-  palette: string[];
-  width: number;
-  height: number;
-  onSelectLayer: (layerId: string) => void;
-  onToggleVisibility: (layerId: string) => void;
-  onCopyLayer: (layerId: string) => void;
-  onRenameClick: (layerId: string) => void;
-  drawerOpen: boolean;
-}
+import type { ISortableLayerItemProps } from "./SortableLayerItem.type";
 
 export function SortableLayerItem({
   layer,
@@ -56,7 +42,7 @@ export function SortableLayerItem({
   onCopyLayer,
   onRenameClick,
   drawerOpen,
-}: SortableLayerItemProps) {
+}: ISortableLayerItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: layer.id });
   const style = {

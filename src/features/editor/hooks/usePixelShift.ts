@@ -7,20 +7,10 @@
 import { useCallback, useEffect, useState } from "react";
 
 import {
-  computeShiftCommand,
-  type ShiftDirection,
+  computeShiftCommand
 } from "@/features/editor/logic/pixelShift";
-
-import type { HistoryCommand } from "@/features/editor/types/editor.types";
-
-interface UsePixelShiftParams {
-  pixelData: Uint8Array | null;
-  layerId: string | null;
-  width: number;
-  height: number;
-  pushCommand: (cmd: HistoryCommand) => void;
-  schedulePaintBump: () => void;
-}
+import type { TShiftDirection } from "@/features/editor/logic/pixelShift.type";
+import type { IUsePixelShiftParams } from "./usePixelShift.type";
 
 export function usePixelShift({
   pixelData,
@@ -29,7 +19,7 @@ export function usePixelShift({
   height,
   pushCommand,
   schedulePaintBump,
-}: UsePixelShiftParams) {
+}: IUsePixelShiftParams) {
   const [shiftOverlayOpen, setShiftOverlayOpen] = useState(false);
 
   const toggleShiftOverlay = useCallback(() => {
@@ -54,7 +44,7 @@ export function usePixelShift({
   }, [shiftOverlayOpen]);
 
   const applyShift = useCallback(
-    (direction: ShiftDirection) => {
+    (direction: TShiftDirection) => {
       if (!pixelData || !layerId) {
         return;
       }

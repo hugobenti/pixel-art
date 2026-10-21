@@ -5,18 +5,8 @@
 "use client";
 
 import { editor } from "@/content/editor";
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
-import type { ViewportState } from "@/features/editor/types/editor.types";
-
 import { useImageDetailPanel } from "@/features/editor/components/EditorSettingsDrawer/hooks/useImageDetailPanel";
-
-interface EditorSettingsImageDetailPanelProps {
-  artwork: Artwork;
-  viewport: ViewportState;
-  viewportCssWidth: number;
-  viewportCssHeight: number;
-  paintRevision: number;
-}
+import type { IEditorSettingsImageDetailPanelProps } from "./EditorSettingsImageDetailPanel.type";
 
 const rootClass = "flex min-h-0 flex-1 flex-col gap-4 px-4 pb-4 pt-0 sm:px-4";
 
@@ -51,7 +41,7 @@ export function EditorSettingsImageDetailPanel({
   viewportCssWidth,
   viewportCssHeight,
   paintRevision,
-}: EditorSettingsImageDetailPanelProps) {
+}: IEditorSettingsImageDetailPanelProps) {
   const { rows, totalCompositeOpaque, totalViewportCells } = useImageDetailPanel({
     artwork,
     viewport,

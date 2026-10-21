@@ -3,15 +3,9 @@
  * Client-side app shell providers (toast stack, future global context).
  */
 "use client";
-
-import type { ReactNode } from "react";
-
 import { ToastProvider } from "@/features/shared/components/Toast";
+import type { IAppProvidersProps } from "./AppProviders.type";
 
-interface AppProvidersProps {
-  children: ReactNode;
-}
-
-export function AppProviders({ children }: AppProvidersProps) {
+export function AppProviders({ children }: IAppProvidersProps) {
   return <ToastProvider>{children}</ToastProvider>;
 }

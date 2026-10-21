@@ -3,13 +3,13 @@
  * Rasterize indexed pixel data into a 2D canvas context using the artwork palette.
  */
 
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
-import type { ViewportState } from "@/features/editor/types/editor.types";
+import type { IArtwork } from "@/features/shared/artwork/artwork.type";
+import type { IViewportState } from "@/features/editor/types/editor.type";
 
 export function renderCanvas(
   ctx: CanvasRenderingContext2D,
-  artwork: Pick<Artwork, "width" | "height" | "layers" | "palette">,
-  viewport: ViewportState
+  artwork: Pick<IArtwork, "width" | "height" | "layers" | "palette">,
+  viewport: IViewportState
 ): void {
   const { width, height, layers, palette } = artwork;
 

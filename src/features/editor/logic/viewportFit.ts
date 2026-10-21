@@ -3,7 +3,7 @@
  * Fit document pixels into the canvas CSS box (contain + center) for default and max zoom-out.
  */
 
-import type { ViewportState } from "@/features/editor/types/editor.types";
+import type { IViewportState } from "@/features/editor/types/editor.type";
 
 /**
  * Scale and offset so the full world rectangle [0,w)×[0,h) is visible and as large as possible
@@ -14,7 +14,7 @@ export function computeContainFit(
   containerH: number,
   worldW: number,
   worldH: number
-): ViewportState {
+): IViewportState {
   const cw = Math.max(1, Math.floor(containerW));
   const ch = Math.max(1, Math.floor(containerH));
   const ww = Math.max(1, worldW);

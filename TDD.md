@@ -26,9 +26,9 @@ src/
 │   │   ├── components/         # CanvasContainer.tsx, PaletteBar.tsx, ToolBar.tsx, PixelGridOverlay.tsx
 │   │   ├── hooks/              # useCanvasEngine.ts, useHistory.ts, useZoomPan.ts
 │   │   ├── logic/              # coordinateMath.ts, pixelBuffer.ts, gridRender.ts
-│   │   └── types/              # editor.types.ts (viewport + undo history)
+│   │   └── types/              # editor.type.ts (viewport + undo history)
 │   └── shared/                 # Shared Kernel / Global App Infrastructure
-│       ├── artwork/            # artwork.types.ts, artworkService.ts (Dexie.js persistence + limits), artworkFileService.ts (JSON/PNG import/export)
+│       ├── artwork/            # artwork.type.ts, artworkService.ts (Dexie.js persistence + limits), artworkFileService.ts (JSON/PNG import/export)
 │       ├── components/         # Primitive UI atoms (Button.tsx, Input.tsx - Pure Tailwind)
 │       ├── db/                 # dexie.config.ts (IndexedDB Schema setup)
 │       └── utils/              # colorConverter.ts, binaryHelpers.ts
@@ -52,9 +52,9 @@ We optimize memory layout by saving data into a flat, typed array (`Uint8Array`)
 ### IndexedDB Database Schema (via Dexie.js)
 
 ```typescript
-// features/shared/artwork/artwork.types.ts
+// features/shared/artwork/artwork.type.ts
 
-export interface Artwork {
+export interface IArtwork {
   id: string;               // UUID v4 Primary Key
   title: string;
   width: number;            // Up to 1000
@@ -226,21 +226,21 @@ To check if the user is dragging across the canvas while holding down their clic
 Instead of keeping a snapshot stack of the full 1MB `Uint8Array` buffer for every incremental stroke action, the app tracks atomic State Deltas.
 
 ```typescript
-// features/editor/types/editor.types.ts
+// features/editor/types/editor.type.ts
 
-interface PixelDelta {
+export interface IPixelDelta {
   index: number;
   previousPaletteIndex: number;
   newPaletteIndex: number;
 }
 
-export interface HistoryCommand {
-  deltas: PixelDelta[]; // Grouped modifications made in one single stroke event
+export interface IHistoryCommand {
+  deltas: IPixelDelta[]; // Grouped modifications made in one single stroke event
 }
 ```
 
-- **Undo execution:** Pop a `HistoryCommand` from the Undo collection stack, iterate backward over its array parameters, and apply the `previousPaletteIndex` values back into the underlying `pixelData` buffer.
-- **Redo execution:** Pop a `HistoryCommand` from the Redo collection stack, iterate forward, and apply `newPaletteIndex`.
+- **Undo execution:** Pop an `IHistoryCommand` from the Undo collection stack, iterate backward over its array parameters, and apply the `previousPaletteIndex` values back into the underlying `pixelData` buffer.
+- **Redo execution:** Pop an `IHistoryCommand` from the Redo collection stack, iterate forward, and apply `newPaletteIndex`.
 
 ### C. Canvas Re-Dimension Logic (Resizing Core Engine)
 

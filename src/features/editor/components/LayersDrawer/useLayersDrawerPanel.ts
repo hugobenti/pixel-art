@@ -7,25 +7,21 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ANIMATION_MS } from "@/features/editor/components/LayersDrawer/layersDrawer.constants";
+import type { IUseLayersDrawerPanelParams } from "./useLayersDrawerPanel.type";
 
-interface UseLayersDrawerPanelParams {
-  onClose: () => void;
-}
-
-export function useLayersDrawerPanel({ onClose }: UseLayersDrawerPanelParams) {
+export function useLayersDrawerPanel({ onClose }: IUseLayersDrawerPanelParams) {
   const [panelEntered, setPanelEntered] = useState(false);
-  type TimeoutHandle = ReturnType<typeof globalThis.setTimeout>;
-  const openEnterTimerRef = useRef<TimeoutHandle | null>(null);
-  const closeExitTimerRef = useRef<TimeoutHandle | null>(null);
+  const openEnterTimerRef = useRef<number | null>(null);
+  const closeExitTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
-    openEnterTimerRef.current = globalThis.setTimeout(() => {
+    openEnterTimerRef.current = window.setTimeout(() => {
       openEnterTimerRef.current = null;
       setPanelEntered(true);
     }, 16);
     return () => {
       if (openEnterTimerRef.current !== null) {
-        globalThis.clearTimeout(openEnterTimerRef.current);
+        window.clearTimeout(openEnterTimerRef.current);
         openEnterTimerRef.current = null;
       }
     };
@@ -34,21 +30,21 @@ export function useLayersDrawerPanel({ onClose }: UseLayersDrawerPanelParams) {
   useEffect(() => {
     return () => {
       if (closeExitTimerRef.current !== null) {
-        globalThis.clearTimeout(closeExitTimerRef.current);
+        window.clearTimeout(closeExitTimerRef.current);
       }
     };
   }, []);
 
   const handleClose = useCallback(() => {
     if (openEnterTimerRef.current !== null) {
-      globalThis.clearTimeout(openEnterTimerRef.current);
+      window.clearTimeout(openEnterTimerRef.current);
       openEnterTimerRef.current = null;
     }
     setPanelEntered(false);
     if (closeExitTimerRef.current !== null) {
-      globalThis.clearTimeout(closeExitTimerRef.current);
+      window.clearTimeout(closeExitTimerRef.current);
     }
-    closeExitTimerRef.current = globalThis.setTimeout(() => {
+    closeExitTimerRef.current = window.setTimeout(() => {
       closeExitTimerRef.current = null;
       onClose();
     }, ANIMATION_MS);

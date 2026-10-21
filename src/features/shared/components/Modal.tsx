@@ -5,34 +5,14 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import type { HTMLAttributes, ReactNode } from "react";
-
 import { shared } from "@/content/shared";
 import {
-  type ModalLayer,
-  type ModalPlacement,
-  type ModalSize,
   modalBackdropClass,
   modalOverlayClasses,
   modalPanelClasses,
 } from "@/features/shared/components/modal.styles";
 import { useFocusTrap } from "@/features/shared/hooks/useFocusTrap";
-
-export interface ModalProps {
-  open: boolean;
-  onClose: () => void;
-  children: ReactNode;
-  placement?: ModalPlacement;
-  size?: ModalSize;
-  layer?: ModalLayer;
-  backdropBlur?: boolean;
-  closeOnBackdrop?: boolean;
-  closeOnEscape?: boolean;
-  overlayClassName?: string;
-  panelClassName?: string;
-  overlayProps?: Omit<HTMLAttributes<HTMLDivElement>, "children">;
-  panelProps?: Omit<HTMLAttributes<HTMLDivElement>, "children">;
-}
+import type { IModalProps } from "./Modal.type";
 
 export function Modal({
   open,
@@ -48,7 +28,7 @@ export function Modal({
   panelClassName,
   overlayProps,
   panelProps,
-}: ModalProps) {
+}: IModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   useFocusTrap(panelRef, open);
 

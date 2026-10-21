@@ -7,15 +7,13 @@
 import { useContext } from "react";
 
 import {
-  ToastContext,
-  type ShowToastInput,
-  type ToastContextValue,
-  type ToastTone,
+  ToastContext
 } from "@/features/shared/components/Toast/ToastProvider";
+import type { IShowToastInput, IToastContextValue, TToastTone } from "@/features/shared/components/Toast/ToastProvider.type";
 
-export type { ToastTone };
+export type { TToastTone };
 
-export function useToast(): ToastContextValue {
+export function useToast(): IToastContextValue {
   const ctx = useContext(ToastContext);
   if (!ctx) {
     // eslint-disable-next-line no-restricted-syntax -- developer error for a missing provider, never shown in the UI
@@ -24,4 +22,4 @@ export function useToast(): ToastContextValue {
   return ctx;
 }
 
-export type { ShowToastInput };
+export type { IShowToastInput };

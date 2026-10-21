@@ -9,21 +9,17 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import type { HistoryCommand } from "@/features/editor/types/editor.types";
+import type { IHistoryCommand } from "@/features/editor/types/editor.type";
+import type { IUseHistoryParams } from "./useHistory.type";
 
-interface UseHistoryParams {
-  documentKey: string;
-  getLayerPixelData: (layerId: string) => Uint8Array | null;
-}
-
-export function useHistory({ documentKey, getLayerPixelData }: UseHistoryParams) {
+export function useHistory({ documentKey, getLayerPixelData }: IUseHistoryParams) {
   const getLayerPixelsRef = useRef(getLayerPixelData);
   useEffect(() => {
     getLayerPixelsRef.current = getLayerPixelData;
   }, [getLayerPixelData]);
 
-  const undoStack = useRef<HistoryCommand[]>([]);
-  const redoStack = useRef<HistoryCommand[]>([]);
+  const undoStack = useRef<IHistoryCommand[]>([]);
+  const redoStack = useRef<IHistoryCommand[]>([]);
   const [historyRevision, setHistoryRevision] = useState(0);
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
@@ -45,7 +41,7 @@ export function useHistory({ documentKey, getLayerPixelData }: UseHistoryParams)
   }, [documentKey]);
 
   const pushCommand = useCallback(
-    (cmd: HistoryCommand) => {
+    (cmd: IHistoryCommand) => {
       if (cmd.deltas.length === 0) {
         return;
       }

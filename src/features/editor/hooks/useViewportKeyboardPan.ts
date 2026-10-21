@@ -6,14 +6,14 @@
 
 import { useEffect, type Dispatch, type RefObject, type SetStateAction } from "react";
 
-import type { ViewportState } from "@/features/editor/types/editor.types";
+import type { IViewportState } from "@/features/editor/types/editor.type";
 
 import { keyboardPanDelta } from "@/features/editor/logic/keyboardPan";
 import { translateViewOffset } from "@/features/editor/services/viewportNavigationService";
 
 export function useViewportKeyboardPan(
   wrapRef: RefObject<HTMLDivElement | null>,
-  setViewport: Dispatch<SetStateAction<ViewportState>>,
+  setViewport: Dispatch<SetStateAction<IViewportState>>,
 ) {
   useEffect(() => {
     const el = wrapRef.current;

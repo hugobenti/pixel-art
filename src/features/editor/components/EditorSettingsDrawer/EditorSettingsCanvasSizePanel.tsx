@@ -11,15 +11,7 @@ import { FormField } from "@/features/shared/components/FormField";
 import { Input } from "@/features/shared/components/Input";
 
 import { MAX_CANVAS_DIMENSION } from "@/features/shared/artwork/artworkService";
-
-interface EditorSettingsCanvasSizePanelProps {
-  widthStr: string;
-  heightStr: string;
-  onWidthChange: (value: string) => void;
-  onHeightChange: (value: string) => void;
-  onCancel: () => void;
-  onApply: () => void;
-}
+import type { IEditorSettingsCanvasSizePanelProps } from "./EditorSettingsCanvasSizePanel.type";
 
 const rootClass = "flex min-h-0 flex-1 flex-col gap-4 px-4 pb-4 pt-0 sm:px-4";
 
@@ -42,7 +34,7 @@ export function EditorSettingsCanvasSizePanel({
   onHeightChange,
   onCancel,
   onApply,
-}: EditorSettingsCanvasSizePanelProps) {
+}: IEditorSettingsCanvasSizePanelProps) {
   return (
     <div className={rootClass}>
       <p className={hintClass}>{editor.settings.canvasSize.hint}</p>

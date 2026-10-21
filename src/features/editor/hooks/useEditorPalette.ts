@@ -5,29 +5,21 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import type { Dispatch, SetStateAction } from "react";
-
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
 import {
   appendPaletteColor,
   clampPaletteIndex,
-  type ColorSlot,
   removePaletteAt,
   setPaletteColorAt,
 } from "@/features/editor/logic/paletteMutations";
-
-interface UseEditorPaletteParams {
-  artwork: Artwork;
-  setArtwork: Dispatch<SetStateAction<Artwork>>;
-  onPaletteOrPixelsDirty: () => void;
-}
+import type { TColorSlot } from "@/features/editor/logic/paletteMutations.type";
+import type { IUseEditorPaletteParams } from "./useEditorPalette.type";
 
 export function useEditorPalette({
   artwork,
   setArtwork,
   onPaletteOrPixelsDirty,
-}: UseEditorPaletteParams) {
-  const [activeSlot, setActiveSlot] = useState<ColorSlot>("primary");
+}: IUseEditorPaletteParams) {
+  const [activeSlot, setActiveSlot] = useState<TColorSlot>("primary");
   const [primaryIndex, setPrimaryIndex] = useState(0);
   const [secondaryIndex, setSecondaryIndex] = useState(1);
 

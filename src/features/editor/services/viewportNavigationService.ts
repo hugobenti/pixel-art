@@ -6,12 +6,12 @@
  * Used by useViewportNavigation; keeps DOM-free logic testable and separate from React.
  */
 
-export type WheelNavigationIntent = "zoom" | "pan";
+import type { TWheelNavigationIntent, IPanGestureInput } from "./viewportNavigationService.type";
 
 /**
  * Shift+wheel or dominant horizontal delta → pan; otherwise zoom (vertical wheel).
  */
-export function classifyWheelIntent(e: WheelEvent): WheelNavigationIntent {
+export function classifyWheelIntent(e: WheelEvent): TWheelNavigationIntent {
   if (e.shiftKey) {
     return "pan";
   }
@@ -39,18 +39,10 @@ export function translateViewOffset(
   return { x: offset.x + dx, y: offset.y + dy };
 }
 
-export interface PanGestureInput {
-  pointerButton: number;
-  /** Space key held (desktop pan shortcut). */
-  spaceHeld: boolean;
-  /** Explicit pan-only mode (e.g. mobile toolbar). */
-  panMode: boolean;
-}
-
 /**
  * Middle mouse always pans; primary button pans when Space is held or pan mode is on.
  */
-export function shouldStartPanGesture(input: PanGestureInput): boolean {
+export function shouldStartPanGesture(input: IPanGestureInput): boolean {
   if (input.pointerButton === 1) {
     return true;
   }

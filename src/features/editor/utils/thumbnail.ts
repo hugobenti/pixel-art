@@ -3,8 +3,8 @@
  * Rasterize artwork into a WebP data URL for gallery thumbnails (~150×150).
  */
 import { renderCanvas } from "@/features/editor/logic/canvasRender";
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
-import type { ViewportState } from "@/features/editor/types/editor.types";
+import type { IArtwork } from "@/features/shared/artwork/artwork.type";
+import type { IViewportState } from "@/features/editor/types/editor.type";
 
 const DEFAULT_SIZE = 150;
 
@@ -12,7 +12,7 @@ const DEFAULT_SIZE = 150;
  * Renders the artwork into a square thumbnail with letterboxing and returns a WebP data URL.
  */
 export function artworkToWebpThumbnail(
-  artwork: Pick<Artwork, "width" | "height" | "layers" | "palette">,
+  artwork: Pick<IArtwork, "width" | "height" | "layers" | "palette">,
   size = DEFAULT_SIZE
 ): string {
   const canvas = document.createElement("canvas");
@@ -27,7 +27,7 @@ export function artworkToWebpThumbnail(
   const ox = (size - artwork.width * scale) / 2;
   const oy = (size - artwork.height * scale) / 2;
 
-  const viewport: ViewportState = {
+  const viewport: IViewportState = {
     scale,
     viewOffset: { x: ox, y: oy },
   };

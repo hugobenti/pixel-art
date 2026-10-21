@@ -7,16 +7,11 @@
 import { useRef } from "react";
 
 import { editor } from "@/content/editor";
-import type { ShiftDirection } from "@/features/editor/logic/pixelShift";
+import type { TShiftDirection } from "@/features/editor/logic/pixelShift.type";
 
 import { Button } from "@/features/shared/components/Button";
 import { useFocusTrap } from "@/features/shared/hooks/useFocusTrap";
-
-interface ShiftDirectionOverlayProps {
-  open: boolean;
-  onClose: () => void;
-  onShift: (direction: ShiftDirection) => void;
-}
+import type { IShiftDirectionOverlayProps } from "./ShiftDirectionOverlay.type";
 
 const backdropClass = `
   fixed inset-0 z-40 bg-scrim/30 
@@ -40,7 +35,7 @@ export function ShiftDirectionOverlay({
   open,
   onClose,
   onShift,
-}: ShiftDirectionOverlayProps) {
+}: IShiftDirectionOverlayProps) {
   const dialogRef = useRef<HTMLDivElement>(null);
   useFocusTrap(dialogRef, open);
 
@@ -48,7 +43,7 @@ export function ShiftDirectionOverlay({
     return null;
   }
 
-  const handleShift = (direction: ShiftDirection) => {
+  const handleShift = (direction: TShiftDirection) => {
     onShift(direction);
   };
 

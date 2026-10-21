@@ -40,23 +40,7 @@ import { LayerRenameModal } from "@/features/editor/components/LayersDrawer/Laye
 import { useLayerRenameDialog } from "@/features/editor/components/LayersDrawer/hooks/useLayerRenameDialog";
 import { SortableLayerItem } from "@/features/editor/components/LayersDrawer/SortableLayerItem";
 import { useLayersDrawerPanel } from "@/features/editor/components/LayersDrawer/useLayersDrawerPanel";
-
-import type { ArtworkLayer } from "@/features/shared/artwork/artwork.types";
-
-interface LayersDrawerProps {
-  layers: ArtworkLayer[];
-  activeLayerId: string;
-  palette: string[];
-  width: number;
-  height: number;
-  onClose: () => void;
-  onSelectLayer: (layerId: string) => void;
-  onToggleVisibility: (layerId: string) => void;
-  onAddLayer: () => void;
-  onCopyLayer: (layerId: string) => void;
-  onRenameLayer: (layerId: string, nextName: string) => void;
-  onReorderLayers: (activeId: string, overId: string | null) => void;
-}
+import type { ILayersDrawerProps } from "./LayersDrawer.type";
 
 export function LayersDrawer({
   layers,
@@ -71,7 +55,7 @@ export function LayersDrawer({
   onCopyLayer,
   onRenameLayer,
   onReorderLayers,
-}: LayersDrawerProps) {
+}: ILayersDrawerProps) {
   const { panelEntered, handleClose } = useLayersDrawerPanel({ onClose });
 
   const layerRename = useLayerRenameDialog(onRenameLayer);

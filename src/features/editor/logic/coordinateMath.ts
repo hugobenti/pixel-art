@@ -3,7 +3,8 @@
  * Viewport math: screen/world mapping and visible world bounds for grid culling.
  */
 
-import type { ViewportState } from "@/features/editor/types/editor.types";
+import type { IViewportState } from "@/features/editor/types/editor.type";
+import type { IVisibleWorldBounds } from "./coordinateMath.type";
 
 /**
  * Maps pointer coordinates in CSS pixels into world (grid) space.
@@ -11,30 +12,23 @@ import type { ViewportState } from "@/features/editor/types/editor.types";
 export function screenToWorldCoordinates(
   mouseX: number,
   mouseY: number,
-  viewport: ViewportState
+  viewport: IViewportState
 ): { x: number; y: number } {
   const worldX = Math.floor((mouseX - viewport.viewOffset.x) / viewport.scale);
   const worldY = Math.floor((mouseY - viewport.viewOffset.y) / viewport.scale);
   return { x: worldX, y: worldY };
 }
 
-export interface VisibleWorldBounds {
-  minX: number;
-  maxX: number;
-  minY: number;
-  maxY: number;
-}
-
 /**
  * Approximate axis-aligned world rectangle visible inside the canvas element for line culling.
  */
 export function getVisibleWorldBounds(
-  viewport: ViewportState,
+  viewport: IViewportState,
   canvasWidthCss: number,
   canvasHeightCss: number,
   worldWidth: number,
   worldHeight: number
-): VisibleWorldBounds {
+): IVisibleWorldBounds {
   const inv = 1 / viewport.scale;
   const left = (0 - viewport.viewOffset.x) * inv;
   const right = (canvasWidthCss - viewport.viewOffset.x) * inv;

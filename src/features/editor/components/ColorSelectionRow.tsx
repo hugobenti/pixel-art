@@ -7,6 +7,7 @@
 import { editor } from "@/content/editor";
 import { Button } from "@/features/shared/components/Button";
 import { ColorSwatch } from "@/features/shared/components/ColorSwatch";
+import type { IColorSelectionRowProps } from "./ColorSelectionRow.type";
 
 const rowClass =
   "flex w-full min-w-0 items-center gap-2 border-b border-line py-2";
@@ -19,15 +20,6 @@ const swatchListClass = "flex items-center gap-1.5";
 const editPaletteButtonClass =
   "shrink-0 touch-manipulation whitespace-nowrap px-3 py-2 text-sm";
 
-interface ColorSelectionRowProps {
-  palette: string[];
-  primaryIndex: number;
-  secondaryIndex: number;
-  focusedSwatchIndex: number;
-  onSwatchPick: (index: number) => void;
-  onOpenPaletteModal: () => void;
-}
-
 export function ColorSelectionRow({
   palette,
   primaryIndex,
@@ -35,7 +27,7 @@ export function ColorSelectionRow({
   focusedSwatchIndex,
   onSwatchPick,
   onOpenPaletteModal,
-}: ColorSelectionRowProps) {
+}: IColorSelectionRowProps) {
   const safeFocus = Math.min(
     Math.max(0, focusedSwatchIndex),
     Math.max(0, palette.length - 1)

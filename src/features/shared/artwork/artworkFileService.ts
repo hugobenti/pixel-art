@@ -8,8 +8,9 @@
 "use client";
 
 import { shared } from "@/content/shared";
-import type { Artwork, ArtworkLayer } from "@/features/shared/artwork/artwork.types";
+import type { IArtwork, IArtworkLayer } from "@/features/shared/artwork/artwork.type";
 import { MAX_PALETTE_ENTRIES, validateDimensions } from "@/features/shared/artwork/artworkService";
+import type { IArtworkFileV1, IArtworkFileV2, IImportedArtworkData } from "./artworkFileService.type";
 
 const errors = shared.artworkFile.errors;
 
@@ -18,48 +19,6 @@ const JSON_MIME = "application/json";
 const PNG_MIME = "image/png";
 const HEX_COLOR = /^#[0-9A-Fa-f]{6}$/;
 const BASE64_CHUNK_BYTES = 0x8000;
-
-interface ArtworkFileV1 {
-  version: 1;
-  title: string;
-  width: number;
-  height: number;
-  palette: string[];
-  layers: Array<{
-    id: string;
-    name: string;
-    visible: boolean;
-    pixelData: number[];
-  }>;
-  activeLayerId: string;
-  referenceImageDataUrl?: string;
-}
-
-interface ArtworkFileV2 {
-  version: 2;
-  title: string;
-  width: number;
-  height: number;
-  palette: string[];
-  layers: Array<{
-    id: string;
-    name: string;
-    visible: boolean;
-    pixelDataBase64: string;
-  }>;
-  activeLayerId: string;
-  referenceImageDataUrl?: string;
-}
-
-export interface ImportedArtworkData {
-  title: string;
-  width: number;
-  height: number;
-  palette: string[];
-  layers: ArtworkLayer[];
-  activeLayerId: string;
-  referenceImageDataUrl?: string;
-}
 
 function sanitizeFileNameSegment(value: string): string {
   const trimmed = value.trim();
@@ -103,7 +62,7 @@ function base64ToUint8Array(base64: string): Uint8Array {
   return buffer;
 }
 
-function toArtworkFile(artwork: Artwork): ArtworkFileV2 {
+function toArtworkFile(artwork: IArtwork): IArtworkFileV2 {
   return {
     version: FILE_SCHEMA_VERSION,
     title: artwork.title,
@@ -121,11 +80,11 @@ function toArtworkFile(artwork: Artwork): ArtworkFileV2 {
   };
 }
 
-function validateParsedArtwork(value: unknown): ImportedArtworkData {
+function validateParsedArtwork(value: unknown): IImportedArtworkData {
   if (!value || typeof value !== "object") {
     throw new Error(errors.invalidFormat);
   }
-  const file = value as Partial<ArtworkFileV1 | ArtworkFileV2>;
+  const file = value as Partial<IArtworkFileV1 | IArtworkFileV2>;
   if (file.version !== 1 && file.version !== 2) {
     throw new Error(errors.unsupportedVersion);
   }
@@ -160,7 +119,7 @@ function validateParsedArtwork(value: unknown): ImportedArtworkData {
     throw new Error(errors.layersMissing);
   }
 
-  const layers: ArtworkLayer[] = file.layers.map((layer, layerIndex) => {
+  const layers: IArtworkLayer[] = file.layers.map((layer, layerIndex) => {
     if (!layer || typeof layer !== "object") {
       throw new Error(errors.layerInvalid(layerIndex + 1));
     }
@@ -240,14 +199,14 @@ function validateParsedArtwork(value: unknown): ImportedArtworkData {
   };
 }
 
-export function exportArtworkAsJson(artwork: Artwork): void {
+export function exportArtworkAsJson(artwork: IArtwork): void {
   const payload = JSON.stringify(toArtworkFile(artwork), null, 2);
   const blob = new Blob([payload], { type: JSON_MIME });
   const fileName = `${sanitizeFileNameSegment(artwork.title)}.json`;
   triggerFileDownload(blob, fileName);
 }
 
-function drawArtworkToCanvas(artwork: Artwork): HTMLCanvasElement {
+function drawArtworkToCanvas(artwork: IArtwork): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
   canvas.width = artwork.width;
   canvas.height = artwork.height;
@@ -274,7 +233,7 @@ function drawArtworkToCanvas(artwork: Artwork): HTMLCanvasElement {
   return canvas;
 }
 
-export async function exportArtworkAsPng(artwork: Artwork): Promise<void> {
+export async function exportArtworkAsPng(artwork: IArtwork): Promise<void> {
   const canvas = drawArtworkToCanvas(artwork);
   const fileName = `${sanitizeFileNameSegment(artwork.title)}.png`;
   const blob = await new Promise<Blob | null>((resolve) => {
@@ -294,7 +253,7 @@ export async function exportArtworkAsPng(artwork: Artwork): Promise<void> {
   anchor.remove();
 }
 
-export async function importArtworkFromJsonFile(file: File): Promise<ImportedArtworkData> {
+export async function importArtworkFromJsonFile(file: File): Promise<IImportedArtworkData> {
   const text = await file.text();
   let parsed: unknown;
   try {

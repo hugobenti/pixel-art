@@ -14,18 +14,13 @@ import {
   editorShortcutForKey,
   isTextEntryTarget,
 } from "@/features/editor/logic/editorKeyboardGuards";
-
-export interface UseEditorKeyboardShortcutsParams {
-  onTogglePixelGrid: () => void;
-  undo: () => void;
-  redo: () => void;
-}
+import type { IUseEditorKeyboardShortcutsParams } from "./useEditorKeyboardShortcuts.type";
 
 export function useEditorKeyboardShortcuts({
   onTogglePixelGrid,
   undo,
   redo,
-}: UseEditorKeyboardShortcutsParams) {
+}: IUseEditorKeyboardShortcutsParams) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const shortcut = editorShortcutForKey(

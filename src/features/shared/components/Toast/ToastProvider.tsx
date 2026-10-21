@@ -14,34 +14,13 @@ import {
   useEffect,
   useMemo,
   useRef,
-  useState,
-  type ReactNode,
+  useState
 } from "react";
 
 import { shared } from "@/content/shared";
+import type { TToastTone, IToastRecord, IShowToastInput, IToastContextValue, IToastStackProps, IToastProviderProps } from "./ToastProvider.type";
 
-export type ToastTone = "neutral" | "success" | "error";
-
-export interface ToastRecord {
-  id: string;
-  message: string;
-  tone: ToastTone;
-}
-
-export interface ShowToastInput {
-  message: string;
-  tone?: ToastTone;
-  durationMs?: number;
-  /** When true, skips enqueue if an identical message and tone is already visible. */
-  skipDuplicateActiveToast?: boolean;
-}
-
-export interface ToastContextValue {
-  showToast: (input: ShowToastInput | string) => void;
-  dismissToast: (id: string) => void;
-}
-
-export const ToastContext = createContext<ToastContextValue | null>(null);
+export const ToastContext = createContext<IToastContextValue | null>(null);
 
 const DEFAULT_DURATION_MS = 4500;
 
@@ -51,7 +30,7 @@ const stackRegionClass = `
   px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-4
 `;
 
-function toastSurfaceClass(tone: ToastTone): string {
+function toastSurfaceClass(tone: TToastTone): string {
   const base =
     "pointer-events-auto flex min-h-12 w-full max-w-lg items-start gap-3 rounded-lg border px-4 py-3 shadow-lg sm:min-w-[280px]";
 
@@ -70,12 +49,7 @@ const messageClass =
 const dismissButtonClass =
   "shrink-0 rounded-md px-1.5 py-0.5 text-lg leading-none text-current opacity-70 hover:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2";
 
-interface ToastStackProps {
-  toasts: ToastRecord[];
-  onDismiss: (id: string) => void;
-}
-
-function ToastStack({ toasts, onDismiss }: ToastStackProps) {
+function ToastStack({ toasts, onDismiss }: IToastStackProps) {
   return (
     <div className={stackRegionClass} aria-live="polite" aria-relevant="additions">
       {toasts.map((toast) => (
@@ -101,12 +75,8 @@ function ToastStack({ toasts, onDismiss }: ToastStackProps) {
   );
 }
 
-interface ToastProviderProps {
-  children: ReactNode;
-}
-
-export function ToastProvider({ children }: ToastProviderProps) {
-  const [toasts, setToasts] = useState<ToastRecord[]>([]);
+export function ToastProvider({ children }: IToastProviderProps) {
+  const [toasts, setToasts] = useState<IToastRecord[]>([]);
   const timersRef = useRef<Map<string, number>>(new Map());
 
   const dismissToast = useCallback((id: string) => {
@@ -119,14 +89,14 @@ export function ToastProvider({ children }: ToastProviderProps) {
   }, []);
 
   const showToast = useCallback(
-    (input: ShowToastInput | string) => {
-      const normalized: ShowToastInput =
+    (input: IShowToastInput | string) => {
+      const normalized: IShowToastInput =
         typeof input === "string" ? { message: input } : input;
       const id =
         typeof crypto !== "undefined" && crypto.randomUUID
           ? crypto.randomUUID()
           : `toast-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-      const tone: ToastTone = normalized.tone ?? "neutral";
+      const tone: TToastTone = normalized.tone ?? "neutral";
       const durationMs = normalized.durationMs ?? DEFAULT_DURATION_MS;
       const skipDup = normalized.skipDuplicateActiveToast === true;
 

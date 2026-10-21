@@ -3,12 +3,10 @@
  * Viewport wrapper with checkerboard backdrop and stacked artwork + reference + grid canvases.
  */
 "use client";
-
-import type { RefObject } from "react";
-
 import { editor } from "@/content/editor";
 import { PixelGridOverlay } from "@/features/editor/components/PixelGridOverlay";
 import { ReferenceImageOverlay } from "@/features/editor/components/ReferenceImageOverlay";
+import type { ICanvasContainerProps } from "./CanvasContainer.type";
 
 const viewportShell =
   "relative flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-lg border border-line bg-surface-muted";
@@ -18,25 +16,6 @@ const checkerLayer =
 
 const canvasStack =
   "relative z-10 h-full min-h-0 w-full min-w-0 flex-1 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 data-pointer-focus:focus-visible:outline-none";
-
-interface CanvasContainerProps {
-  wrapRef: RefObject<HTMLDivElement | null>;
-  artworkCanvasRef: RefObject<HTMLCanvasElement | null>;
-  referenceImageCanvasRef: RefObject<HTMLCanvasElement | null>;
-  gridCanvasRef: RefObject<HTMLCanvasElement | null>;
-  viewportHandlers: {
-    onPointerDown: React.PointerEventHandler<HTMLDivElement>;
-    onPointerMove: React.PointerEventHandler<HTMLDivElement>;
-    onPointerUp: React.PointerEventHandler<HTMLDivElement>;
-    onPointerCancel: React.PointerEventHandler<HTMLDivElement>;
-    onPointerEnter: React.PointerEventHandler<HTMLDivElement>;
-    onPointerLeave: React.PointerEventHandler<HTMLDivElement>;
-    onFocus: React.FocusEventHandler<HTMLDivElement>;
-    onBlur: React.FocusEventHandler<HTMLDivElement>;
-  };
-  onArtworkPointerDown: React.PointerEventHandler<HTMLCanvasElement>;
-}
-
 const artworkCanvasClass =
   "absolute inset-0 block h-full w-full cursor-crosshair touch-none";
 
@@ -47,7 +26,7 @@ export function CanvasContainer({
   gridCanvasRef,
   viewportHandlers,
   onArtworkPointerDown,
-}: CanvasContainerProps) {
+}: ICanvasContainerProps) {
   return (
     <div className={viewportShell}>
       <div className={checkerLayer} aria-hidden />

@@ -7,17 +7,12 @@
 import { useEffect } from "react";
 
 import { useLayersDrawerPanel } from "@/features/editor/components/LayersDrawer/useLayersDrawerPanel";
-
-interface UseEditorSettingsDrawerParams {
-  onClose: () => void;
-  /** When true is returned, Escape does not close the drawer (e.g. drill-in navigates back first). */
-  interceptEscape?: () => boolean;
-}
+import type { IUseEditorSettingsDrawerParams } from "./useEditorSettingsDrawer.type";
 
 export function useEditorSettingsDrawer({
   onClose,
   interceptEscape,
-}: UseEditorSettingsDrawerParams) {
+}: IUseEditorSettingsDrawerParams) {
   const { panelEntered, handleClose } = useLayersDrawerPanel({ onClose });
 
   useEffect(() => {

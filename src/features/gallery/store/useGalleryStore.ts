@@ -5,23 +5,10 @@
 import { create } from "zustand";
 
 import { gallery } from "@/content/gallery";
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
-import type { ImportedArtworkData } from "@/features/shared/artwork/artworkFileService";
 import * as artworkService from "@/features/shared/artwork/artworkService";
+import type { IGalleryState } from "./useGalleryStore.type";
 
-interface GalleryState {
-  artworks: Artwork[];
-  loading: boolean;
-  error: string | null;
-  loadArtworks: () => Promise<void>;
-  createArtwork: (input: artworkService.CreateArtworkInput) => Promise<Artwork | null>;
-  importArtwork: (input: ImportedArtworkData) => Promise<Artwork | null>;
-  renameArtwork: (id: string, title: string) => Promise<void>;
-  cloneArtwork: (id: string) => Promise<Artwork | undefined>;
-  deleteArtwork: (id: string) => Promise<void>;
-}
-
-export const useGalleryStore = create<GalleryState>((set, get) => ({
+export const useGalleryStore = create<IGalleryState>((set, get) => ({
   artworks: [],
   loading: false,
   error: null,

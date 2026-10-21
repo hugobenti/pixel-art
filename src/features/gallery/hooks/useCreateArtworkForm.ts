@@ -8,15 +8,11 @@ import { useCallback, useState, type FormEvent } from "react";
 
 import { shared } from "@/content/shared";
 import {
-  DEFAULT_PALETTE,
-  type CreateArtworkInput,
+  DEFAULT_PALETTE
 } from "@/features/shared/artwork/artworkService";
+import type { TUseCreateArtworkFormOptions } from "./useCreateArtworkForm.type";
 
-type UseCreateArtworkFormOptions = {
-  onCreate: (input: CreateArtworkInput) => Promise<unknown>;
-};
-
-export function useCreateArtworkForm({ onCreate }: UseCreateArtworkFormOptions) {
+export function useCreateArtworkForm({ onCreate }: TUseCreateArtworkFormOptions) {
   const [title, setTitle] = useState(shared.artwork.untitled);
   const [width, setWidth] = useState("64");
   const [height, setHeight] = useState("64");

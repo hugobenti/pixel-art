@@ -10,10 +10,10 @@ import {
   countVisibleCompositePixelsByPaletteIndex,
   isArtworkPixelVisibleInViewport,
 } from "@/features/editor/logic/visibleCompositePixelCounts";
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
-import type { ViewportState } from "@/features/editor/types/editor.types";
+import type { IArtwork } from "@/features/shared/artwork/artwork.type";
+import type { IViewportState } from "@/features/editor/types/editor.type";
 
-function layer(id: string, pixels: number[]): Artwork["layers"][0] {
+function layer(id: string, pixels: number[]): IArtwork["layers"][0] {
   return {
     id,
     name: id,
@@ -24,7 +24,7 @@ function layer(id: string, pixels: number[]): Artwork["layers"][0] {
 
 describe("isArtworkPixelVisibleInViewport", () => {
   it("returns true when the scaled pixel rect intersects the CSS viewport", () => {
-    const viewport: ViewportState = {
+    const viewport: IViewportState = {
       scale: 10,
       viewOffset: { x: 0, y: 0 },
     };
@@ -34,7 +34,7 @@ describe("isArtworkPixelVisibleInViewport", () => {
   });
 
   it("respects pan offset", () => {
-    const viewport: ViewportState = {
+    const viewport: IViewportState = {
       scale: 10,
       viewOffset: { x: -55, y: 0 },
     };
@@ -45,7 +45,7 @@ describe("isArtworkPixelVisibleInViewport", () => {
 
 describe("compositeOpaquePaletteIndexAt", () => {
   it("uses the topmost visible non-transparent layer (lower array index draws on top)", () => {
-    const artwork: Pick<Artwork, "width" | "height" | "layers" | "palette"> = {
+    const artwork: Pick<IArtwork, "width" | "height" | "layers" | "palette"> = {
       width: 2,
       height: 1,
       palette: ["transparent", "#f00", "#00f"],
@@ -59,7 +59,7 @@ describe("compositeOpaquePaletteIndexAt", () => {
   });
 
   it("skips invisible layers", () => {
-    const artwork: Pick<Artwork, "width" | "height" | "layers" | "palette"> = {
+    const artwork: Pick<IArtwork, "width" | "height" | "layers" | "palette"> = {
       width: 1,
       height: 1,
       palette: ["transparent", "#f00"],
@@ -74,13 +74,13 @@ describe("compositeOpaquePaletteIndexAt", () => {
 
 describe("countVisibleCompositePixelsByPaletteIndex", () => {
   it("counts only viewport-intersecting pixels once", () => {
-    const artwork: Pick<Artwork, "width" | "height" | "layers" | "palette"> = {
+    const artwork: Pick<IArtwork, "width" | "height" | "layers" | "palette"> = {
       width: 3,
       height: 1,
       palette: ["transparent", "#aaa", "#bbb"],
       layers: [layer("a", [1, 1, 2])],
     };
-    const viewport: ViewportState = { scale: 1, viewOffset: { x: 1, y: 0 } };
+    const viewport: IViewportState = { scale: 1, viewOffset: { x: 1, y: 0 } };
     const result = countVisibleCompositePixelsByPaletteIndex(artwork, viewport, 3, 10);
     expect(result.totalViewportCells).toBe(2);
     expect(result.totalCompositeOpaque).toBe(2);

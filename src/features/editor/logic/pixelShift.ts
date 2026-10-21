@@ -6,9 +6,8 @@
  * Pixel indices follow row-major order: index = x + y * width.
  */
 
-import type { HistoryCommand, PixelDelta } from "@/features/editor/types/editor.types";
-
-export type ShiftDirection = "up" | "down" | "left" | "right";
+import type { IHistoryCommand, IPixelDelta } from "@/features/editor/types/editor.type";
+import type { TShiftDirection } from "./pixelShift.type";
 
 /**
  * Mutates `pixelData` to the shifted grid and returns an undo command, or null if nothing changed.
@@ -18,8 +17,8 @@ export function computeShiftCommand(
   pixelData: Uint8Array,
   width: number,
   height: number,
-  direction: ShiftDirection
-): HistoryCommand | null {
+  direction: TShiftDirection
+): IHistoryCommand | null {
   const len = width * height;
   if (len === 0 || pixelData.length !== len) {
     return null;
@@ -52,7 +51,7 @@ export function computeShiftCommand(
     }
   }
 
-  const deltas: PixelDelta[] = [];
+  const deltas: IPixelDelta[] = [];
   for (let i = 0; i < len; i++) {
     if (old[i] !== next[i]) {
       deltas.push({

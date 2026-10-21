@@ -6,8 +6,7 @@
 import { normalizeHexColor } from "@/features/shared/utils/colorConverter";
 
 import { MAX_PALETTE_ENTRIES } from "@/features/shared/artwork/artworkService";
-
-export type ColorSlot = "primary" | "secondary";
+import type { IRemovePaletteResult } from "./paletteMutations.type";
 
 /**
  * Clamps a palette slot index to valid palette bounds (0 … length − 1).
@@ -43,12 +42,6 @@ export function appendPaletteColor(
   return [...palette, normalizeHexColor(hex)];
 }
 
-export interface RemovePaletteResult {
-  palette: string[];
-  primaryIndex: number;
-  secondaryIndex: number;
-}
-
 /**
  * Removes one palette entry; remaps pixel indices and clamps primary/secondary selection.
  */
@@ -58,7 +51,7 @@ export function removePaletteAt(
   removeIndex: number,
   primaryIndex: number,
   secondaryIndex: number
-): RemovePaletteResult | null {
+): IRemovePaletteResult | null {
   if (palette.length <= 1 || removeIndex < 0 || removeIndex >= palette.length) {
     return null;
   }

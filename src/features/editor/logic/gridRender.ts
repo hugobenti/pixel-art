@@ -6,21 +6,10 @@
  * Symmetry guides use the artwork mid-lines in world space (half-width / half-height), drawn after the base grid.
  */
 
-import type { ViewportState } from "@/features/editor/types/editor.types";
+import type { IViewportState } from "@/features/editor/types/editor.type";
 
 import { getVisibleWorldBounds } from "@/features/editor/logic/coordinateMath";
-
-export interface PixelGridRenderOptions {
-  /** Grid stroke color, read from the `--color-grid-line` token. */
-  color: string;
-  /** Stroke color for the horizontal mid-line (symmetry guide). */
-  centerHorizontalColor?: string;
-  /** Stroke color for the vertical mid-line (symmetry guide). */
-  centerVerticalColor?: string;
-  lineWidthWorld?: number;
-  /** Optional extra thickness multiplier for center guides (defaults to 1.45). */
-  centerLineWidthFactor?: number;
-}
+import type { IPixelGridRenderOptions } from "./gridRender.type";
 
 /**
  * Strokes grid lines on pixel boundaries; skips work outside the visible world slice when bounds are provided.
@@ -29,8 +18,8 @@ export function renderPixelGrid(
   ctx: CanvasRenderingContext2D,
   worldWidth: number,
   worldHeight: number,
-  viewport: ViewportState,
-  options: PixelGridRenderOptions,
+  viewport: IViewportState,
+  options: IPixelGridRenderOptions,
   canvasWidthCss: number,
   canvasHeightCss: number
 ): void {

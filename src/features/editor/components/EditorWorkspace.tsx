@@ -47,7 +47,8 @@ import * as artworkService from "@/features/shared/artwork/artworkService";
 
 import { useToast } from "@/features/shared/components/Toast/hooks/useToast";
 
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
+import type { IArtwork } from "@/features/shared/artwork/artwork.type";
+import type { IHistoryCommand } from "@/features/editor/types/editor.type";
 
 import { editor } from "@/content/editor";
 import { clampPaletteIndex } from "@/features/editor/logic/paletteMutations";
@@ -56,6 +57,7 @@ import {
   normalizeViewportToPixelGrid,
 } from "@/features/editor/logic/viewportPixelAlign";
 import { computeContainFit } from "@/features/editor/logic/viewportFit";
+import type { IEditorWorkspaceProps } from "./EditorWorkspace.type";
 
 const MIN_ZOOM_RATIO_OF_CONTAIN = 0.75;
 
@@ -66,13 +68,9 @@ const chromeClass = "flex shrink-0 flex-col gap-0";
 
 const mainClass = "flex min-h-0 flex-1 flex-col";
 
-interface EditorWorkspaceProps {
-  initialArtwork: Artwork;
-}
-
-export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
+export function EditorWorkspace({ initialArtwork }: IEditorWorkspaceProps) {
   const { showToast } = useToast();
-  const [artwork, setArtwork] = useState<Artwork>(initialArtwork);
+  const [artwork, setArtwork] = useState<IArtwork>(initialArtwork);
 
   const [showPixelGrid, setShowPixelGrid] = useState(true);
   const [paintRevision, setPaintRevision] = useState(0);
@@ -241,13 +239,13 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
   }, [wrapRef, setViewport, cssSize.w, cssSize.h, artwork.width, artwork.height]);
 
   const onCommitStroke = useCallback(
-    (cmd: import("@/features/editor/types/editor.types").HistoryCommand) => {
+    (cmd: IHistoryCommand) => {
       pushCommand(cmd);
     },
     [pushCommand]
   );
 
-  const handleApplyCanvasSize = useCallback((next: Artwork) => {
+  const handleApplyCanvasSize = useCallback((next: IArtwork) => {
     setArtwork(next);
     schedulePaintBump();
   }, [schedulePaintBump]);

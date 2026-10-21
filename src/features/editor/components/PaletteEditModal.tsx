@@ -11,6 +11,7 @@ import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
 import { ColorSwatch } from "@/features/shared/components/ColorSwatch";
 import { Modal } from "@/features/shared/components/Modal";
+import type { IPaletteEditModalProps } from "./PaletteEditModal.type";
 
 const titleClass = "text-lg font-semibold text-fg";
 
@@ -18,19 +19,6 @@ const swatchGridClass =
   "grid grid-cols-8 gap-2 sm:grid-cols-10";
 
 const legendClass = "text-xs font-medium text-muted";
-
-interface PaletteEditModalProps {
-  open: boolean;
-  onClose: () => void;
-  palette: string[];
-  focusedSwatchIndex: number;
-  onSelectSwatch: (index: number) => void;
-  onApplyHex: (index: number, hex: string) => void;
-  onAddColor: (hex: string) => void;
-  onRemoveSwatch: (index: number) => void;
-  canRemoveSwatch: boolean;
-  maxPaletteReached: boolean;
-}
 
 export function PaletteEditModal({
   open,
@@ -43,7 +31,7 @@ export function PaletteEditModal({
   onRemoveSwatch,
   canRemoveSwatch,
   maxPaletteReached,
-}: PaletteEditModalProps) {
+}: IPaletteEditModalProps) {
   const titleId = useId();
   const safeFocus = Math.min(
     Math.max(0, focusedSwatchIndex),

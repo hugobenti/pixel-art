@@ -12,7 +12,7 @@
  */
 "use client";
 
-import type { Dispatch, RefObject, SetStateAction } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import {
   useCallback,
   useEffect,
@@ -21,7 +21,7 @@ import {
   useState,
 } from "react";
 
-import type { ViewportState } from "@/features/editor/types/editor.types";
+import type { IViewportState } from "@/features/editor/types/editor.type";
 
 import { shouldClaimSpaceForCanvasPan } from "@/features/editor/logic/editorKeyboardGuards";
 import {
@@ -42,13 +42,7 @@ import {
   shouldStartPanGesture,
   translateViewOffset,
 } from "@/features/editor/services/viewportNavigationService";
-
-export interface UseViewportNavigationOptions {
-  /** Minimum scale from contain-fit ratio; used when snapping zoom/pan to integer pixels. */
-  getMinScale?: () => number;
-  /** Active touch pointer IDs (window capture); shared with painting for single-finger pan/paint rules. */
-  touchPointersRef: RefObject<Set<number>>;
-}
+import type { IUseViewportNavigationOptions } from "./useViewportNavigation.type";
 
 /**
  * Two-finger pinch on the viewport element (or children): updates scale toward the pinch midpoint.
@@ -56,7 +50,7 @@ export interface UseViewportNavigationOptions {
  */
 export function attachViewportPinchZoom(
   el: HTMLDivElement,
-  setViewport: Dispatch<SetStateAction<ViewportState>>,
+  setViewport: Dispatch<SetStateAction<IViewportState>>,
   getMinScale: () => number
 ): () => void {
   const pointers = new Map<number, { x: number; y: number }>();
@@ -140,7 +134,7 @@ export function attachViewportPinchZoom(
  */
 export function attachViewportWheel(
   el: HTMLDivElement,
-  setViewport: Dispatch<SetStateAction<ViewportState>>,
+  setViewport: Dispatch<SetStateAction<IViewportState>>,
   getMinScale: () => number
 ): () => void {
   const onWheel = (e: WheelEvent) => {
@@ -185,7 +179,7 @@ export function attachViewportWheel(
   return () => el.removeEventListener("wheel", onWheel);
 }
 
-export function useViewportNavigation(options: UseViewportNavigationOptions) {
+export function useViewportNavigation(options: IUseViewportNavigationOptions) {
   const { touchPointersRef } = options;
   const getMinScaleRef = useRef(options.getMinScale);
 
@@ -193,7 +187,7 @@ export function useViewportNavigation(options: UseViewportNavigationOptions) {
     getMinScaleRef.current = options.getMinScale;
   }, [options.getMinScale]);
 
-  const snapViewport = useCallback((v: ViewportState) => {
+  const snapViewport = useCallback((v: IViewportState) => {
     const getter = getMinScaleRef.current;
     const minScale = Math.max(1e-6, getter?.() ?? 1);
     return normalizeViewportToPixelGrid(v, {
@@ -202,7 +196,7 @@ export function useViewportNavigation(options: UseViewportNavigationOptions) {
     });
   }, []);
 
-  const [viewport, setViewport] = useState<ViewportState>({
+  const [viewport, setViewport] = useState<IViewportState>({
     scale: 1,
     viewOffset: { x: 0, y: 0 },
   });
