@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
 import { AppProviders } from "@/app/AppProviders";
+import { siteMetadata } from "@/content/metadata";
 
 import "./globals.css";
 
@@ -19,10 +20,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "PixelCraft",
-  description: "Web-based pixel art editor",
-};
+export const metadata: Metadata = siteMetadata;
 
 export default function RootLayout({
   children,

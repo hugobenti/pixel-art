@@ -6,6 +6,7 @@
 
 import type { RefObject } from "react";
 
+import { editor } from "@/content/editor";
 import { PixelGridOverlay } from "@/features/editor/components/PixelGridOverlay";
 import { ReferenceImageOverlay } from "@/features/editor/components/ReferenceImageOverlay";
 
@@ -55,7 +56,7 @@ export function CanvasContainer({
         className={canvasStack}
         {...viewportHandlers}
         role="application"
-        aria-label="Pixel canvas (arrow keys pan, Shift for larger steps)"
+        aria-label={editor.viewport.label}
         tabIndex={0}
       >
         <canvas

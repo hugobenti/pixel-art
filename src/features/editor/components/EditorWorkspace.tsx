@@ -49,7 +49,7 @@ import { useToast } from "@/features/shared/components/Toast/hooks/useToast";
 
 import type { Artwork } from "@/features/shared/artwork/artwork.types";
 
-import { EDITOR_TOAST_HIDDEN_LAYER_MESSAGE } from "@/features/editor/constants/editorToastMessages";
+import { editor } from "@/content/editor";
 import { clampPaletteIndex } from "@/features/editor/logic/paletteMutations";
 import {
   MAX_VIEWPORT_SCALE,
@@ -274,7 +274,7 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
 
   const onHiddenActiveLayerPaintAttempt = useCallback(() => {
     showToast({
-      message: EDITOR_TOAST_HIDDEN_LAYER_MESSAGE,
+      message: editor.toasts.hiddenLayer,
       tone: "error",
       skipDuplicateActiveToast: true,
     });

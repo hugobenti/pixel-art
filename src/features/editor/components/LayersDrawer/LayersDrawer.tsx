@@ -25,6 +25,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
+import { editor } from "@/content/editor";
 import { Button } from "@/features/shared/components/Button";
 import { SideDrawer, SideDrawerCloseButton } from "@/features/shared/components/SideDrawer";
 
@@ -126,11 +127,11 @@ export function LayersDrawer({
       <SideDrawer
         entered={panelEntered}
         onBackdropClick={handleClose}
-        title="Layers"
+        title={editor.layers.title}
         motionDurationMs={ANIMATION_MS}
-        backdropAriaLabel="Close layers panel"
+        backdropAriaLabel={editor.layers.closeLabel}
         headerRight={
-          <SideDrawerCloseButton onClick={handleClose} aria-label="Close layers panel" />
+          <SideDrawerCloseButton onClick={handleClose} aria-label={editor.layers.closeLabel} />
         }
         belowHeader={
           <div className={actionsRowClass}>
@@ -140,11 +141,11 @@ export function LayersDrawer({
               className="min-h-10 w-full touch-manipulation px-3 sm:min-h-9 sm:w-auto"
               onClick={onAddLayer}
             >
-              Add layer
+              {editor.layers.add}
             </Button>
           </div>
         }
-        footer={<footer className={footerClass}>Top items render in front of lower items.</footer>}
+        footer={<footer className={footerClass}>{editor.layers.footer}</footer>}
       >
         <div className={listWrapClass}>
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>

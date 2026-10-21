@@ -7,6 +7,7 @@
  * New artworks honor `backgroundColor`: pixels are filled with that palette index, appending the
  * color to the palette when it is not already present (up to MAX_PALETTE_ENTRIES).
  */
+import { shared } from "@/content/shared";
 import { db } from "@/features/shared/db/dexie.config";
 import type { Artwork, ArtworkLayer } from "@/features/shared/artwork/artwork.types";
 import type { ImportedArtworkData } from "@/features/shared/artwork/artworkFileService";
@@ -55,7 +56,7 @@ function cloneLayerWithSize(
 function buildFallbackLayer(pixelCount: number): ArtworkLayer {
   return {
     id: newId(),
-    name: "Background",
+    name: shared.artwork.backgroundLayer,
     visible: true,
     pixelData: new Uint8Array(pixelCount),
   };
@@ -70,9 +71,7 @@ export function validateDimensions(width: number, height: number): void {
     width > MAX_CANVAS_DIMENSION ||
     height > MAX_CANVAS_DIMENSION
   ) {
-    throw new Error(
-      `Dimensions must be between 1 and ${MAX_CANVAS_DIMENSION}.`
-    );
+    throw new Error(shared.artwork.errors.dimensionsOutOfRange(MAX_CANVAS_DIMENSION));
   }
 }
 
@@ -100,7 +99,7 @@ function hydrateArtwork(row: Artwork): Artwork {
       : [
           {
             id: newId(),
-            name: "Background",
+            name: shared.artwork.backgroundLayer,
             visible: true,
             pixelData: legacyPixels,
           },
@@ -130,7 +129,7 @@ export async function createArtwork(input: CreateArtworkInput): Promise<Artwork>
   validateDimensions(input.width, input.height);
   const bgHex = normalizeHexColor(input.backgroundColor.trim());
   if (!CANON_HEX6.test(bgHex)) {
-    throw new Error("Invalid background color.");
+    throw new Error(shared.artwork.errors.invalidBackgroundColor);
   }
 
   let palette = DEFAULT_PALETTE.slice(0, MAX_PALETTE_ENTRIES);
@@ -139,7 +138,7 @@ export async function createArtwork(input: CreateArtworkInput): Promise<Artwork>
   );
   if (bgIndex === -1) {
     if (palette.length >= MAX_PALETTE_ENTRIES) {
-      throw new Error("Cannot add background color: palette is full.");
+      throw new Error(shared.artwork.errors.backgroundPaletteFull);
     }
     palette = [...palette, bgHex];
     bgIndex = palette.length - 1;
@@ -150,14 +149,14 @@ export async function createArtwork(input: CreateArtworkInput): Promise<Artwork>
   pixelData.fill(bgIndex);
   const baseLayer: ArtworkLayer = {
     id: newId(),
-    name: "Background",
+    name: shared.artwork.backgroundLayer,
     visible: true,
     pixelData,
   };
 
   const artwork: Artwork = {
     id: newId(),
-    title: input.title.trim() || "Untitled",
+    title: input.title.trim() || shared.artwork.untitled,
     width: input.width,
     height: input.height,
     createdAt: now,
@@ -178,10 +177,10 @@ export async function createArtworkFromImport(
 ): Promise<Artwork> {
   validateDimensions(imported.width, imported.height);
   if (imported.palette.length === 0) {
-    throw new Error("Imported palette is empty.");
+    throw new Error(shared.artwork.errors.importedPaletteEmpty);
   }
   if (imported.palette.length > MAX_PALETTE_ENTRIES) {
-    throw new Error(`Palette cannot exceed ${MAX_PALETTE_ENTRIES} colors.`);
+    throw new Error(shared.artwork.errors.paletteTooLarge(MAX_PALETTE_ENTRIES));
   }
 
   const now = Date.now();
@@ -198,7 +197,7 @@ export async function createArtworkFromImport(
 
   const artwork: Artwork = {
     id: newId(),
-    title: imported.title.trim() || "Untitled",
+    title: imported.title.trim() || shared.artwork.untitled,
     width: imported.width,
     height: imported.height,
     createdAt: now,
@@ -217,7 +216,7 @@ export async function createArtworkFromImport(
 export async function saveArtwork(artwork: Artwork): Promise<void> {
   validateDimensions(artwork.width, artwork.height);
   if (artwork.palette.length > MAX_PALETTE_ENTRIES) {
-    throw new Error(`Palette cannot exceed ${MAX_PALETTE_ENTRIES} colors.`);
+    throw new Error(shared.artwork.errors.paletteTooLarge(MAX_PALETTE_ENTRIES));
   }
   const pixelCount = artwork.width * artwork.height;
   const normalizedLayers =
@@ -248,7 +247,7 @@ export async function deleteArtwork(id: string): Promise<void> {
 
 export async function renameArtwork(id: string, title: string): Promise<void> {
   await db.artworks.update(id, {
-    title: title.trim() || "Untitled",
+    title: title.trim() || shared.artwork.untitled,
     updatedAt: Date.now(),
   });
 }
@@ -261,7 +260,7 @@ export async function cloneArtwork(id: string): Promise<Artwork | undefined> {
   const clone: Artwork = {
     ...source,
     id: newId(),
-    title: `${source.title} (copy)`,
+    title: shared.artwork.copyTitle(source.title),
     createdAt: now,
     updatedAt: now,
     thumbnail: source.thumbnail,

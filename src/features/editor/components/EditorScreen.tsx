@@ -6,6 +6,7 @@
 
 import { useEffect, useState } from "react";
 
+import { editor } from "@/content/editor";
 import { EditorWorkspace } from "@/features/editor/components/EditorWorkspace";
 
 import type { Artwork } from "@/features/shared/artwork/artwork.types";
@@ -30,7 +31,7 @@ export function EditorScreen({ artworkId }: EditorScreenProps) {
       }
       setLoadError(null);
       if (!row) {
-        setLoadError("Artwork not found.");
+        setLoadError(editor.screen.notFound);
         setArtwork(null);
         return;
       }
@@ -56,7 +57,7 @@ export function EditorScreen({ artworkId }: EditorScreenProps) {
           href="/gallery"
           className="mt-4 inline-block text-fg-secondary underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
         >
-          Back to gallery
+          {editor.screen.backToGallery}
         </a>
       </main>
     );
@@ -68,7 +69,7 @@ export function EditorScreen({ artworkId }: EditorScreenProps) {
         role="status"
         className="mx-auto max-w-lg px-4 py-16 text-center text-muted"
       >
-        Loading artwork…
+        {editor.screen.loading}
       </main>
     );
   }

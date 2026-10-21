@@ -6,6 +6,7 @@
 
 import { useRef } from "react";
 
+import { editor } from "@/content/editor";
 import type { ShiftDirection } from "@/features/editor/logic/pixelShift";
 
 import { Button } from "@/features/shared/components/Button";
@@ -52,57 +53,57 @@ export function ShiftDirectionOverlay({
   };
 
   return (
-    <div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Shift pixels">
+    <div ref={dialogRef} role="dialog" aria-modal="true" aria-label={editor.shiftOverlay.dialogLabel}>
       <button
         type="button"
         tabIndex={-1}
         className={backdropClass}
-        aria-label="Close shift controls"
+        aria-label={editor.shiftOverlay.closeLabel}
         onClick={onClose}
       />
       <div className={bottomControlsClass}>
-        <div className={arrowPadClass} role="group" aria-label="Shift directions">
+        <div className={arrowPadClass} role="group" aria-label={editor.shiftOverlay.groupLabel}>
           <Button
             type="button"
             variant="ghost"
             className={arrowButtonClass}
-            title="Shift up (wrap)"
-            aria-label="Shift pixels up"
+            title={editor.shiftOverlay.directions.up.title}
+            aria-label={editor.shiftOverlay.directions.up.label}
             onClick={() => handleShift("up")}
           >
-            ↑
+            {editor.shiftOverlay.directions.up.glyph}
           </Button>
           <div className={arrowSideRowClass}>
             <Button
               type="button"
               variant="ghost"
               className={arrowButtonClass}
-              title="Shift left (wrap)"
-              aria-label="Shift pixels left"
+              title={editor.shiftOverlay.directions.left.title}
+              aria-label={editor.shiftOverlay.directions.left.label}
               onClick={() => handleShift("left")}
             >
-              ←
+              {editor.shiftOverlay.directions.left.glyph}
             </Button>
             <Button
               type="button"
               variant="ghost"
               className={arrowButtonClass}
-              title="Shift right (wrap)"
-              aria-label="Shift pixels right"
+              title={editor.shiftOverlay.directions.right.title}
+              aria-label={editor.shiftOverlay.directions.right.label}
               onClick={() => handleShift("right")}
             >
-              →
+              {editor.shiftOverlay.directions.right.glyph}
             </Button>
           </div>
           <Button
             type="button"
             variant="ghost"
             className={arrowButtonClass}
-            title="Shift down (wrap)"
-            aria-label="Shift pixels down"
+            title={editor.shiftOverlay.directions.down.title}
+            aria-label={editor.shiftOverlay.directions.down.label}
             onClick={() => handleShift("down")}
           >
-            ↓
+            {editor.shiftOverlay.directions.down.glyph}
           </Button>
         </div>
       </div>

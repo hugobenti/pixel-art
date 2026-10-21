@@ -10,6 +10,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import { gallery } from "@/content/gallery";
+import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
 
 import { CreateArtworkModal } from "@/features/gallery/components/CreateArtworkModal";
@@ -56,9 +58,9 @@ export function GalleryScreen() {
     <main className={shellClass}>
       <header className={headerClass}>
         <div>
-          <h1 className={titleClass}>Gallery</h1>
+          <h1 className={titleClass}>{gallery.screen.title}</h1>
           <p className="mt-1 text-sm text-muted">
-            Local artworks stored in your browser (IndexedDB).
+            {gallery.screen.intro}
           </p>
         </div>
         <div className={headerActionsClass}>
@@ -73,10 +75,10 @@ export function GalleryScreen() {
             }}
           />
           <Button type="button" variant="outline" onClick={openImportPicker}>
-            Import JSON
+            {gallery.screen.importJson}
           </Button>
           <Button type="button" onClick={() => setModalOpen(true)}>
-            New artwork
+            {gallery.screen.newArtwork}
           </Button>
         </div>
       </header>
@@ -88,7 +90,7 @@ export function GalleryScreen() {
       ) : null}
 
       {loading ? (
-        <p role="status" className="text-muted">Loading…</p>
+        <p role="status" className="text-muted">{shared.loading}</p>
       ) : (
         <GalleryGrid
           artworks={artworks}

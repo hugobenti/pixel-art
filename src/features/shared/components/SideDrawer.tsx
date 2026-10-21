@@ -9,6 +9,7 @@
 
 import { useId, useRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 
+import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
 import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
 import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
@@ -54,7 +55,7 @@ export function SideDrawer({
   footer,
   motionDurationMs,
   children,
-  backdropAriaLabel = "Close panel",
+  backdropAriaLabel = shared.sideDrawer.closeLabel,
 }: SideDrawerProps) {
   const titleId = useId();
   const rootRef = useRef<HTMLDivElement>(null);

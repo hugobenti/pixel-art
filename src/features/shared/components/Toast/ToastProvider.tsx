@@ -18,6 +18,8 @@ import {
   type ReactNode,
 } from "react";
 
+import { shared } from "@/content/shared";
+
 export type ToastTone = "neutral" | "success" | "error";
 
 export interface ToastRecord {
@@ -86,12 +88,12 @@ function ToastStack({ toasts, onDismiss }: ToastStackProps) {
           <button
             type="button"
             className={dismissButtonClass}
-            aria-label="Dismiss notification"
+            aria-label={shared.toast.dismissLabel}
             onClick={() => {
               onDismiss(toast.id);
             }}
           >
-            ×
+            {shared.toast.dismissGlyph}
           </button>
         </div>
       ))}

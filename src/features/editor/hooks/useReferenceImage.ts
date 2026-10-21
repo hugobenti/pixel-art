@@ -6,6 +6,9 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { editor } from "@/content/editor";
+
+const errors = editor.referenceImage.errors;
 const ACCEPTED_IMAGE_TYPES = "image/png,image/jpeg,image/webp,image/gif,image/bmp";
 const MAX_REFERENCE_SIDE = 512;
 const REFERENCE_ALPHA = 0.5;
@@ -13,7 +16,7 @@ const REFERENCE_ALPHA = 0.5;
 async function readFileAsDataUrl(file: File): Promise<string> {
   return await new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onerror = () => reject(new Error("Could not read the selected image."));
+    reader.onerror = () => reject(new Error(errors.read));
     reader.onload = () => resolve(String(reader.result ?? ""));
     reader.readAsDataURL(file);
   });
@@ -23,7 +26,7 @@ async function loadImageElement(dataUrl: string): Promise<HTMLImageElement> {
   return await new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve(img);
-    img.onerror = () => reject(new Error("Could not decode reference image."));
+    img.onerror = () => reject(new Error(errors.decode));
     img.src = dataUrl;
   });
 }
@@ -41,7 +44,7 @@ async function compressReferenceImageDataUrl(rawDataUrl: string): Promise<string
   canvas.height = targetHeight;
   const ctx = canvas.getContext("2d");
   if (!ctx) {
-    throw new Error("Could not prepare reference image canvas.");
+    throw new Error(errors.canvas);
   }
 
   ctx.drawImage(source, 0, 0, targetWidth, targetHeight);

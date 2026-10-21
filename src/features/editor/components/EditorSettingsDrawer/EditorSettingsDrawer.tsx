@@ -10,6 +10,7 @@
 
 import { useCallback } from "react";
 
+import { editor } from "@/content/editor";
 import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
 import {
   SideDrawer,
@@ -113,26 +114,20 @@ export function EditorSettingsDrawer({
     interceptEscape,
   });
 
-  const gridLabel = showPixelGrid ? "Hide grid" : "Show grid";
-  const imageLabel = showReferenceImage ? "Hide reference image" : "Show reference image";
+  const { menu } = editor.settings;
+  const gridLabel = showPixelGrid ? menu.grid.hide : menu.grid.show;
+  const imageLabel = showReferenceImage ? menu.referenceImage.hide : menu.referenceImage.show;
 
-  const drawerTitle =
-    settingsView === "menu"
-      ? "Settings"
-      : settingsView === "canvasSize"
-        ? "Canvas size"
-        : settingsView === "imageDetail"
-          ? "Image detail"
-          : "Export";
+  const drawerTitle = editor.settings.titles[settingsView];
 
-  const sizeHint = `${artwork.width} × ${artwork.height}`;
+  const sizeHint = menu.canvasSize.hint(artwork.width, artwork.height);
 
   const headerLeft =
     settingsView === "canvasSize" ||
     settingsView === "imageDetail" ||
     settingsView === "importExport" ? (
       // eslint-disable-next-line jsx-a11y/no-autofocus -- drill-in replaces the focused menu row; focus moves to the view's back control
-      <SideDrawerBackButton autoFocus onClick={backToMenu} aria-label="Back to settings" />
+      <SideDrawerBackButton autoFocus onClick={backToMenu} aria-label={editor.settings.backLabel} />
     ) : undefined;
 
   return (
@@ -142,15 +137,15 @@ export function EditorSettingsDrawer({
       title={drawerTitle}
       headerLeft={headerLeft}
       motionDurationMs={ANIMATION_MS}
-      backdropAriaLabel="Close settings"
+      backdropAriaLabel={editor.settings.closeLabel}
       headerRight={
-        <SideDrawerCloseButton onClick={handleClose} aria-label="Close settings" />
+        <SideDrawerCloseButton onClick={handleClose} aria-label={editor.settings.closeLabel} />
       }
     >
       <div className={shellBodyClass}>
         {settingsView === "menu" ? (
           <div className={menuRootClass}>
-            <div className={menuListClass} role="group" aria-label="Editor settings">
+            <div className={menuListClass} role="group" aria-label={editor.settings.navLabel}>
               <button
                 type="button"
                 className={menuRowClass}
@@ -161,7 +156,7 @@ export function EditorSettingsDrawer({
               >
                 <span className={rowLeadClass}>
                   <PublicMaskIcon src={PUBLIC_ICONS.grid} className={menuIconClass} />
-                  <span>Show / hide grid</span>
+                  <span>{menu.grid.label}</span>
                 </span>
                 <span className={menuHintClass}>{gridLabel}</span>
               </button>
@@ -179,10 +174,10 @@ export function EditorSettingsDrawer({
               >
                 <span className={rowLeadClass}>
                   <PublicMaskIcon src={PUBLIC_ICONS.eye} className={menuIconClass} />
-                  <span>Show / hide image</span>
+                  <span>{menu.referenceImage.label}</span>
                 </span>
                 <span className={menuHintClass}>
-                  {!hasReferenceImage ? "Load an image first" : imageLabel}
+                  {!hasReferenceImage ? menu.referenceImage.unavailable : imageLabel}
                 </span>
               </button>
               <button
@@ -194,9 +189,9 @@ export function EditorSettingsDrawer({
               >
                 <span className={rowLeadClass}>
                   <PublicMaskIcon src={PUBLIC_ICONS.upload} className={menuIconClass} />
-                  <span>Load image</span>
+                  <span>{menu.loadImage.label}</span>
                 </span>
-                <span className={menuHintClass}>Pick file</span>
+                <span className={menuHintClass}>{menu.loadImage.hint}</span>
               </button>
               <button
                 type="button"
@@ -207,7 +202,7 @@ export function EditorSettingsDrawer({
               >
                 <span className={rowLeadClass}>
                   <PublicMaskIcon src={PUBLIC_ICONS.panArrows} className={menuIconClass} />
-                  <span>Canvas size</span>
+                  <span>{menu.canvasSize.label}</span>
                 </span>
                 <span className={menuHintClass}>{sizeHint}</span>
               </button>
@@ -220,9 +215,9 @@ export function EditorSettingsDrawer({
               >
                 <span className={rowLeadClass}>
                   <PublicMaskIcon src={PUBLIC_ICONS.upload} className={menuIconClass} />
-                  <span>Export</span>
+                  <span>{menu.export.label}</span>
                 </span>
-                <span className={menuHintClass}>Download files</span>
+                <span className={menuHintClass}>{menu.export.hint}</span>
               </button>
               <button
                 type="button"
@@ -233,9 +228,9 @@ export function EditorSettingsDrawer({
               >
                 <span className={rowLeadClass}>
                   <PublicMaskIcon src={PUBLIC_ICONS.dashboard} className={menuIconClass} />
-                  <span>Image detail</span>
+                  <span>{menu.imageDetail.label}</span>
                 </span>
-                <span className={menuHintClass}>Visible area</span>
+                <span className={menuHintClass}>{menu.imageDetail.hint}</span>
               </button>
             </div>
           </div>

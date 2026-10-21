@@ -6,6 +6,8 @@
 
 import { useId, useState } from "react";
 
+import { editor } from "@/content/editor";
+import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
 import { ColorSwatch } from "@/features/shared/components/ColorSwatch";
 import { Modal } from "@/features/shared/components/Modal";
@@ -59,15 +61,15 @@ export function PaletteEditModal({
     >
       <div className="flex items-start justify-between gap-3">
         <h2 id={titleId} className={titleClass}>
-          Edit palette
+          {editor.paletteModal.title}
         </h2>
         <Button type="button" variant="ghost" onClick={onClose}>
-          Close
+          {shared.actions.close}
         </Button>
       </div>
 
       <div>
-        <p className={legendClass}>Swatches</p>
+        <p className={legendClass}>{editor.paletteModal.swatches}</p>
         <div className={`${swatchGridClass} mt-2`}>
           {palette.map((color, index) => (
             <ColorSwatch
@@ -83,14 +85,14 @@ export function PaletteEditModal({
       </div>
 
       <div className="flex flex-wrap items-center gap-3 border-t border-line pt-4">
-        <span className={legendClass}>Selected color</span>
+        <span className={legendClass}>{editor.paletteModal.selectedColor}</span>
         <label className="flex items-center gap-2 text-sm text-fg-secondary">
           <input
             type="color"
             value={editHex}
             onChange={(e) => onApplyHex(safeFocus, e.target.value)}
             className="h-10 w-12 cursor-pointer rounded border border-line-strong bg-surface p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-            aria-label="Color value for selected swatch"
+            aria-label={editor.paletteModal.selectedColorLabel}
           />
         </label>
         <Button
@@ -99,7 +101,7 @@ export function PaletteEditModal({
           disabled={!canRemoveSwatch}
           onClick={() => onRemoveSwatch(safeFocus)}
         >
-          Remove
+          {shared.actions.remove}
         </Button>
       </div>
 
@@ -124,7 +126,7 @@ function PaletteAddSection({
 
   return (
     <div className="flex flex-col gap-2 border-t border-line pt-4">
-      <span className={legendClass}>Add new color</span>
+      <span className={legendClass}>{editor.paletteModal.addColor}</span>
       <div className={addRowClass}>
         <input
           type="color"
@@ -132,7 +134,7 @@ function PaletteAddSection({
           disabled={maxPaletteReached}
           onChange={(e) => setNewHex(e.target.value)}
           className="h-10 w-12 cursor-pointer rounded border border-line-strong bg-surface p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50"
-          aria-label="Pick new color to append"
+          aria-label={editor.paletteModal.newColorLabel}
         />
         <Button
           type="button"
@@ -140,12 +142,12 @@ function PaletteAddSection({
           disabled={maxPaletteReached}
           onClick={() => onAddColor(newHex)}
         >
-          Add
+          {shared.actions.add}
         </Button>
       </div>
       {maxPaletteReached ? (
         <p className="text-xs text-subtle">
-          Palette full (256 colors maximum).
+          {editor.paletteModal.paletteFull}
         </p>
       ) : null}
     </div>

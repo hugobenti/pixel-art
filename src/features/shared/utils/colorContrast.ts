@@ -12,6 +12,7 @@ const COLOR_DECLARATION = /--color-([a-z0-9-]+)\s*:\s*([^;]+);/gi;
 function luminance(hex: string): number {
   const match = OPAQUE_HEX.exec(hex);
   if (!match) {
+    // eslint-disable-next-line no-restricted-syntax -- developer error from the token contrast test, never shown to users
     throw new Error(`contrastRatio needs an opaque hex color, got "${hex}"`);
   }
   const digits =

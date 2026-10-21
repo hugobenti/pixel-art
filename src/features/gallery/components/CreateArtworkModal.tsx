@@ -4,6 +4,8 @@
  */
 "use client";
 
+import { gallery } from "@/content/gallery";
+import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
 import { FormField } from "@/features/shared/components/FormField";
 import { Input } from "@/features/shared/components/Input";
@@ -42,9 +44,6 @@ export function CreateArtworkModal({
     handleSubmit,
   } = useCreateArtworkForm({ onCreate });
 
-  const bgHint =
-    "If this color is not in the default palette, it is added when the artwork is created.";
-
   return (
     <Modal
       open={open}
@@ -54,10 +53,10 @@ export function CreateArtworkModal({
       overlayProps={{ "aria-labelledby": "create-artwork-heading" }}
     >
       <h2 id="create-artwork-heading" className="text-lg font-semibold text-fg">
-        New artwork
+        {gallery.create.title}
       </h2>
       <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
-        <FormField label="Title" htmlFor="create-artwork-title">
+        <FormField label={gallery.create.titleLabel} htmlFor="create-artwork-title">
           <Input
             id="create-artwork-title"
             value={title}
@@ -66,7 +65,7 @@ export function CreateArtworkModal({
           />
         </FormField>
         <div className="grid grid-cols-2 gap-3">
-          <FormField label="Width (px)" htmlFor="create-artwork-width">
+          <FormField label={shared.fields.width} htmlFor="create-artwork-width">
             <Input
               id="create-artwork-width"
               inputMode="numeric"
@@ -77,7 +76,7 @@ export function CreateArtworkModal({
               required
             />
           </FormField>
-          <FormField label="Height (px)" htmlFor="create-artwork-height">
+          <FormField label={shared.fields.height} htmlFor="create-artwork-height">
             <Input
               id="create-artwork-height"
               inputMode="numeric"
@@ -90,9 +89,9 @@ export function CreateArtworkModal({
           </FormField>
         </div>
         <FormField
-          label="Background color"
+          label={gallery.create.backgroundLabel}
           htmlFor="create-artwork-bg"
-          hint={bgHint}
+          hint={gallery.create.backgroundHint}
         >
           <div className={colorRowClass}>
             <input
@@ -101,19 +100,19 @@ export function CreateArtworkModal({
               value={backgroundColor}
               onChange={(ev) => setBackgroundColor(ev.target.value)}
               className={colorPickerClass}
-              aria-label="Canvas background color"
+              aria-label={gallery.create.backgroundAriaLabel}
             />
           </div>
         </FormField>
         <p className="text-xs text-subtle">
-          Maximum {MAX_CANVAS_DIMENSION} × {MAX_CANVAS_DIMENSION} pixels.
+          {gallery.create.maxSize(MAX_CANVAS_DIMENSION)}
         </p>
         <div className="mt-2 flex justify-end gap-2">
           <Button type="button" variant="ghost" onClick={onClose}>
-            Cancel
+            {shared.actions.cancel}
           </Button>
           <Button type="submit" disabled={busy}>
-            {busy ? "Creating…" : "Create"}
+            {busy ? gallery.create.submitting : gallery.create.submit}
           </Button>
         </div>
       </form>
