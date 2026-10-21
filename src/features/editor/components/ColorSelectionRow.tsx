@@ -8,7 +8,7 @@ import { Button } from "@/features/shared/components/Button";
 import { ColorSwatch } from "@/features/shared/components/ColorSwatch";
 
 const rowClass =
-  "flex w-full min-w-0 items-center gap-2 border-b border-zinc-200 py-2";
+  "flex w-full min-w-0 items-center gap-2 border-b border-line py-2";
 
 const scrollerClass =
   "flex min-w-0 flex-1 items-center gap-2 overflow-x-auto py-1 [scrollbar-width:thin]";

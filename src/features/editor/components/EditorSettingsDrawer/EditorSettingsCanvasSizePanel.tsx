@@ -23,7 +23,7 @@ const rootClass = "flex min-h-0 flex-1 flex-col gap-4 px-4 pb-4 pt-0 sm:px-4";
 
 const gridClass = "grid grid-cols-2 gap-3";
 
-const hintClass = "text-xs font-normal leading-relaxed text-zinc-500";
+const hintClass = "text-xs font-normal leading-relaxed text-subtle";
 
 const actionsClass = "flex flex-wrap items-center justify-end gap-2 pt-1";
 

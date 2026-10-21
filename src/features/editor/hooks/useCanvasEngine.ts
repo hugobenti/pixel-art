@@ -3,7 +3,7 @@
  * Bind editor canvases to viewport size and schedule artwork/reference/grid renders.
  *
  * Notes (optional):
- * Grid and symmetry-guide colors come from CSS custom properties on :root so they stay aligned with design tokens.
+ * Grid and symmetry-guide colors are read from the design-token CSS variables on :root (src/app/globals.css).
  */
 "use client";
 
@@ -28,16 +28,13 @@ interface UseCanvasEngineParams {
   historyRevision: number;
 }
 
-function readRootCssColor(primaryVar: string, fallbackVar: string): string {
+function readRootCssColor(cssVar: string): string {
   if (typeof document === "undefined") {
     return "";
   }
-  const root = document.documentElement;
-  const primary = getComputedStyle(root).getPropertyValue(primaryVar).trim();
-  if (primary.length > 0) {
-    return primary;
-  }
-  return getComputedStyle(root).getPropertyValue(fallbackVar).trim();
+  return getComputedStyle(document.documentElement)
+    .getPropertyValue(cssVar)
+    .trim();
 }
 
 export function useCanvasEngine({
@@ -114,18 +111,9 @@ export function useCanvasEngine({
     }
 
     if (showPixelGrid) {
-      const gridColor = readRootCssColor(
-        EDITOR_ROOT_CSS_VARS.gridLine,
-        EDITOR_ROOT_CSS_VARS.gridLineFallback
-      );
-      const centerH = readRootCssColor(
-        EDITOR_ROOT_CSS_VARS.centerHorizontal,
-        EDITOR_ROOT_CSS_VARS.centerHorizontalFallback
-      );
-      const centerV = readRootCssColor(
-        EDITOR_ROOT_CSS_VARS.centerVertical,
-        EDITOR_ROOT_CSS_VARS.centerVerticalFallback
-      );
+      const gridColor = readRootCssColor(EDITOR_ROOT_CSS_VARS.gridLine);
+      const centerH = readRootCssColor(EDITOR_ROOT_CSS_VARS.centerHorizontal);
+      const centerV = readRootCssColor(EDITOR_ROOT_CSS_VARS.centerVertical);
       renderPixelGrid(
         gctx,
         artwork.width,

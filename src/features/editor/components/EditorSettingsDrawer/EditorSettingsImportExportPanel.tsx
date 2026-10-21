@@ -12,9 +12,9 @@ interface EditorSettingsImportExportPanelProps {
 }
 
 const rootClass = "flex min-h-0 flex-1 flex-col gap-4 px-4 pb-4 pt-0 sm:px-4";
-const hintClass = "text-xs font-normal leading-relaxed text-zinc-500";
-const sectionClass = "rounded-lg border border-zinc-200 bg-zinc-50 p-3";
-const sectionTitleClass = "text-sm font-semibold text-zinc-900";
+const hintClass = "text-xs font-normal leading-relaxed text-subtle";
+const sectionClass = "rounded-lg border border-line bg-surface-subtle p-3";
+const sectionTitleClass = "text-sm font-semibold text-fg";
 const actionsClass = "mt-3 flex flex-wrap gap-2";
 const buttonClass = "min-h-10 touch-manipulation px-4 sm:min-h-9";
 

@@ -7,7 +7,7 @@
 import type { HTMLAttributes, ReactNode } from "react";
 
 const groupClass =
-  "flex items-center gap-0.5 rounded-lg border border-zinc-300 bg-white p-0.5 shadow-sm";
+  "flex items-center gap-0.5 rounded-lg border border-line-strong bg-surface p-0.5 shadow-sm";
 
 interface ButtonGroupProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;

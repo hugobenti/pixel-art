@@ -16,7 +16,7 @@ import { MAX_CANVAS_DIMENSION } from "@/features/shared/artwork/artworkService";
 const colorRowClass = "flex flex-wrap items-center gap-3";
 
 const colorPickerClass =
-  "h-10 w-14 shrink-0 cursor-pointer rounded border border-zinc-300 bg-white p-1";
+  "h-10 w-14 shrink-0 cursor-pointer rounded border border-line-strong bg-surface p-1";
 
 interface CreateArtworkModalProps {
   open: boolean;
@@ -53,7 +53,7 @@ export function CreateArtworkModal({
       size="md"
       overlayProps={{ "aria-labelledby": "create-artwork-heading" }}
     >
-      <h2 id="create-artwork-heading" className="text-lg font-semibold text-zinc-900">
+      <h2 id="create-artwork-heading" className="text-lg font-semibold text-fg">
         New artwork
       </h2>
       <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
@@ -105,7 +105,7 @@ export function CreateArtworkModal({
             />
           </div>
         </FormField>
-        <p className="text-xs text-zinc-500">
+        <p className="text-xs text-subtle">
           Maximum {MAX_CANVAS_DIMENSION} × {MAX_CANVAS_DIMENSION} pixels.
         </p>
         <div className="mt-2 flex justify-end gap-2">

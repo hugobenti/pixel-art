@@ -40,8 +40,8 @@ export function ColorSwatch(props: ColorSwatchProps) {
   if (props.density === "compact") {
     const { selected } = props;
     const ring = selected
-      ? "ring-2 ring-blue-600 ring-offset-2 ring-offset-white"
-      : "ring-1 ring-zinc-300";
+      ? "ring-2 ring-pick-primary ring-offset-2 ring-offset-surface"
+      : "ring-1 ring-line-strong";
     return (
       <button
         type="button"
@@ -56,16 +56,16 @@ export function ColorSwatch(props: ColorSwatchProps) {
   }
 
   const { isPrimary, isSecondary, isFocused } = props;
-  let ring = "ring-1 ring-zinc-300";
+  let ring = "ring-1 ring-line-strong";
   if (isPrimary && isSecondary) {
-    ring = "ring-2 ring-zinc-900 ring-offset-2";
+    ring = "ring-2 ring-accent ring-offset-2";
   } else if (isPrimary) {
-    ring = "ring-2 ring-blue-600 ring-offset-2";
+    ring = "ring-2 ring-pick-primary ring-offset-2";
   } else if (isSecondary) {
-    ring = "ring-2 ring-amber-500 ring-offset-2";
+    ring = "ring-2 ring-pick-secondary ring-offset-2";
   }
   const focusOutline = isFocused
-    ? " outline outline-2 outline-offset-2 outline-dashed outline-zinc-500"
+    ? " outline outline-2 outline-offset-2 outline-dashed outline-focus"
     : "";
 
   const slotNames = `${isPrimary ? ", primary" : ""}${isSecondary ? ", secondary" : ""}`;

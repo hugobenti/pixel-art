@@ -6,13 +6,13 @@
  * Symmetry guides use the artwork mid-lines in world space (half-width / half-height), drawn after the base grid.
  */
 
-import { EDITOR_GRID_LINE_STROKE_FALLBACK } from "@/features/editor/constants/editorCanvasFallbacks";
 import type { ViewportState } from "@/features/editor/types/editor.types";
 
 import { getVisibleWorldBounds } from "@/features/editor/logic/coordinateMath";
 
 export interface PixelGridRenderOptions {
-  color?: string;
+  /** Grid stroke color, read from the `--color-grid-line` token. */
+  color: string;
   /** Stroke color for the horizontal mid-line (symmetry guide). */
   centerHorizontalColor?: string;
   /** Stroke color for the vertical mid-line (symmetry guide). */
@@ -52,7 +52,7 @@ export function renderPixelGrid(
   const baseLineWidth =
     options.lineWidthWorld ?? Math.max(1.2 / viewport.scale, 1e-6);
 
-  ctx.strokeStyle = options.color ?? EDITOR_GRID_LINE_STROKE_FALLBACK;
+  ctx.strokeStyle = options.color;
   ctx.lineWidth = baseLineWidth;
 
   const startX = Math.max(0, bounds.minX);

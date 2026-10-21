@@ -6,7 +6,7 @@
 
 import type { ReactNode } from "react";
 
-const rootClass = "flex flex-col gap-1 text-sm text-zinc-700";
+const rootClass = "flex flex-col gap-1 text-sm text-fg-secondary";
 
 interface FormFieldProps {
   label: string;
@@ -29,7 +29,7 @@ export function FormField({
       {label}
       {children}
       {hint ? (
-        <span className="text-xs font-normal text-zinc-500">{hint}</span>
+        <span className="text-xs font-normal text-subtle">{hint}</span>
       ) : null}
     </label>
   );

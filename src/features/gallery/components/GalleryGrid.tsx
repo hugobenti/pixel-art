@@ -26,7 +26,7 @@ export function GalleryGrid({
 }: GalleryGridProps) {
   if (artworks.length === 0) {
     return (
-      <p className="rounded-xl border border-dashed border-zinc-300 p-12 text-center text-zinc-500">
+      <p className="rounded-xl border border-dashed border-line-strong p-12 text-center text-muted">
         No artworks yet. Create one to get started.
       </p>
     );

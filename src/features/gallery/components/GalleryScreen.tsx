@@ -18,9 +18,9 @@ import { useGalleryImport } from "@/features/gallery/hooks/useGalleryImport";
 import { useGalleryStore } from "@/features/gallery/store/useGalleryStore";
 
 const headerClass =
-  "flex flex-col gap-4 border-b border-zinc-200 pb-6 sm:flex-row sm:items-center sm:justify-between";
+  "flex flex-col gap-4 border-b border-line pb-6 sm:flex-row sm:items-center sm:justify-between";
 
-const titleClass = "text-2xl font-semibold text-zinc-900";
+const titleClass = "text-2xl font-semibold text-fg";
 
 const shellClass = "mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-4 py-10";
 const headerActionsClass = "flex flex-wrap items-center gap-2";
@@ -57,7 +57,7 @@ export function GalleryScreen() {
       <header className={headerClass}>
         <div>
           <h1 className={titleClass}>Gallery</h1>
-          <p className="mt-1 text-sm text-zinc-600">
+          <p className="mt-1 text-sm text-muted">
             Local artworks stored in your browser (IndexedDB).
           </p>
         </div>
@@ -82,13 +82,13 @@ export function GalleryScreen() {
       </header>
 
       {error ? (
-        <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800">
+        <p role="alert" className="rounded-lg bg-danger-surface px-4 py-3 text-sm text-danger-fg">
           {error}
         </p>
       ) : null}
 
       {loading ? (
-        <p role="status" className="text-zinc-500">Loading…</p>
+        <p role="status" className="text-muted">Loading…</p>
       ) : (
         <GalleryGrid
           artworks={artworks}

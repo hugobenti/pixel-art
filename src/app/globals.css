@@ -1,34 +1,66 @@
 @import "tailwindcss";
 
 /**
- * Global design tokens and base styles for PixelCraft (light theme).
- * App shell uses `mist-300`; checkerboard uses zinc theme() stops (no raw hex in components).
+ * Design tokens for PixelCraft (light theme), declared once here.
+ * Tailwind generates the utilities (`bg-surface`, `text-muted`, `outline-focus`…); canvas renderers
+ * read the same CSS variables via getComputedStyle. `static` keeps every token on :root even when
+ * no utility uses it (canvas-only tokens). Tailwind's default palette is removed, so raw classes
+ * such as `bg-zinc-200` generate no CSS. Contrast pairs are tested in src/app/tokenContrast.test.ts.
  */
+@theme static {
+  --color-*: initial;
 
-@theme inline {
-  --color-mist-300: #cfd9df;
-  --color-background: var(--color-mist-300);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Surfaces */
+  --color-bg: #cfd9df;
+  --color-surface: #ffffff;
+  --color-surface-subtle: #fafafa;
+  --color-surface-muted: #f4f4f5;
+  --color-surface-strong: #e4e4e7;
+  --color-surface-inverse: #22292b;
+  --color-scrim: #000000;
+
+  /* Borders and dividers */
+  --color-line: #e4e4e7;
+  --color-line-strong: #d4d4d8;
+
+  /* Text */
+  --color-fg: #18181b;
+  --color-fg-soft: #27272a;
+  --color-fg-secondary: #3f3f46;
+  --color-muted: #52525c;
+  --color-subtle: #71717b;
+
+  /* Primary action and selection */
+  --color-accent: #18181b;
+  --color-accent-hover: #27272a;
+  --color-on-accent: #fafafa;
+  --color-focus: #71717b;
+  --color-pick-primary: #155dfc;
+  --color-pick-secondary: #e17100;
+
+  /* Status */
+  --color-danger: #e7000b;
+  --color-danger-hover: #c10007;
+  --color-on-danger: #ffffff;
+  --color-danger-surface: #fef2f2;
+  --color-danger-line: #ffc9c9;
+  --color-danger-fg: #9f0712;
+  --color-danger-fg-strong: #460809;
+  --color-success-surface: #f0fdf4;
+  --color-success-line: #b9f8cf;
+  --color-success-fg: #032e15;
+
+  /* Editor canvas: transparency checkerboard, pixel grid, symmetry guides */
+  --color-checker-light: #e4e4e7;
+  --color-checker-dark: #d4d4d8;
+  --color-grid-line: color-mix(in srgb, var(--color-fg) 52%, transparent);
+  --color-guide-horizontal: #e7000b;
+  --color-guide-vertical: #155dfc;
 }
 
-:root {
-  --foreground: #171717;
-  --background: var(--color-mist-300);
-  /** Editorial pixel grid overlay (canvas reads these via getComputedStyle). */
-  --color-editor-grid-line: color-mix(in srgb, var(--foreground) 52%, transparent);
-  /** Horizontal symmetry guide through the canvas mid-height (red). */
-  --color-editor-grid-center-horizontal: #ef4444;
-  /** Vertical symmetry guide through the canvas mid-width (blue). */
-  --color-editor-grid-center-vertical: #3b82f6;
-  /**
-   * Secondary fallbacks when primary vars are unset (e.g. SSR guard); mirror tokens above.
-   * Consumed by useCanvasEngine via getPropertyValue — keep in sync with editorCanvasFallbacks.ts for gridRender.
-   */
-  --editor-canvas-fallback-grid-line: rgba(0, 0, 0, 0.35);
-  --editor-canvas-fallback-center-horizontal: var(--color-editor-grid-center-horizontal);
-  --editor-canvas-fallback-center-vertical: var(--color-editor-grid-center-vertical);
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
 
 html {
@@ -36,37 +68,36 @@ html {
 }
 
 body {
-  color: var(--foreground);
+  color: var(--color-fg);
   font-family: Arial, Helvetica, sans-serif;
 }
 
 /**
  * Transparency hint behind the artwork canvas (not the editable pixel grid).
- * Uses theme-aware zinc stops via Tailwind theme() in gradients.
  */
 @layer utilities {
   .pixel-checkerboard {
-    background-color: theme("colors.zinc.200");
+    background-color: var(--color-checker-light);
     background-image:
       linear-gradient(
         45deg,
-        theme("colors.zinc.300") 25%,
+        var(--color-checker-dark) 25%,
         transparent 25%
       ),
       linear-gradient(
         -45deg,
-        theme("colors.zinc.300") 25%,
+        var(--color-checker-dark) 25%,
         transparent 25%
       ),
       linear-gradient(
         45deg,
         transparent 75%,
-        theme("colors.zinc.300") 75%
+        var(--color-checker-dark) 75%
       ),
       linear-gradient(
         -45deg,
         transparent 75%,
-        theme("colors.zinc.300") 75%
+        var(--color-checker-dark) 75%
       );
     background-size:
       20px 20px,

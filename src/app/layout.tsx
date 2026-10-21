@@ -32,9 +32,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full min-h-dvh bg-mist-300 antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full min-h-dvh bg-bg antialiased`}
     >
-      <body className="flex min-h-dvh flex-col bg-mist-300 font-sans">
+      <body className="flex min-h-dvh flex-col bg-bg font-sans">
         <AppProviders>{children}</AppProviders>
       </body>
     </html>

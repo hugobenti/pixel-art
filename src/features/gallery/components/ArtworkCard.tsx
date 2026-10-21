@@ -51,7 +51,7 @@ export function ArtworkCard({
           href={`/editor/${artwork.id}`}
           aria-hidden
           tabIndex={-1}
-          className="relative block aspect-square w-full overflow-hidden rounded-lg bg-zinc-100"
+          className="relative block aspect-square w-full overflow-hidden rounded-lg bg-surface-muted"
         >
           <Image
             src={thumb}
@@ -90,7 +90,7 @@ export function ArtworkCard({
           <div className={metaRowClass}>
             <Link
               href={`/editor/${artwork.id}`}
-              className="min-w-0 flex-1 truncate rounded-sm font-medium text-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+              className="min-w-0 flex-1 truncate rounded-sm font-medium text-fg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
             >
               {artwork.title}
             </Link>

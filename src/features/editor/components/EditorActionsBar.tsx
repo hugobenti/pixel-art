@@ -13,17 +13,17 @@ import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
 import type { ColorSlot } from "@/features/editor/logic/paletteMutations";
 
 const barClass =
-  "flex flex-wrap items-center gap-2 border-b border-zinc-200 py-2";
+  "flex flex-wrap items-center gap-2 border-b border-line py-2";
 
 const leftClusterClass = "flex min-w-0 flex-1 items-center gap-3";
 
 const actionClusterClass = "flex flex-wrap items-center justify-end gap-2";
 
 const backLinkClass =
-  "shrink-0 rounded-sm text-sm font-medium text-zinc-600 underline-offset-4 hover:text-zinc-900 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2";
+  "shrink-0 rounded-sm text-sm font-medium text-muted underline-offset-4 hover:text-fg hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2";
 
 const titleClass =
-  "min-w-0 truncate text-base font-semibold text-zinc-900";
+  "min-w-0 truncate text-base font-semibold text-fg";
 
 interface EditorActionsBarProps {
   title: string;
