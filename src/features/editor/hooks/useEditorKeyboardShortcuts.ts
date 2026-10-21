@@ -1,10 +1,19 @@
 /**
  * Purpose:
  * Global key bindings for the pixel editor (toggle grid, undo/redo).
+ *
+ * Notes:
+ * Key → shortcut mapping lives in editorKeyboardGuards.ts: keys typed into text fields
+ * (input/textarea/select/contenteditable) are never claimed, and scrolling keys are never bound.
  */
 "use client";
 
 import { useEffect } from "react";
+
+import {
+  editorShortcutForKey,
+  isTextEntryTarget,
+} from "@/features/editor/logic/editorKeyboardGuards";
 
 export interface UseEditorKeyboardShortcutsParams {
   onTogglePixelGrid: () => void;
@@ -19,22 +28,20 @@ export function useEditorKeyboardShortcuts({
 }: UseEditorKeyboardShortcutsParams) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      const lower = e.key.toLowerCase();
-      if (lower === "g" && !e.ctrlKey && !e.metaKey && !e.altKey) {
-        const tag = (e.target as HTMLElement)?.tagName?.toLowerCase();
-        if (tag === "input" || tag === "textarea") {
-          return;
-        }
-        e.preventDefault();
-        onTogglePixelGrid();
+      const shortcut = editorShortcutForKey(
+        e,
+        isTextEntryTarget(e.target as HTMLElement | null)
+      );
+      if (!shortcut) {
+        return;
       }
-      if ((e.ctrlKey || e.metaKey) && lower === "z") {
-        e.preventDefault();
-        if (e.shiftKey) {
-          redo();
-        } else {
-          undo();
-        }
+      e.preventDefault();
+      if (shortcut === "toggleGrid") {
+        onTogglePixelGrid();
+      } else if (shortcut === "redo") {
+        redo();
+      } else {
+        undo();
       }
     };
     window.addEventListener("keydown", onKey);

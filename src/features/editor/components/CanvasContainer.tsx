@@ -28,6 +28,10 @@ interface CanvasContainerProps {
     onPointerMove: React.PointerEventHandler<HTMLDivElement>;
     onPointerUp: React.PointerEventHandler<HTMLDivElement>;
     onPointerCancel: React.PointerEventHandler<HTMLDivElement>;
+    onPointerEnter: React.PointerEventHandler<HTMLDivElement>;
+    onPointerLeave: React.PointerEventHandler<HTMLDivElement>;
+    onFocus: React.FocusEventHandler<HTMLDivElement>;
+    onBlur: React.FocusEventHandler<HTMLDivElement>;
   };
   onArtworkPointerDown: React.PointerEventHandler<HTMLCanvasElement>;
 }

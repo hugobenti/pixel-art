@@ -1,6 +1,8 @@
 /**
  * Purpose:
  * React hook for canvas viewport: zoom (wheel / two-finger pinch), pan (wheel / Space+drag / pan mode / middle mouse).
+ * The canvas viewport is the only surface allowed to claim wheel, pinch, drag and Space (see editorKeyboardGuards.ts):
+ * Space is claimed only when the viewport is focused, or nothing is focused while the pointer is over it.
  *
  * Notes:
  * Delegates gesture rules to viewportNavigationService.ts. Touch contact counts come from useEditorPointerContacts
@@ -21,6 +23,7 @@ import {
 
 import type { ViewportState } from "@/features/editor/types/editor.types";
 
+import { shouldClaimSpaceForCanvasPan } from "@/features/editor/logic/editorKeyboardGuards";
 import {
   MAX_VIEWPORT_SCALE,
   normalizeViewportToPixelGrid,
@@ -208,6 +211,8 @@ export function useViewportNavigation(options: UseViewportNavigationOptions) {
 
   const spaceDownRef = useRef(false);
   const panModeRef = useRef(false);
+  const pointerOverCanvasRef = useRef(false);
+  const focusedCanvasRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     panModeRef.current = panMode;
@@ -215,14 +220,13 @@ export function useViewportNavigation(options: UseViewportNavigationOptions) {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.code !== "Space") {
-        return;
-      }
-      const t = e.target;
       if (
-        t instanceof HTMLInputElement ||
-        t instanceof HTMLTextAreaElement ||
-        (t instanceof HTMLElement && t.isContentEditable)
+        !shouldClaimSpaceForCanvasPan({
+          code: e.code,
+          target: e.target as HTMLElement | null,
+          canvas: focusedCanvasRef.current,
+          pointerOverCanvas: pointerOverCanvasRef.current,
+        })
       ) {
         return;
       }
@@ -259,6 +263,9 @@ export function useViewportNavigation(options: UseViewportNavigationOptions) {
   }, [viewport.viewOffset]);
 
   const onPointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    // Interacting with the canvas moves focus to the viewport, so Space+drag targets it rather than the
+    // last-clicked control (painting's pointerdown preventDefault suppresses the default mousedown focus).
+    e.currentTarget.focus({ preventScroll: true });
     if (
       e.pointerType === "touch" &&
       touchPointersRef.current.size > 1
@@ -331,6 +338,22 @@ export function useViewportNavigation(options: UseViewportNavigationOptions) {
     }
   }, []);
 
+  const onPointerEnter = useCallback(() => {
+    pointerOverCanvasRef.current = true;
+  }, []);
+
+  const onPointerLeave = useCallback(() => {
+    pointerOverCanvasRef.current = false;
+  }, []);
+
+  const onFocus = useCallback((e: React.FocusEvent<HTMLDivElement>) => {
+    focusedCanvasRef.current = e.currentTarget;
+  }, []);
+
+  const onBlur = useCallback(() => {
+    focusedCanvasRef.current = null;
+  }, []);
+
   const deferPrimaryPaint = useCallback(() => {
     return deferPrimaryPaintRule({
       spaceHeld: spaceDownRef.current,
@@ -348,6 +371,10 @@ export function useViewportNavigation(options: UseViewportNavigationOptions) {
       onPointerMove,
       onPointerUp,
       onPointerCancel,
+      onPointerEnter,
+      onPointerLeave,
+      onFocus,
+      onBlur,
     },
     deferPrimaryPaint,
   };
