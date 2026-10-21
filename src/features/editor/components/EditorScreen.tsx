@@ -51,10 +51,10 @@ export function EditorScreen({ artworkId }: EditorScreenProps) {
   if (loadError) {
     return (
       <main className="mx-auto max-w-lg px-4 py-16 text-center">
-        <p role="alert" className="text-red-600">{loadError}</p>
+        <p role="alert" className="text-danger-fg">{loadError}</p>
         <a
           href="/gallery"
-          className="mt-4 inline-block text-zinc-700 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+          className="mt-4 inline-block text-fg-secondary underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
         >
           Back to gallery
         </a>
@@ -66,7 +66,7 @@ export function EditorScreen({ artworkId }: EditorScreenProps) {
     return (
       <main
         role="status"
-        className="mx-auto max-w-lg px-4 py-16 text-center text-zinc-500"
+        className="mx-auto max-w-lg px-4 py-16 text-center text-muted"
       >
         Loading artwork…
       </main>

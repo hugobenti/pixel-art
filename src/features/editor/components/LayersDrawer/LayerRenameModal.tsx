@@ -12,7 +12,7 @@ import { Modal } from "@/features/shared/components/Modal";
 
 import type { LayerRenameSession } from "@/features/editor/components/LayersDrawer/hooks/useLayerRenameDialog";
 
-const titleClass = "text-base font-semibold text-zinc-900";
+const titleClass = "text-base font-semibold text-fg";
 
 const fieldWrapClass = "mt-3";
 

@@ -19,30 +19,30 @@ interface EditorSettingsImageDetailPanelProps {
 
 const rootClass = "flex min-h-0 flex-1 flex-col gap-4 px-4 pb-4 pt-0 sm:px-4";
 
-const hintClass = "text-xs font-normal leading-relaxed text-zinc-500";
+const hintClass = "text-xs font-normal leading-relaxed text-subtle";
 
 const listClass =
-  "max-h-[min(55vh,28rem)] min-h-0 divide-y divide-zinc-200 overflow-y-auto rounded-lg border border-zinc-200 bg-zinc-50";
+  "max-h-[min(55vh,28rem)] min-h-0 divide-y divide-line overflow-y-auto rounded-lg border border-line bg-surface-subtle";
 
-const rowClass = "flex items-center gap-3 px-3 py-2.5 text-sm text-zinc-900";
+const rowClass = "flex items-center gap-3 px-3 py-2.5 text-sm text-fg";
 
 const rowMetaClass = "flex min-w-0 flex-1 flex-col gap-0.5";
 
 const rowTitleClass = "truncate font-medium tabular-nums";
 
-const rowSubClass = "truncate text-xs font-normal text-zinc-500";
+const rowSubClass = "truncate text-xs font-normal text-subtle";
 
 const swatchBaseClass =
-  "h-9 w-9 shrink-0 rounded border border-zinc-300 shadow-inner";
+  "h-9 w-9 shrink-0 rounded border border-line-strong shadow-inner";
 
-const swatchTransparentClass = `${swatchBaseClass} bg-zinc-200`;
+const swatchTransparentClass = `${swatchBaseClass} bg-surface-strong`;
 
-const countClass = "shrink-0 tabular-nums text-zinc-700";
+const countClass = "shrink-0 tabular-nums text-fg-secondary";
 
-const pctClass = "w-12 shrink-0 text-right text-xs tabular-nums text-zinc-500";
+const pctClass = "w-12 shrink-0 text-right text-xs tabular-nums text-subtle";
 
 const emptyClass =
-  "rounded-lg border border-dashed border-zinc-300 bg-white px-3 py-6 text-center text-sm text-zinc-600";
+  "rounded-lg border border-dashed border-line-strong bg-surface px-3 py-6 text-center text-sm text-muted";
 
 export function EditorSettingsImageDetailPanel({
   artwork,

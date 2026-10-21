@@ -10,12 +10,12 @@ import { Button } from "@/features/shared/components/Button";
 import { ColorSwatch } from "@/features/shared/components/ColorSwatch";
 import { Modal } from "@/features/shared/components/Modal";
 
-const titleClass = "text-lg font-semibold text-zinc-900";
+const titleClass = "text-lg font-semibold text-fg";
 
 const swatchGridClass =
   "grid grid-cols-8 gap-2 sm:grid-cols-10";
 
-const legendClass = "text-xs font-medium text-zinc-600";
+const legendClass = "text-xs font-medium text-muted";
 
 interface PaletteEditModalProps {
   open: boolean;
@@ -82,14 +82,14 @@ export function PaletteEditModal({
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 border-t border-zinc-200 pt-4">
+      <div className="flex flex-wrap items-center gap-3 border-t border-line pt-4">
         <span className={legendClass}>Selected color</span>
-        <label className="flex items-center gap-2 text-sm text-zinc-700">
+        <label className="flex items-center gap-2 text-sm text-fg-secondary">
           <input
             type="color"
             value={editHex}
             onChange={(e) => onApplyHex(safeFocus, e.target.value)}
-            className="h-10 w-12 cursor-pointer rounded border border-zinc-300 bg-white p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+            className="h-10 w-12 cursor-pointer rounded border border-line-strong bg-surface p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
             aria-label="Color value for selected swatch"
           />
         </label>
@@ -123,7 +123,7 @@ function PaletteAddSection({
   const [newHex, setNewHex] = useState("#808080");
 
   return (
-    <div className="flex flex-col gap-2 border-t border-zinc-200 pt-4">
+    <div className="flex flex-col gap-2 border-t border-line pt-4">
       <span className={legendClass}>Add new color</span>
       <div className={addRowClass}>
         <input
@@ -131,7 +131,7 @@ function PaletteAddSection({
           value={newHex}
           disabled={maxPaletteReached}
           onChange={(e) => setNewHex(e.target.value)}
-          className="h-10 w-12 cursor-pointer rounded border border-zinc-300 bg-white p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50"
+          className="h-10 w-12 cursor-pointer rounded border border-line-strong bg-surface p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50"
           aria-label="Pick new color to append"
         />
         <Button
@@ -144,7 +144,7 @@ function PaletteAddSection({
         </Button>
       </div>
       {maxPaletteReached ? (
-        <p className="text-xs text-zinc-500">
+        <p className="text-xs text-subtle">
           Palette full (256 colors maximum).
         </p>
       ) : null}

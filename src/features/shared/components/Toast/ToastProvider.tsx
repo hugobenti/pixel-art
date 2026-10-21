@@ -54,12 +54,12 @@ function toastSurfaceClass(tone: ToastTone): string {
     "pointer-events-auto flex min-h-12 w-full max-w-lg items-start gap-3 rounded-lg border px-4 py-3 shadow-lg sm:min-w-[280px]";
 
   if (tone === "success") {
-    return `${base} border-green-200 bg-green-50 text-green-950`;
+    return `${base} border-success-line bg-success-surface text-success-fg`;
   }
   if (tone === "error") {
-    return `${base} border-red-200 bg-red-50 text-red-950`;
+    return `${base} border-danger-line bg-danger-surface text-danger-fg-strong`;
   }
-  return `${base} border-zinc-200 bg-white text-zinc-900`;
+  return `${base} border-line bg-surface text-fg`;
 }
 
 const messageClass =

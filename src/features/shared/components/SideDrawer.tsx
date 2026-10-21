@@ -26,7 +26,7 @@ import {
   drawerTitleClass,
 } from "@/features/shared/components/drawer.styles";
 
-const headerIconMaskClass = "h-5 w-5 text-zinc-800";
+const headerIconMaskClass = "h-5 w-5 text-fg-soft";
 
 const headerIconButtonClass = "shrink-0 touch-manipulation";
 

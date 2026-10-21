@@ -26,12 +26,12 @@ const sizeClasses: Record<ButtonSize, string> = {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-zinc-900 text-zinc-50 hover:bg-zinc-800 focus-visible:outline-zinc-900",
-  ghost: "bg-transparent text-zinc-800 hover:bg-zinc-100",
+    "bg-accent text-on-accent hover:bg-accent-hover focus-visible:outline-accent",
+  ghost: "bg-transparent text-fg-soft hover:bg-surface-muted",
   danger:
-    "bg-red-600 text-white hover:bg-red-700 focus-visible:outline-red-600",
+    "bg-danger text-on-danger hover:bg-danger-hover focus-visible:outline-danger",
   outline:
-    "border border-zinc-300 bg-white text-zinc-800 shadow-sm hover:bg-zinc-50 active:bg-zinc-100",
+    "border border-line-strong bg-surface text-fg-soft shadow-sm hover:bg-surface-subtle active:bg-surface-muted",
 };
 
 export function Button({
@@ -43,7 +43,7 @@ export function Button({
 }: ButtonProps) {
   const ghostStepAdjust =
     variant === "ghost" && size === "step"
-      ? "hover:bg-zinc-100 disabled:opacity-40"
+      ? "hover:bg-surface-muted disabled:opacity-40"
       : "";
 
   const classes =

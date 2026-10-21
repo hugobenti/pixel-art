@@ -30,6 +30,58 @@ const galleryImports = (from) =>
 
 const featureFiles = (feature) => [`src/features/${feature}/**/*.{ts,tsx,mts,mjs}`];
 
+/**
+ * Token-only styling (AGENTS.md): UI colors come from the semantic tokens in src/app/globals.css.
+ * The default palette is removed there, so a raw class like `bg-zinc-200` would silently render
+ * nothing; this rule makes it (and arbitrary/literal colors) a lint error instead. Hex strings in
+ * the canonical artwork-palette form `#RRGGBB` (uppercase, what artworks store) are pixel data,
+ * not styling, and stay allowed. A local plugin rather than `no-restricted-syntax` so it never
+ * overrides other `no-restricted-syntax` blocks.
+ */
+const RAW_PALETTE_CLASS =
+  /(?:^|[\s:])(?:bg|text|border(?:-[xytrblse])?|divide|outline|ring(?:-offset)?|fill|stroke|from|via|to|placeholder|caret|accent|decoration|shadow|inset-shadow|drop-shadow)-(?:white|black|(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|mist|mauve|olive|taupe)-(?:50|[1-9]00|950))(?:\/\d+)?(?=$|\s)/;
+const RAW_COLOR =
+  /#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})(?![\w-])|\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color-mix)\(/i;
+const ARTWORK_PALETTE_HEX = /^#[0-9A-F]{6}$/;
+
+const designTokensPlugin = {
+  rules: {
+    "no-raw-color": {
+      meta: {
+        type: "problem",
+        messages: {
+          paletteClass:
+            'Raw palette class "{{match}}": use a semantic token utility from src/app/globals.css (bg-surface, text-muted, border-line…).',
+          rawColor:
+            'Raw color "{{match}}": declare a token in src/app/globals.css and use its utility, or read its CSS variable in canvas code.',
+        },
+        schema: [],
+      },
+      create(context) {
+        function check(node, text) {
+          const palette = RAW_PALETTE_CLASS.exec(text);
+          if (palette) {
+            context.report({ node, messageId: "paletteClass", data: { match: palette[0].replace(/^[\s:]/, "") } });
+            return;
+          }
+          const color = ARTWORK_PALETTE_HEX.test(text) ? null : RAW_COLOR.exec(text);
+          if (color) {
+            context.report({ node, messageId: "rawColor", data: { match: color[0] } });
+          }
+        }
+        return {
+          Literal(node) {
+            if (typeof node.value === "string") check(node, node.value);
+          },
+          TemplateElement(node) {
+            check(node, node.value.cooked ?? node.value.raw);
+          },
+        };
+      },
+    },
+  },
+};
+
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
@@ -65,6 +117,12 @@ const eslintConfig = defineConfig([
         { tags: [], roles: ["tabpanel", "application"], allowExpressionValues: true },
       ],
     },
+  },
+  {
+    files: ["src/**/*.{ts,tsx}"],
+    ignores: ["src/**/*.test.ts"],
+    plugins: { "design-tokens": designTokensPlugin },
+    rules: { "design-tokens/no-raw-color": "error" },
   },
   // Override default ignores of eslint-config-next.
   globalIgnores([

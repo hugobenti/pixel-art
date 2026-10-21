@@ -10,7 +10,7 @@ import { PixelGridOverlay } from "@/features/editor/components/PixelGridOverlay"
 import { ReferenceImageOverlay } from "@/features/editor/components/ReferenceImageOverlay";
 
 const viewportShell =
-  "relative flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-lg border border-zinc-200 bg-zinc-100";
+  "relative flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-lg border border-line bg-surface-muted";
 
 const checkerLayer =
   "pixel-checkerboard pointer-events-none absolute inset-0 rounded-[inherit]";

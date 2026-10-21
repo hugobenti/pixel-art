@@ -279,7 +279,7 @@ export function resizePixelBuffer(
 
 ## 5. UI Layer Guidelines (Tailwind CSS Integration)
 
-The interface relies completely on pure utility classes via Tailwind CSS, without reliance on secondary heavyweight UI component libraries.
+The interface relies completely on pure utility classes via Tailwind CSS, without reliance on secondary heavyweight UI component libraries. Colors are semantic tokens declared once in `src/app/globals.css` (`@theme`); Tailwind's default palette is removed, and canvas renderers read the same CSS variables (`--color-grid-line`, `--color-guide-*`).
 
 ### Checkerboard Background
 
@@ -287,10 +287,11 @@ Do not simulate transparency using individual canvas pixels. Utilize native mode
 
 ```css
 .pixel-checkerboard {
-  background-image: linear-gradient(45deg, #ccc 25%, transparent 25%),
-    linear-gradient(-45deg, #ccc 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, #ccc 75%),
-    linear-gradient(-45deg, transparent 75%, #ccc 75%);
+  background-color: var(--color-checker-light);
+  background-image: linear-gradient(45deg, var(--color-checker-dark) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--color-checker-dark) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--color-checker-dark) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--color-checker-dark) 75%);
   background-size: 20px 20px;
   background-position: 0 0, 0 10px, 10px -10px, -10px 0;
 }

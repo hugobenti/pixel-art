@@ -7,7 +7,7 @@
 import type { HTMLAttributes, ReactNode } from "react";
 
 const cardBaseClass =
-  "rounded-xl border border-zinc-200 bg-white shadow-sm";
+  "rounded-xl border border-line bg-surface shadow-sm";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
