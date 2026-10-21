@@ -4,7 +4,7 @@
  */
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import {
   computeShiftCommand,
@@ -39,6 +39,19 @@ export function usePixelShift({
   const closeShiftOverlay = useCallback(() => {
     setShiftOverlayOpen(false);
   }, []);
+
+  useEffect(() => {
+    if (!shiftOverlayOpen) {
+      return;
+    }
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setShiftOverlayOpen(false);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [shiftOverlayOpen]);
 
   const applyShift = useCallback(
     (direction: ShiftDirection) => {

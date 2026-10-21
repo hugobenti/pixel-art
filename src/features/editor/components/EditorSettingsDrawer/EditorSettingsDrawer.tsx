@@ -53,6 +53,7 @@ const menuRowClass = `
   flex min-h-12 w-full items-center justify-between gap-3 px-4 py-3
   text-left text-sm font-medium text-zinc-900 transition-colors
   active:bg-zinc-100 touch-manipulation
+  focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2
 `;
 
 const menuRowMutedClass = "cursor-not-allowed opacity-50 active:bg-transparent";
@@ -130,7 +131,8 @@ export function EditorSettingsDrawer({
     settingsView === "canvasSize" ||
     settingsView === "imageDetail" ||
     settingsView === "importExport" ? (
-      <SideDrawerBackButton onClick={backToMenu} aria-label="Back to settings" />
+      // eslint-disable-next-line jsx-a11y/no-autofocus -- drill-in replaces the focused menu row; focus moves to the view's back control
+      <SideDrawerBackButton autoFocus onClick={backToMenu} aria-label="Back to settings" />
     ) : undefined;
 
   return (
@@ -148,10 +150,11 @@ export function EditorSettingsDrawer({
       <div className={shellBodyClass}>
         {settingsView === "menu" ? (
           <div className={menuRootClass}>
-            <nav className={menuListClass} aria-label="Editor settings">
+            <div className={menuListClass} role="group" aria-label="Editor settings">
               <button
                 type="button"
                 className={menuRowClass}
+                aria-pressed={showPixelGrid}
                 onClick={() => {
                   onToggleGrid();
                 }}
@@ -166,6 +169,7 @@ export function EditorSettingsDrawer({
                 type="button"
                 className={`${menuRowClass} ${!hasReferenceImage ? menuRowMutedClass : ""}`}
                 disabled={!hasReferenceImage}
+                aria-pressed={showReferenceImage}
                 onClick={() => {
                   if (!hasReferenceImage) {
                     return;
@@ -233,7 +237,7 @@ export function EditorSettingsDrawer({
                 </span>
                 <span className={menuHintClass}>Visible area</span>
               </button>
-            </nav>
+            </div>
           </div>
         ) : settingsView === "canvasSize" ? (
           <EditorSettingsCanvasSizePanel

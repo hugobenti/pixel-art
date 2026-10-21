@@ -1,6 +1,7 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
+import jsxA11y from "eslint-plugin-jsx-a11y";
 
 // Feature boundary: dependencies flow shared → editor / gallery → app.
 // Each layer is blocked by its `@/` alias and by any relative `../` path that climbs into it.
@@ -51,6 +52,18 @@ const eslintConfig = defineConfig([
     files: featureFiles("gallery"),
     rules: {
       "no-restricted-imports": ["error", { patterns: [appImports, editorImports("gallery")] }],
+    },
+  },
+  // Accessibility: next registers the jsx-a11y plugin but enables only a handful of its rules.
+  {
+    files: ["src/**/*.tsx"],
+    rules: {
+      ...jsxA11y.flatConfigs.strict.rules,
+      // The canvas viewport is role="application" and keyboard-operable (arrow keys pan).
+      "jsx-a11y/no-noninteractive-tabindex": [
+        "error",
+        { tags: [], roles: ["tabpanel", "application"], allowExpressionValues: true },
+      ],
     },
   },
   // Override default ignores of eslint-config-next.

@@ -4,16 +4,18 @@
  */
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import type { HTMLAttributes, ReactNode } from "react";
 
 import {
   type ModalLayer,
   type ModalPlacement,
   type ModalSize,
+  modalBackdropClass,
   modalOverlayClasses,
   modalPanelClasses,
 } from "@/features/shared/components/modal.styles";
+import { useFocusTrap } from "@/features/shared/hooks/useFocusTrap";
 
 export interface ModalProps {
   open: boolean;
@@ -46,6 +48,9 @@ export function Modal({
   overlayProps,
   panelProps,
 }: ModalProps) {
+  const panelRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(panelRef, open);
+
   useEffect(() => {
     if (!open || !closeOnEscape) {
       return;
@@ -64,17 +69,9 @@ export function Modal({
     return null;
   }
 
-  const {
-    className: overlayPropClass,
-    onMouseDown: overlayOnMouseDown,
-    ...restOverlay
-  } = overlayProps ?? {};
+  const { className: overlayPropClass, ...restOverlay } = overlayProps ?? {};
 
-  const {
-    className: panelPropClass,
-    onMouseDown: panelOnMouseDown,
-    ...restPanel
-  } = panelProps ?? {};
+  const { className: panelPropClass, ...restPanel } = panelProps ?? {};
 
   const overlayClass = [
     modalOverlayClasses({
@@ -95,29 +92,17 @@ export function Modal({
     .trim();
 
   return (
-    <div
-      className={overlayClass}
-      role="dialog"
-      aria-modal="true"
-      onMouseDown={(e) => {
-        overlayOnMouseDown?.(e);
-        if (!closeOnBackdrop) {
-          return;
-        }
-        if (e.target === e.currentTarget) {
-          onClose();
-        }
-      }}
-      {...restOverlay}
-    >
-      <div
-        className={panelClass}
-        onMouseDown={(e) => {
-          panelOnMouseDown?.(e);
-          e.stopPropagation();
-        }}
-        {...restPanel}
-      >
+    <div className={overlayClass} role="dialog" aria-modal="true" {...restOverlay}>
+      {closeOnBackdrop ? (
+        <button
+          type="button"
+          tabIndex={-1}
+          aria-label="Close dialog"
+          className={modalBackdropClass}
+          onMouseDown={onClose}
+        />
+      ) : null}
+      <div ref={panelRef} className={panelClass} {...restPanel}>
         {children}
       </div>
     </div>
