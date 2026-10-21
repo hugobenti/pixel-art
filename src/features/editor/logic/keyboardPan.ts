@@ -12,7 +12,7 @@ export const KEYBOARD_PAN_FAST_STEP_PX = 128;
 /** View-offset delta for an arrow key, or null when the key does not pan. */
 export function keyboardPanDelta(
   key: string,
-  shiftKey: boolean
+  shiftKey: boolean,
 ): { dx: number; dy: number } | null {
   const step = shiftKey ? KEYBOARD_PAN_FAST_STEP_PX : KEYBOARD_PAN_STEP_PX;
   switch (key) {

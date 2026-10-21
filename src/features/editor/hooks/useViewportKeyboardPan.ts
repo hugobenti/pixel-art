@@ -13,7 +13,7 @@ import { translateViewOffset } from "@/features/editor/services/viewportNavigati
 
 export function useViewportKeyboardPan(
   wrapRef: RefObject<HTMLDivElement | null>,
-  setViewport: Dispatch<SetStateAction<ViewportState>>
+  setViewport: Dispatch<SetStateAction<ViewportState>>,
 ) {
   useEffect(() => {
     const el = wrapRef.current;

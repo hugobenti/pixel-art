@@ -20,7 +20,7 @@ export const FOCUSABLE_SELECTOR = [
 export function focusTrapTargetIndex(
   currentIndex: number,
   count: number,
-  backwards: boolean
+  backwards: boolean,
 ): number | null {
   if (count === 0) {
     return null;

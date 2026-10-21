@@ -11,17 +11,11 @@
 
 import { useEffect, type RefObject } from "react";
 
-import {
-  FOCUSABLE_SELECTOR,
-  focusTrapTargetIndex,
-} from "@/features/shared/logic/focusTrap";
+import { FOCUSABLE_SELECTOR, focusTrapTargetIndex } from "@/features/shared/logic/focusTrap";
 
 const activeTraps: HTMLElement[] = [];
 
-export function useFocusTrap(
-  containerRef: RefObject<HTMLElement | null>,
-  active: boolean
-) {
+export function useFocusTrap(containerRef: RefObject<HTMLElement | null>, active: boolean) {
   useEffect(() => {
     const container = containerRef.current;
     if (!active || !container) {
@@ -44,9 +38,7 @@ export function useFocusTrap(
       }
       const items = focusables();
       const current =
-        document.activeElement instanceof HTMLElement
-          ? items.indexOf(document.activeElement)
-          : -1;
+        document.activeElement instanceof HTMLElement ? items.indexOf(document.activeElement) : -1;
       const target = focusTrapTargetIndex(current, items.length, event.shiftKey);
       if (items.length === 0) {
         event.preventDefault();
