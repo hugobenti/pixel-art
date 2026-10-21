@@ -6,10 +6,7 @@
 
 import { useState, type ChangeEvent, type FormEvent } from "react";
 
-import {
-  EMPTY_THUMBNAIL_SRC,
-  getEditorHref,
-} from "@/features/gallery/logic/artworkLinks";
+import { EMPTY_THUMBNAIL_SRC, getEditorHref } from "@/features/gallery/logic/artworkLinks";
 
 import type { Artwork } from "@/features/shared/artwork/artwork.types";
 
@@ -45,10 +42,7 @@ export function useArtworkCard({ artwork, onRename, onDelete }: UseArtworkCardPa
   };
 
   const handleDelete = () => {
-    if (
-      typeof window !== "undefined" &&
-      window.confirm("Delete this artwork permanently?")
-    ) {
+    if (typeof window !== "undefined" && window.confirm("Delete this artwork permanently?")) {
       void onDelete(artwork.id);
     }
   };

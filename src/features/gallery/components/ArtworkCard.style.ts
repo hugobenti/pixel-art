@@ -5,8 +5,7 @@
 
 export const artworkCard = {
   inner: "flex flex-col gap-3 p-4",
-  thumbLink:
-    "relative block aspect-square w-full overflow-hidden rounded-lg bg-zinc-100",
+  thumbLink: "relative block aspect-square w-full overflow-hidden rounded-lg bg-zinc-100",
   thumbImage: "object-cover",
   renameForm: "flex gap-2",
   metaRow: "flex flex-wrap items-center gap-2",

@@ -13,22 +13,22 @@ import {
 describe("formatImageDetailSummary", () => {
   it("explains when no artwork cell is visible", () => {
     expect(formatImageDetailSummary(0, 0)).toBe(
-      "No artwork pixels intersect the visible viewport."
+      "No artwork pixels intersect the visible viewport.",
     );
   });
 
   it("uses singular nouns for one pixel and one cell", () => {
     expect(formatImageDetailSummary(1, 1)).toBe(
-      "1 composited pixel across 1 visible cell (layers stacked; no double counting)."
+      "1 composited pixel across 1 visible cell (layers stacked; no double counting).",
     );
   });
 
   it("uses plural nouns otherwise", () => {
     expect(formatImageDetailSummary(0, 12)).toBe(
-      "0 composited pixels across 12 visible cells (layers stacked; no double counting)."
+      "0 composited pixels across 12 visible cells (layers stacked; no double counting).",
     );
     expect(formatImageDetailSummary(5, 9)).toBe(
-      "5 composited pixels across 9 visible cells (layers stacked; no double counting)."
+      "5 composited pixels across 9 visible cells (layers stacked; no double counting).",
     );
   });
 });

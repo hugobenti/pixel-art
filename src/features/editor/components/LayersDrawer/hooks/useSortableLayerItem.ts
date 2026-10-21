@@ -26,8 +26,9 @@ export function useSortableLayerItem({
   onCopyLayer,
   onRenameClick,
 }: UseSortableLayerItemParams) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: layerId });
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: layerId,
+  });
 
   const style: CSSProperties = {
     transform: CSS.Transform.toString(transform),

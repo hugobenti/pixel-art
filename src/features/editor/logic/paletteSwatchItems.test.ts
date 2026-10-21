@@ -66,7 +66,7 @@ describe("buildPaletteSwatchItems", () => {
         primaryIndex: 0,
         secondaryIndex: 0,
         focusedSwatchIndex: 0,
-      })
+      }),
     ).toEqual([]);
   });
 });

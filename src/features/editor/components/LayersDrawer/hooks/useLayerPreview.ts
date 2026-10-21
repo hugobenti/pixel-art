@@ -24,7 +24,7 @@ export function useLayerPreview({ layer, palette, width, height }: UseLayerPrevi
   const { pixelData } = layer;
   const previewUrl = useMemo(
     () => renderLayerPreviewDataUrl(pixelData, palette, width, height, LAYER_PREVIEW_MAX_EDGE_PX),
-    [pixelData, palette, width, height]
+    [pixelData, palette, width, height],
   );
   return { previewUrl };
 }

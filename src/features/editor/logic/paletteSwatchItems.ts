@@ -23,7 +23,7 @@ export interface PaletteSwatchSelection {
 /** Focus index is clamped into the palette so a stale focus still highlights a swatch. */
 export function buildPaletteSwatchItems(
   palette: readonly string[],
-  { primaryIndex, secondaryIndex, focusedSwatchIndex }: PaletteSwatchSelection
+  { primaryIndex, secondaryIndex, focusedSwatchIndex }: PaletteSwatchSelection,
 ): PaletteSwatchItem[] {
   const safeFocus = clampPaletteIndex(focusedSwatchIndex, palette.length);
   return palette.map((color, index) => ({

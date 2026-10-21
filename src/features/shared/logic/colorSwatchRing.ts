@@ -3,12 +3,7 @@
  * Picks which selection ring a palette swatch shows (keys of `colorSwatch.ring`).
  */
 
-export type ColorSwatchRing =
-  | "idle"
-  | "selected"
-  | "primary"
-  | "secondary"
-  | "primaryAndSecondary";
+export type ColorSwatchRing = "idle" | "selected" | "primary" | "secondary" | "primaryAndSecondary";
 
 type ColorSwatchSelection =
   | { density: "compact"; selected: boolean }

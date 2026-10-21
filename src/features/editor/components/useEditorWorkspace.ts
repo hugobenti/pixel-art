@@ -8,14 +8,7 @@
  * Toolbar zoom logic lives in useToolbarCenterZoom + logic/toolbarCenterZoom.ts.
  */
 
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { useArtworkLayers } from "@/features/editor/hooks/useArtworkLayers";
 import { useCanvasEngine } from "@/features/editor/hooks/useCanvasEngine";
@@ -85,14 +78,8 @@ export function useEditorWorkspace(initialArtwork: Artwork) {
     onPaletteOrPixelsDirty: schedulePaintBump,
   });
 
-  const primaryPaint = clampPaletteIndex(
-    paletteUi.primaryIndex,
-    artwork.palette.length
-  );
-  const secondaryPaint = clampPaletteIndex(
-    paletteUi.secondaryIndex,
-    artwork.palette.length
-  );
+  const primaryPaint = clampPaletteIndex(paletteUi.primaryIndex, artwork.palette.length);
+  const secondaryPaint = clampPaletteIndex(paletteUi.secondaryIndex, artwork.palette.length);
 
   const layersState = useArtworkLayers({
     artwork,
@@ -102,19 +89,11 @@ export function useEditorWorkspace(initialArtwork: Artwork) {
 
   const getLayerPixelData = useCallback(
     (layerId: string) =>
-      artworkRef.current.layers.find((layer) => layer.id === layerId)?.pixelData ??
-      null,
-    []
+      artworkRef.current.layers.find((layer) => layer.id === layerId)?.pixelData ?? null,
+    [],
   );
 
-  const {
-    pushCommand,
-    undo,
-    redo,
-    canUndo,
-    canRedo,
-    historyRevision,
-  } = useHistory({
+  const { pushCommand, undo, redo, canUndo, canRedo, historyRevision } = useHistory({
     documentKey: `${artwork.id}:${artwork.width}x${artwork.height}`,
     getLayerPixelData,
   });
@@ -141,27 +120,21 @@ export function useEditorWorkspace(initialArtwork: Artwork) {
     },
   });
 
-  const {
-    wrapRef,
-    artworkCanvasRef,
-    referenceImageCanvasRef,
-    gridCanvasRef,
-    cssSize,
-  } = useCanvasEngine({
-    artwork,
-    viewport,
-    showPixelGrid,
-    showReferenceImage: referenceImage.showReferenceImage,
-    referenceImage: referenceImage.referenceImageElement,
-    referenceImageAlpha: referenceImage.referenceAlpha,
-    paintRevision,
-    historyRevision,
-  });
+  const { wrapRef, artworkCanvasRef, referenceImageCanvasRef, gridCanvasRef, cssSize } =
+    useCanvasEngine({
+      artwork,
+      viewport,
+      showPixelGrid,
+      showReferenceImage: referenceImage.showReferenceImage,
+      referenceImage: referenceImage.referenceImageElement,
+      referenceImageAlpha: referenceImage.referenceAlpha,
+      paintRevision,
+      historyRevision,
+    });
 
   const viewportMinScaleUi = useMemo(
-    () =>
-      computeViewportMinScale(cssSize.w, cssSize.h, artwork.width, artwork.height),
-    [cssSize.w, cssSize.h, artwork.width, artwork.height]
+    () => computeViewportMinScale(cssSize.w, cssSize.h, artwork.width, artwork.height),
+    [cssSize.w, cssSize.h, artwork.width, artwork.height],
   );
 
   const { onZoomIn, onZoomOut, canZoomIn, canZoomOut } = useToolbarCenterZoom({
@@ -188,19 +161,14 @@ export function useEditorWorkspace(initialArtwork: Artwork) {
   });
 
   useLayoutEffect(() => {
-    const next = computeContainFit(
-      cssSize.w,
-      cssSize.h,
-      artwork.width,
-      artwork.height
-    );
+    const next = computeContainFit(cssSize.w, cssSize.h, artwork.width, artwork.height);
     const minScale = next.scale * MIN_ZOOM_RATIO_OF_CONTAIN;
     minScaleRef.current = minScale;
     setViewport(
       normalizeViewportToPixelGrid(next, {
         minScale,
         maxScale: MAX_VIEWPORT_SCALE,
-      })
+      }),
     );
   }, [cssSize.w, cssSize.h, artwork.width, artwork.height, setViewport]);
 
@@ -209,12 +177,8 @@ export function useEditorWorkspace(initialArtwork: Artwork) {
     if (!el) {
       return;
     }
-    const cleanupWheel = attachViewportWheel(el, setViewport, () =>
-      minScaleRef.current
-    );
-    const cleanupPinch = attachViewportPinchZoom(el, setViewport, () =>
-      minScaleRef.current
-    );
+    const cleanupWheel = attachViewportWheel(el, setViewport, () => minScaleRef.current);
+    const cleanupPinch = attachViewportPinchZoom(el, setViewport, () => minScaleRef.current);
     return () => {
       cleanupWheel();
       cleanupPinch();
@@ -225,13 +189,16 @@ export function useEditorWorkspace(initialArtwork: Artwork) {
     (cmd: HistoryCommand) => {
       pushCommand(cmd);
     },
-    [pushCommand]
+    [pushCommand],
   );
 
-  const handleApplyCanvasSize = useCallback((next: Artwork) => {
-    setArtwork(next);
-    schedulePaintBump();
-  }, [schedulePaintBump]);
+  const handleApplyCanvasSize = useCallback(
+    (next: Artwork) => {
+      setArtwork(next);
+      schedulePaintBump();
+    },
+    [schedulePaintBump],
+  );
 
   const togglePanMode = useCallback(() => {
     setPanMode((value) => {
@@ -290,19 +257,10 @@ export function useEditorWorkspace(initialArtwork: Artwork) {
 
   const openPaletteModal = useCallback(() => setPaletteModalOpen(true), []);
   const closePaletteModal = useCallback(() => setPaletteModalOpen(false), []);
-  const toggleLayersDrawer = useCallback(
-    () => setLayersDrawerOpen((v) => !v),
-    []
-  );
+  const toggleLayersDrawer = useCallback(() => setLayersDrawerOpen((v) => !v), []);
   const closeLayersDrawer = useCallback(() => setLayersDrawerOpen(false), []);
-  const toggleSettingsDrawer = useCallback(
-    () => setSettingsDrawerOpen((v) => !v),
-    []
-  );
-  const closeSettingsDrawer = useCallback(
-    () => setSettingsDrawerOpen(false),
-    []
-  );
+  const toggleSettingsDrawer = useCallback(() => setSettingsDrawerOpen((v) => !v), []);
+  const closeSettingsDrawer = useCallback(() => setSettingsDrawerOpen(false), []);
   const { addLayer } = layersState;
   const handleAddLayer = useCallback(() => {
     addLayer();
@@ -331,8 +289,7 @@ export function useEditorWorkspace(initialArtwork: Artwork) {
     openPaletteModal,
     closePaletteModal,
     canRemoveSwatch: artwork.palette.length > 1,
-    maxPaletteReached:
-      artwork.palette.length >= artworkService.MAX_PALETTE_ENTRIES,
+    maxPaletteReached: artwork.palette.length >= artworkService.MAX_PALETTE_ENTRIES,
     layersDrawerOpen,
     toggleLayersDrawer,
     closeLayersDrawer,

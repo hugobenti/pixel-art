@@ -12,8 +12,7 @@ import type {
 export const DEFAULT_TOAST_DURATION_MS = 4500;
 
 export function normalizeToastInput(input: ShowToastInput | string) {
-  const normalized: ShowToastInput =
-    typeof input === "string" ? { message: input } : input;
+  const normalized: ShowToastInput = typeof input === "string" ? { message: input } : input;
   return {
     message: normalized.message,
     tone: normalized.tone ?? ("neutral" as ToastTone),
@@ -25,7 +24,7 @@ export function normalizeToastInput(input: ShowToastInput | string) {
 export function isDuplicateActiveToast(
   toasts: ToastRecord[],
   message: string,
-  tone: ToastTone
+  tone: ToastTone,
 ): boolean {
   return toasts.some((t) => t.message === message && t.tone === tone);
 }

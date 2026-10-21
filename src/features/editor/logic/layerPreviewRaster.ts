@@ -16,7 +16,7 @@ export interface LayerThumbnailSize {
 export function layerThumbnailSize(
   artworkWidth: number,
   artworkHeight: number,
-  maxEdge: number
+  maxEdge: number,
 ): LayerThumbnailSize {
   const scale = Math.min(maxEdge / artworkWidth, maxEdge / artworkHeight);
   return {
@@ -29,7 +29,7 @@ function rasterizeLayerToCanvas(
   pixelData: ArrayLike<number>,
   palette: string[],
   width: number,
-  height: number
+  height: number,
 ): HTMLCanvasElement | null {
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
@@ -58,12 +58,12 @@ function downscaleCanvasNearest(
   source: HTMLCanvasElement,
   artworkWidth: number,
   artworkHeight: number,
-  maxEdge: number
+  maxEdge: number,
 ): HTMLCanvasElement {
   const { width: thumbW, height: thumbH } = layerThumbnailSize(
     artworkWidth,
     artworkHeight,
-    maxEdge
+    maxEdge,
   );
 
   const thumb = document.createElement("canvas");
@@ -84,7 +84,7 @@ export function renderLayerPreviewDataUrl(
   palette: string[],
   width: number,
   height: number,
-  maxEdge: number
+  maxEdge: number,
 ): string {
   if (typeof document === "undefined") {
     return "";

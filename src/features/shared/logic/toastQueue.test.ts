@@ -28,7 +28,7 @@ describe("normalizeToastInput", () => {
         tone: "error",
         durationMs: 1000,
         skipDuplicateActiveToast: true,
-      })
+      }),
     ).toEqual({
       message: "Failed",
       tone: "error",

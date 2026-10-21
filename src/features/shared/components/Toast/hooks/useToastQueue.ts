@@ -11,10 +11,7 @@ import type {
   ToastContextValue,
   ToastRecord,
 } from "@/features/shared/components/Toast/ToastProvider";
-import {
-  isDuplicateActiveToast,
-  normalizeToastInput,
-} from "@/features/shared/logic/toastQueue";
+import { isDuplicateActiveToast, normalizeToastInput } from "@/features/shared/logic/toastQueue";
 
 export function useToastQueue() {
   const [toasts, setToasts] = useState<ToastRecord[]>([]);
@@ -31,18 +28,14 @@ export function useToastQueue() {
 
   const showToast = useCallback(
     (input: ShowToastInput | string) => {
-      const { message, tone, durationMs, skipDuplicateActiveToast } =
-        normalizeToastInput(input);
+      const { message, tone, durationMs, skipDuplicateActiveToast } = normalizeToastInput(input);
       const id =
         typeof crypto !== "undefined" && crypto.randomUUID
           ? crypto.randomUUID()
           : `toast-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
       setToasts((prev) => {
-        if (
-          skipDuplicateActiveToast &&
-          isDuplicateActiveToast(prev, message, tone)
-        ) {
+        if (skipDuplicateActiveToast && isDuplicateActiveToast(prev, message, tone)) {
           return prev;
         }
         if (!timersRef.current.has(id)) {
@@ -54,7 +47,7 @@ export function useToastQueue() {
         return [...prev, { id, message, tone }];
       });
     },
-    [dismissToast]
+    [dismissToast],
   );
 
   useEffect(() => {
@@ -67,12 +60,12 @@ export function useToastQueue() {
 
   const value = useMemo<ToastContextValue>(
     () => ({ showToast, dismissToast }),
-    [showToast, dismissToast]
+    [showToast, dismissToast],
   );
 
   const toastViews = useMemo(
     () => toasts.map((toast) => ({ ...toast, domId: `toast-${toast.id}` })),
-    [toasts]
+    [toasts],
   );
 
   return { value, toasts: toastViews, dismissToast };

@@ -53,7 +53,7 @@ export function useLayersDrawer({
         delay: 200,
         tolerance: 6,
       },
-    })
+    }),
   );
 
   useEffect(() => {

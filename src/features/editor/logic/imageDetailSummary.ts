@@ -6,7 +6,7 @@
 /** One-line summary above the image detail histogram. */
 export function formatImageDetailSummary(
   totalCompositeOpaque: number,
-  totalViewportCells: number
+  totalViewportCells: number,
 ): string {
   if (totalViewportCells === 0) {
     return "No artwork pixels intersect the visible viewport.";

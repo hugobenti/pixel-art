@@ -27,7 +27,7 @@ export function useColorSelectionRow({
         secondaryIndex,
         focusedSwatchIndex,
       }),
-    [palette, primaryIndex, secondaryIndex, focusedSwatchIndex]
+    [palette, primaryIndex, secondaryIndex, focusedSwatchIndex],
   );
 
   return { swatches };

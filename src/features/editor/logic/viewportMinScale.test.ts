@@ -19,7 +19,7 @@ describe("computeViewportMinScale", () => {
 
   it("follows the contain-fit scale for letterboxed documents", () => {
     expect(computeViewportMinScale(100, 50, 10, 10)).toBe(
-      computeContainFit(100, 50, 10, 10).scale * 0.75
+      computeContainFit(100, 50, 10, 10).scale * 0.75,
     );
   });
 });
