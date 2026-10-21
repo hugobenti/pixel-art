@@ -7,8 +7,8 @@
  */
 "use client";
 
-import type { Artwork, ArtworkLayer } from "@/features/editor/types/editor.types";
-import { MAX_PALETTE_ENTRIES, validateDimensions } from "@/features/gallery/services/galleryService";
+import type { Artwork, ArtworkLayer } from "@/features/shared/artwork/artwork.types";
+import { MAX_PALETTE_ENTRIES, validateDimensions } from "@/features/shared/artwork/artworkService";
 
 const FILE_SCHEMA_VERSION = 2;
 const JSON_MIME = "application/json";

@@ -8,9 +8,9 @@ import { useEffect, useState } from "react";
 
 import { EditorWorkspace } from "@/features/editor/components/EditorWorkspace";
 
-import type { Artwork } from "@/features/editor/types/editor.types";
+import type { Artwork } from "@/features/shared/artwork/artwork.types";
 
-import * as galleryService from "@/features/gallery/services/galleryService";
+import * as artworkService from "@/features/shared/artwork/artworkService";
 import { clonePixelBuffer } from "@/features/shared/utils/binaryHelpers";
 
 interface EditorScreenProps {
@@ -24,7 +24,7 @@ export function EditorScreen({ artworkId }: EditorScreenProps) {
   useEffect(() => {
     let cancelled = false;
     void (async () => {
-      const row = await galleryService.getArtwork(artworkId);
+      const row = await artworkService.getArtwork(artworkId);
       if (cancelled) {
         return;
       }

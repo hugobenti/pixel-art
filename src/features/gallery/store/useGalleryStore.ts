@@ -4,16 +4,16 @@
  */
 import { create } from "zustand";
 
-import type { Artwork } from "@/features/editor/types/editor.types";
-import type { ImportedArtworkData } from "@/features/editor/services/artworkFileService";
-import * as galleryService from "@/features/gallery/services/galleryService";
+import type { Artwork } from "@/features/shared/artwork/artwork.types";
+import type { ImportedArtworkData } from "@/features/shared/artwork/artworkFileService";
+import * as artworkService from "@/features/shared/artwork/artworkService";
 
 interface GalleryState {
   artworks: Artwork[];
   loading: boolean;
   error: string | null;
   loadArtworks: () => Promise<void>;
-  createArtwork: (input: galleryService.CreateArtworkInput) => Promise<Artwork | null>;
+  createArtwork: (input: artworkService.CreateArtworkInput) => Promise<Artwork | null>;
   importArtwork: (input: ImportedArtworkData) => Promise<Artwork | null>;
   renameArtwork: (id: string, title: string) => Promise<void>;
   cloneArtwork: (id: string) => Promise<Artwork | undefined>;
@@ -28,7 +28,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   loadArtworks: async () => {
     set({ loading: true, error: null });
     try {
-      const artworks = await galleryService.listArtworks();
+      const artworks = await artworkService.listArtworks();
       set({ artworks, loading: false });
     } catch (e) {
       const message = e instanceof Error ? e.message : "Failed to load gallery.";
@@ -39,7 +39,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   createArtwork: async (input) => {
     set({ error: null });
     try {
-      const created = await galleryService.createArtwork(input);
+      const created = await artworkService.createArtwork(input);
       await get().loadArtworks();
       return created;
     } catch (e) {
@@ -52,7 +52,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   importArtwork: async (input) => {
     set({ error: null });
     try {
-      const created = await galleryService.createArtworkFromImport(input);
+      const created = await artworkService.createArtworkFromImport(input);
       await get().loadArtworks();
       return created;
     } catch (e) {
@@ -65,7 +65,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   renameArtwork: async (id, title) => {
     set({ error: null });
     try {
-      await galleryService.renameArtwork(id, title);
+      await artworkService.renameArtwork(id, title);
       await get().loadArtworks();
     } catch (e) {
       const message = e instanceof Error ? e.message : "Rename failed.";
@@ -76,7 +76,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   cloneArtwork: async (id) => {
     set({ error: null });
     try {
-      const clone = await galleryService.cloneArtwork(id);
+      const clone = await artworkService.cloneArtwork(id);
       await get().loadArtworks();
       return clone;
     } catch (e) {
@@ -89,7 +89,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   deleteArtwork: async (id) => {
     set({ error: null });
     try {
-      await galleryService.deleteArtwork(id);
+      await artworkService.deleteArtwork(id);
       await get().loadArtworks();
     } catch (e) {
       const message = e instanceof Error ? e.message : "Delete failed.";

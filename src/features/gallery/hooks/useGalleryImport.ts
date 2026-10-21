@@ -6,11 +6,11 @@
 
 import { useCallback, useRef } from "react";
 
-import { importArtworkFromJsonFile } from "@/features/editor/services/artworkFileService";
+import { importArtworkFromJsonFile } from "@/features/shared/artwork/artworkFileService";
 import { useToast } from "@/features/shared/components/Toast/hooks/useToast";
 
-import type { Artwork } from "@/features/editor/types/editor.types";
-import type { ImportedArtworkData } from "@/features/editor/services/artworkFileService";
+import type { Artwork } from "@/features/shared/artwork/artwork.types";
+import type { ImportedArtworkData } from "@/features/shared/artwork/artworkFileService";
 
 interface UseGalleryImportParams {
   importArtwork: (input: ImportedArtworkData) => Promise<Artwork | null>;

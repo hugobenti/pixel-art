@@ -5,7 +5,7 @@
 
 import { normalizeHexColor } from "@/features/shared/utils/colorConverter";
 
-import { MAX_PALETTE_ENTRIES } from "@/features/gallery/services/galleryService";
+import { MAX_PALETTE_ENTRIES } from "@/features/shared/artwork/artworkService";
 
 export type ColorSlot = "primary" | "secondary";
 

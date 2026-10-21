@@ -42,11 +42,11 @@ import {
   attachViewportWheel,
   useViewportNavigation,
 } from "@/features/editor/hooks/useViewportNavigation";
-import * as galleryService from "@/features/gallery/services/galleryService";
+import * as artworkService from "@/features/shared/artwork/artworkService";
 
 import { useToast } from "@/features/shared/components/Toast/hooks/useToast";
 
-import type { Artwork } from "@/features/editor/types/editor.types";
+import type { Artwork } from "@/features/shared/artwork/artwork.types";
 
 import { EDITOR_TOAST_HIDDEN_LAYER_MESSAGE } from "@/features/editor/constants/editorToastMessages";
 import { clampPaletteIndex } from "@/features/editor/logic/paletteMutations";
@@ -351,7 +351,7 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
         onRemoveSwatch={paletteUi.removeSwatchAtIndex}
         canRemoveSwatch={artwork.palette.length > 1}
         maxPaletteReached={
-          artwork.palette.length >= galleryService.MAX_PALETTE_ENTRIES
+          artwork.palette.length >= artworkService.MAX_PALETTE_ENTRIES
         }
       />
 

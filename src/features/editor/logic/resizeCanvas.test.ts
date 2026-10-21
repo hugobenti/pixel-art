@@ -10,7 +10,7 @@ import {
   resizeLayerPixelData,
 } from "@/features/editor/logic/resizeCanvas";
 
-import type { Artwork } from "@/features/editor/types/editor.types";
+import type { Artwork } from "@/features/shared/artwork/artwork.types";
 
 describe("resizeLayerPixelData", () => {
   it("copies top-left region when expanding", () => {

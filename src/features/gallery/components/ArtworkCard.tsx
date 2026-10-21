@@ -12,7 +12,7 @@ import { Button } from "@/features/shared/components/Button";
 import { Card } from "@/features/shared/components/Card";
 import { Input } from "@/features/shared/components/Input";
 
-import type { Artwork } from "@/features/editor/types/editor.types";
+import type { Artwork } from "@/features/shared/artwork/artwork.types";
 
 const cardInnerClass = "flex flex-col gap-3 p-4";
 

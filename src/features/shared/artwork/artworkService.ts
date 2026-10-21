@@ -1,14 +1,15 @@
 /**
  * Purpose:
- * Gallery persistence layer: IndexedDB access for artworks (CRUD, clone, thumbnail updates).
+ * Artwork persistence layer shared by the editor and gallery: IndexedDB access for artworks
+ * (CRUD, clone, thumbnail updates) plus dimension/palette limits and validation.
  *
  * Notes:
  * New artworks honor `backgroundColor`: pixels are filled with that palette index, appending the
  * color to the palette when it is not already present (up to MAX_PALETTE_ENTRIES).
  */
 import { db } from "@/features/shared/db/dexie.config";
-import type { Artwork, ArtworkLayer } from "@/features/editor/types/editor.types";
-import type { ImportedArtworkData } from "@/features/editor/services/artworkFileService";
+import type { Artwork, ArtworkLayer } from "@/features/shared/artwork/artwork.types";
+import type { ImportedArtworkData } from "@/features/shared/artwork/artworkFileService";
 import { normalizeHexColor } from "@/features/shared/utils/colorConverter";
 import { clonePixelBuffer, ensureUint8PixelData } from "@/features/shared/utils/binaryHelpers";
 

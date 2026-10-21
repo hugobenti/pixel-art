@@ -20,14 +20,15 @@ src/
 ├── features/                   # Feature Domain Isolation
 │   ├── gallery/                # Gallery Domain
 │   │   ├── components/         # GalleryGrid.tsx, ArtworkCard.tsx, CreateArtworkModal.tsx
-│   │   ├── services/           # galleryService.ts (Dexie.js integration code)
+│   │   ├── hooks/              # useCreateArtworkForm.ts, useGalleryImport.ts
 │   │   └── store/              # useGalleryStore.ts (State management for UI)
 │   ├── editor/                 # Canvas Engine Domain
 │   │   ├── components/         # CanvasContainer.tsx, PaletteBar.tsx, ToolBar.tsx, PixelGridOverlay.tsx
 │   │   ├── hooks/              # useCanvasEngine.ts, useHistory.ts, useZoomPan.ts
 │   │   ├── logic/              # coordinateMath.ts, pixelBuffer.ts, gridRender.ts
-│   │   └── types/              # editor.types.ts
+│   │   └── types/              # editor.types.ts (viewport + undo history)
 │   └── shared/                 # Shared Kernel / Global App Infrastructure
+│       ├── artwork/            # artwork.types.ts, artworkService.ts (Dexie.js persistence + limits), artworkFileService.ts (JSON/PNG import/export)
 │       ├── components/         # Primitive UI atoms (Button.tsx, Input.tsx - Pure Tailwind)
 │       ├── db/                 # dexie.config.ts (IndexedDB Schema setup)
 │       └── utils/              # colorConverter.ts, binaryHelpers.ts
@@ -51,7 +52,7 @@ We optimize memory layout by saving data into a flat, typed array (`Uint8Array`)
 ### IndexedDB Database Schema (via Dexie.js)
 
 ```typescript
-// features/editor/types/editor.types.ts
+// features/shared/artwork/artwork.types.ts
 
 export interface Artwork {
   id: string;               // UUID v4 Primary Key

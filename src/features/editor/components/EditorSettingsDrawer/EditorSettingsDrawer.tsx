@@ -26,7 +26,8 @@ import { useCanvasSizePanel } from "@/features/editor/components/EditorSettingsD
 import { useEditorSettingsDrawer } from "@/features/editor/components/EditorSettingsDrawer/hooks/useEditorSettingsDrawer";
 import { useImportExportPanel } from "@/features/editor/components/EditorSettingsDrawer/hooks/useImportExportPanel";
 
-import type { Artwork, ViewportState } from "@/features/editor/types/editor.types";
+import type { Artwork } from "@/features/shared/artwork/artwork.types";
+import type { ViewportState } from "@/features/editor/types/editor.types";
 
 interface EditorSettingsDrawerProps {
   artwork: Artwork;

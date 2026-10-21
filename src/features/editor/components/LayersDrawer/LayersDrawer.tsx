@@ -38,7 +38,7 @@ import { useLayerRenameDialog } from "@/features/editor/components/LayersDrawer/
 import { SortableLayerItem } from "@/features/editor/components/LayersDrawer/SortableLayerItem";
 import { useLayersDrawerPanel } from "@/features/editor/components/LayersDrawer/useLayersDrawerPanel";
 
-import type { ArtworkLayer } from "@/features/editor/types/editor.types";
+import type { ArtworkLayer } from "@/features/shared/artwork/artwork.types";
 
 interface LayersDrawerProps {
   layers: ArtworkLayer[];

@@ -9,8 +9,8 @@ import { useCallback } from "react";
 import {
   exportArtworkAsJson,
   exportArtworkAsPng,
-} from "@/features/editor/services/artworkFileService";
-import type { Artwork } from "@/features/editor/types/editor.types";
+} from "@/features/shared/artwork/artworkFileService";
+import type { Artwork } from "@/features/shared/artwork/artwork.types";
 import { useToast } from "@/features/shared/components/Toast/hooks/useToast";
 
 interface UseImportExportPanelParams {

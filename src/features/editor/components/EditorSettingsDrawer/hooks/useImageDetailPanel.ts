@@ -10,7 +10,8 @@
 import { useMemo } from "react";
 
 import { countVisibleCompositePixelsByPaletteIndex } from "@/features/editor/logic/visibleCompositePixelCounts";
-import type { Artwork, ViewportState } from "@/features/editor/types/editor.types";
+import type { Artwork } from "@/features/shared/artwork/artwork.types";
+import type { ViewportState } from "@/features/editor/types/editor.types";
 
 export interface ImageDetailRow {
   paletteIndex: number;

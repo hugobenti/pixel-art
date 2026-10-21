@@ -10,7 +10,7 @@ import Image from "next/image";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-import type { ArtworkLayer } from "@/features/editor/types/editor.types";
+import type { ArtworkLayer } from "@/features/shared/artwork/artwork.types";
 
 import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
 import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";

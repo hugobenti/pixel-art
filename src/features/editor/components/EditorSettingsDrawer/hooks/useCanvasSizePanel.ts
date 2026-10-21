@@ -7,9 +7,9 @@
 import { useCallback, useState } from "react";
 
 import { resizeArtworkDimensions } from "@/features/editor/logic/resizeCanvas";
-import type { Artwork } from "@/features/editor/types/editor.types";
+import type { Artwork } from "@/features/shared/artwork/artwork.types";
 import { useToast } from "@/features/shared/components/Toast/hooks/useToast";
-import { validateDimensions } from "@/features/gallery/services/galleryService";
+import { validateDimensions } from "@/features/shared/artwork/artworkService";
 
 export type EditorSettingsView =
   | "menu"
