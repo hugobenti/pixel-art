@@ -7,7 +7,9 @@
 import type { Artwork } from "@/features/shared/artwork/artwork.types";
 import type { ViewportState } from "@/features/editor/types/editor.types";
 
+import { editorSettingsImageDetailPanel } from "@/features/editor/components/EditorSettingsDrawer/EditorSettingsImageDetailPanel.style";
 import { useImageDetailPanel } from "@/features/editor/components/EditorSettingsDrawer/hooks/useImageDetailPanel";
+import { cx } from "@/features/shared/utils/cx";
 
 interface EditorSettingsImageDetailPanelProps {
   artwork: Artwork;
@@ -17,33 +19,6 @@ interface EditorSettingsImageDetailPanelProps {
   paintRevision: number;
 }
 
-const rootClass = "flex min-h-0 flex-1 flex-col gap-4 px-4 pb-4 pt-0 sm:px-4";
-
-const hintClass = "text-xs font-normal leading-relaxed text-zinc-500";
-
-const listClass =
-  "max-h-[min(55vh,28rem)] min-h-0 divide-y divide-zinc-200 overflow-y-auto rounded-lg border border-zinc-200 bg-zinc-50";
-
-const rowClass = "flex items-center gap-3 px-3 py-2.5 text-sm text-zinc-900";
-
-const rowMetaClass = "flex min-w-0 flex-1 flex-col gap-0.5";
-
-const rowTitleClass = "truncate font-medium tabular-nums";
-
-const rowSubClass = "truncate text-xs font-normal text-zinc-500";
-
-const swatchBaseClass =
-  "h-9 w-9 shrink-0 rounded border border-zinc-300 shadow-inner";
-
-const swatchTransparentClass = `${swatchBaseClass} bg-zinc-200`;
-
-const countClass = "shrink-0 tabular-nums text-zinc-700";
-
-const pctClass = "w-12 shrink-0 text-right text-xs tabular-nums text-zinc-500";
-
-const emptyClass =
-  "rounded-lg border border-dashed border-zinc-300 bg-white px-3 py-6 text-center text-sm text-zinc-600";
-
 export function EditorSettingsImageDetailPanel({
   artwork,
   viewport,
@@ -51,53 +26,50 @@ export function EditorSettingsImageDetailPanel({
   viewportCssHeight,
   paintRevision,
 }: EditorSettingsImageDetailPanelProps) {
-  const { rows, totalCompositeOpaque, totalViewportCells } = useImageDetailPanel({
-    artwork,
-    viewport,
-    viewportCssWidth,
-    viewportCssHeight,
-    paintRevision,
-  });
-
-  const summaryPrefix =
-    totalViewportCells === 0
-      ? "No artwork pixels intersect the visible viewport."
-      : `${totalCompositeOpaque} composited pixel${totalCompositeOpaque === 1 ? "" : "s"} across ${totalViewportCells} visible cell${totalViewportCells === 1 ? "" : "s"} (layers stacked; no double counting).`;
+  const { rows, summaryText, showViewportEmpty, showTransparentEmpty, showRows } =
+    useImageDetailPanel({
+      artwork,
+      viewport,
+      viewportCssWidth,
+      viewportCssHeight,
+      paintRevision,
+    });
 
   return (
-    <div className={rootClass}>
-      <p className={hintClass}>{summaryPrefix}</p>
-      {totalViewportCells === 0 ? (
-        <div className={emptyClass}>Pan or zoom so the canvas viewport overlaps your artwork.</div>
-      ) : totalCompositeOpaque === 0 ? (
-        <div className={emptyClass}>
+    <div className={editorSettingsImageDetailPanel.root}>
+      <p className={editorSettingsImageDetailPanel.hint}>{summaryText}</p>
+      {showViewportEmpty && (
+        <div className={editorSettingsImageDetailPanel.empty}>
+          Pan or zoom so the canvas viewport overlaps your artwork.
+        </div>
+      )}
+      {showTransparentEmpty && (
+        <div className={editorSettingsImageDetailPanel.empty}>
           Every visible cell is fully transparent in the composite stack.
         </div>
-      ) : (
-        <ul className={listClass}>
-          {rows.map((row) => {
-            const pct =
-              totalCompositeOpaque > 0
-                ? Math.round((row.count / totalCompositeOpaque) * 1000) / 10
-                : 0;
-            const opaqueSwatch = row.color !== "transparent";
-
-            return (
-              <li key={row.paletteIndex} className={rowClass}>
-                <span
-                  className={opaqueSwatch ? swatchBaseClass : swatchTransparentClass}
-                  style={opaqueSwatch ? { backgroundColor: row.color } : undefined}
-                  aria-hidden
-                />
-                <div className={rowMetaClass}>
-                  <span className={rowTitleClass}>Palette #{row.paletteIndex}</span>
-                  <span className={rowSubClass}>{row.color}</span>
-                </div>
-                <span className={countClass}>{row.count}</span>
-                <span className={pctClass}>{pct}%</span>
-              </li>
-            );
-          })}
+      )}
+      {showRows && (
+        <ul className={editorSettingsImageDetailPanel.list}>
+          {rows.map((row) => (
+            <li key={row.paletteIndex} className={editorSettingsImageDetailPanel.row}>
+              <span
+                className={cx(
+                  editorSettingsImageDetailPanel.swatch,
+                  !row.opaqueSwatch && editorSettingsImageDetailPanel.swatchTransparent
+                )}
+                style={row.swatchStyle}
+                aria-hidden
+              />
+              <div className={editorSettingsImageDetailPanel.rowMeta}>
+                <span className={editorSettingsImageDetailPanel.rowTitle}>
+                  Palette #{row.paletteIndex}
+                </span>
+                <span className={editorSettingsImageDetailPanel.rowSub}>{row.color}</span>
+              </div>
+              <span className={editorSettingsImageDetailPanel.count}>{row.count}</span>
+              <span className={editorSettingsImageDetailPanel.pct}>{row.pct}%</span>
+            </li>
+          ))}
         </ul>
       )}
     </div>

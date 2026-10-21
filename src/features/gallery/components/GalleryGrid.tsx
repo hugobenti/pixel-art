@@ -7,9 +7,7 @@
 import type { Artwork } from "@/features/shared/artwork/artwork.types";
 
 import { ArtworkCard } from "@/features/gallery/components/ArtworkCard";
-
-const gridClass =
-  "grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4";
+import { galleryGrid } from "@/features/gallery/components/GalleryGrid.style";
 
 interface GalleryGridProps {
   artworks: Artwork[];
@@ -26,14 +24,14 @@ export function GalleryGrid({
 }: GalleryGridProps) {
   if (artworks.length === 0) {
     return (
-      <p className="rounded-xl border border-dashed border-zinc-300 p-12 text-center text-zinc-500">
+      <p className={galleryGrid.empty}>
         No artworks yet. Create one to get started.
       </p>
     );
   }
 
   return (
-    <div className={gridClass}>
+    <div className={galleryGrid.grid}>
       {artworks.map((a) => (
         <ArtworkCard
           key={a.id}

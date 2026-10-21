@@ -6,17 +6,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
 
 import { Button } from "@/features/shared/components/Button";
 import { Card } from "@/features/shared/components/Card";
 import { Input } from "@/features/shared/components/Input";
+import { artworkCard } from "@/features/gallery/components/ArtworkCard.style";
+import { useArtworkCard } from "@/features/gallery/hooks/useArtworkCard";
 
 import type { Artwork } from "@/features/shared/artwork/artwork.types";
-
-const cardInnerClass = "flex flex-col gap-3 p-4";
-
-const metaRowClass = "flex flex-wrap items-center gap-2";
 
 interface ArtworkCardProps {
   artwork: Artwork;
@@ -31,87 +28,59 @@ export function ArtworkCard({
   onClone,
   onDelete,
 }: ArtworkCardProps) {
-  const [renaming, setRenaming] = useState(false);
-  const [title, setTitle] = useState(artwork.title);
-
-  const thumb =
-    artwork.thumbnail ||
-    "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
-
-  const handleRenameSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await onRename(artwork.id, title);
-    setRenaming(false);
-  };
+  const {
+    editorHref,
+    thumb,
+    thumbUnoptimized,
+    renaming,
+    title,
+    handleTitleChange,
+    handleRenameSubmit,
+    startRename,
+    cancelRename,
+    handleDelete,
+  } = useArtworkCard({ artwork, onRename, onDelete });
 
   return (
     <article>
-      <Card className={cardInnerClass}>
-        <Link
-          href={`/editor/${artwork.id}`}
-          className="relative block aspect-square w-full overflow-hidden rounded-lg bg-zinc-100"
-        >
+      <Card className={artworkCard.inner}>
+        <Link href={editorHref} className={artworkCard.thumbLink}>
           <Image
             src={thumb}
             alt=""
             fill
-            className="object-cover"
+            className={artworkCard.thumbImage}
             sizes="200px"
-            unoptimized={thumb.startsWith("data:")}
+            unoptimized={thumbUnoptimized}
           />
         </Link>
 
         {renaming ? (
-          <form onSubmit={handleRenameSubmit} className="flex gap-2">
-            <Input
-              autoFocus
-              value={title}
-              onChange={(ev) => setTitle(ev.target.value)}
-            />
+          <form onSubmit={handleRenameSubmit} className={artworkCard.renameForm}>
+            <Input autoFocus value={title} onChange={handleTitleChange} />
             <Button type="submit" variant="primary">
               Save
             </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => {
-                setTitle(artwork.title);
-                setRenaming(false);
-              }}
-            >
+            <Button type="button" variant="ghost" onClick={cancelRename}>
               Cancel
             </Button>
           </form>
         ) : (
-          <div className={metaRowClass}>
-            <Link
-              href={`/editor/${artwork.id}`}
-              className="min-w-0 flex-1 truncate font-medium text-zinc-900"
-            >
+          <div className={artworkCard.metaRow}>
+            <Link href={editorHref} className={artworkCard.titleLink}>
               {artwork.title}
             </Link>
           </div>
         )}
 
-        <div className="flex flex-wrap gap-2">
-          <Button variant="ghost" type="button" onClick={() => setRenaming(true)}>
+        <div className={artworkCard.actions}>
+          <Button variant="ghost" type="button" onClick={startRename}>
             Rename
           </Button>
           <Button variant="ghost" type="button" onClick={() => onClone(artwork.id)}>
             Clone
           </Button>
-          <Button
-            variant="danger"
-            type="button"
-            onClick={() => {
-              if (
-                typeof window !== "undefined" &&
-                window.confirm("Delete this artwork permanently?")
-              ) {
-                void onDelete(artwork.id);
-              }
-            }}
-          >
+          <Button variant="danger" type="button" onClick={handleDelete}>
             Delete
           </Button>
         </div>

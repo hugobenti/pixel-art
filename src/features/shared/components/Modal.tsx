@@ -4,24 +4,19 @@
  */
 "use client";
 
-import { useEffect } from "react";
 import type { HTMLAttributes, ReactNode } from "react";
 
-import {
-  type ModalLayer,
-  type ModalPlacement,
-  type ModalSize,
-  modalOverlayClasses,
-  modalPanelClasses,
-} from "@/features/shared/components/modal.styles";
+import { modal } from "@/features/shared/components/Modal.style";
+import { useModal } from "@/features/shared/components/useModal";
+import { cx } from "@/features/shared/utils/cx";
 
 export interface ModalProps {
   open: boolean;
   onClose: () => void;
   children: ReactNode;
-  placement?: ModalPlacement;
-  size?: ModalSize;
-  layer?: ModalLayer;
+  placement?: keyof typeof modal.placement;
+  size?: keyof typeof modal.size;
+  layer?: keyof typeof modal.layer;
   backdropBlur?: boolean;
   closeOnBackdrop?: boolean;
   closeOnEscape?: boolean;
@@ -46,77 +41,45 @@ export function Modal({
   overlayProps,
   panelProps,
 }: ModalProps) {
-  useEffect(() => {
-    if (!open || !closeOnEscape) {
-      return;
-    }
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        onClose();
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open, closeOnEscape, onClose]);
+  const {
+    overlayClassName: overlayPropClass,
+    overlayRest,
+    onOverlayMouseDown,
+    panelClassName: panelPropClass,
+    panelRest,
+    onPanelMouseDown,
+  } = useModal({
+    open,
+    onClose,
+    closeOnBackdrop,
+    closeOnEscape,
+    overlayProps,
+    panelProps,
+  });
 
   if (!open) {
     return null;
   }
 
-  const {
-    className: overlayPropClass,
-    onMouseDown: overlayOnMouseDown,
-    ...restOverlay
-  } = overlayProps ?? {};
-
-  const {
-    className: panelPropClass,
-    onMouseDown: panelOnMouseDown,
-    ...restPanel
-  } = panelProps ?? {};
-
-  const overlayClass = [
-    modalOverlayClasses({
-      placement,
-      layer,
-      backdropBlur,
-      extra: overlayClassName,
-    }),
-    overlayPropClass,
-  ]
-    .filter(Boolean)
-    .join(" ")
-    .trim();
-
-  const panelClass = [modalPanelClasses(size, panelClassName), panelPropClass]
-    .filter(Boolean)
-    .join(" ")
-    .trim();
-
   return (
     <div
-      className={overlayClass}
+      className={cx(
+        modal.overlay,
+        modal.layer[layer],
+        modal.placement[placement],
+        backdropBlur && modal.backdropBlur,
+        overlayClassName,
+        overlayPropClass
+      )}
       role="dialog"
       aria-modal="true"
-      onMouseDown={(e) => {
-        overlayOnMouseDown?.(e);
-        if (!closeOnBackdrop) {
-          return;
-        }
-        if (e.target === e.currentTarget) {
-          onClose();
-        }
-      }}
-      {...restOverlay}
+      onMouseDown={onOverlayMouseDown}
+      {...overlayRest}
     >
       <div
-        className={panelClass}
-        onMouseDown={(e) => {
-          panelOnMouseDown?.(e);
-          e.stopPropagation();
-        }}
-        {...restPanel}
+        className={cx(modal.size[size], panelClassName, panelPropClass)}
+        onMouseDown={onPanelMouseDown}
+        {...panelRest}
       >
         {children}
       </div>

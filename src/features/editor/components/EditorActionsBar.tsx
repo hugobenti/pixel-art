@@ -6,24 +6,13 @@
 
 import Link from "next/link";
 
+import { editorActionsBar } from "@/features/editor/components/EditorActionsBar.style";
+import { useEditorActionsBar } from "@/features/editor/components/useEditorActionsBar";
 import { Button } from "@/features/shared/components/Button";
 import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
 import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
 
 import type { ColorSlot } from "@/features/editor/logic/paletteMutations";
-
-const barClass =
-  "flex flex-wrap items-center gap-2 border-b border-zinc-200 py-2";
-
-const leftClusterClass = "flex min-w-0 flex-1 items-center gap-3";
-
-const actionClusterClass = "flex flex-wrap items-center justify-end gap-2";
-
-const backLinkClass =
-  "shrink-0 text-sm font-medium text-zinc-600 underline-offset-4 hover:text-zinc-900 hover:underline";
-
-const titleClass =
-  "min-w-0 truncate text-base font-semibold text-zinc-900";
 
 interface EditorActionsBarProps {
   title: string;
@@ -72,20 +61,18 @@ export function EditorActionsBar({
   settingsDrawerOpen,
   onToggleSettingsDrawer,
 }: EditorActionsBarProps) {
-  const slotLabel = activeSlot === "primary" ? "Primary" : "Secondary";
-
-  const slotToggleButtonClass =
-    "min-h-10 min-w-[12ch] shrink-0 touch-manipulation px-3";
+  const { slotLabel, slotAriaLabel, slotVariant } =
+    useEditorActionsBar(activeSlot);
 
   return (
-    <div className={barClass}>
-      <div className={leftClusterClass}>
-        <Link href="/gallery" className={backLinkClass}>
+    <div className={editorActionsBar.base}>
+      <div className={editorActionsBar.leftCluster}>
+        <Link href="/gallery" className={editorActionsBar.backLink}>
           ← Gallery
         </Link>
-        <h1 className={titleClass}>{title}</h1>
+        <h1 className={editorActionsBar.title}>{title}</h1>
       </div>
-      <div className={actionClusterClass}>
+      <div className={editorActionsBar.actionCluster}>
         <Button
           type="button"
           variant="ghost"
@@ -176,10 +163,10 @@ export function EditorActionsBar({
         </Button>
         <Button
           type="button"
-          variant={activeSlot === "primary" ? "primary" : "outline"}
-          className={slotToggleButtonClass}
+          variant={slotVariant}
+          className={editorActionsBar.slotToggleButton}
           onClick={onToggleActiveSlot}
-          aria-label={`Painting slot: ${slotLabel}. Click to switch.`}
+          aria-label={slotAriaLabel}
           title="Switch primary / secondary painting slot"
         >
           {slotLabel}

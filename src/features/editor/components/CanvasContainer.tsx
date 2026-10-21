@@ -6,17 +6,10 @@
 
 import type { RefObject } from "react";
 
+import { canvasContainer } from "@/features/editor/components/CanvasContainer.style";
 import { PixelGridOverlay } from "@/features/editor/components/PixelGridOverlay";
 import { ReferenceImageOverlay } from "@/features/editor/components/ReferenceImageOverlay";
-
-const viewportShell =
-  "relative flex min-h-0 w-full flex-1 flex-col overflow-hidden rounded-lg border border-zinc-200 bg-zinc-100";
-
-const checkerLayer =
-  "pixel-checkerboard pointer-events-none absolute inset-0 rounded-[inherit]";
-
-const canvasStack =
-  "relative z-10 h-full min-h-0 w-full min-w-0 flex-1";
+import { useCanvasContainer } from "@/features/editor/components/useCanvasContainer";
 
 interface CanvasContainerProps {
   wrapRef: RefObject<HTMLDivElement | null>;
@@ -32,9 +25,6 @@ interface CanvasContainerProps {
   onArtworkPointerDown: React.PointerEventHandler<HTMLCanvasElement>;
 }
 
-const artworkCanvasClass =
-  "absolute inset-0 block h-full w-full cursor-crosshair touch-none";
-
 export function CanvasContainer({
   wrapRef,
   artworkCanvasRef,
@@ -43,21 +33,23 @@ export function CanvasContainer({
   viewportHandlers,
   onArtworkPointerDown,
 }: CanvasContainerProps) {
+  const { onArtworkContextMenu } = useCanvasContainer();
+
   return (
-    <div className={viewportShell}>
-      <div className={checkerLayer} aria-hidden />
+    <div className={canvasContainer.base}>
+      <div className={canvasContainer.checker} aria-hidden />
       <div
         ref={wrapRef}
-        className={canvasStack}
+        className={canvasContainer.stack}
         {...viewportHandlers}
         role="application"
         tabIndex={0}
       >
         <canvas
           ref={artworkCanvasRef}
-          className={artworkCanvasClass}
+          className={canvasContainer.artworkCanvas}
           onPointerDown={onArtworkPointerDown}
-          onContextMenu={(e) => e.preventDefault()}
+          onContextMenu={onArtworkContextMenu}
         />
         <ReferenceImageOverlay canvasRef={referenceImageCanvasRef} />
         <PixelGridOverlay canvasRef={gridCanvasRef} />

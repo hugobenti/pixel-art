@@ -4,18 +4,15 @@
  */
 "use client";
 
-import { useParams } from "next/navigation";
-
+import { editorPage } from "@/app/editor/[id]/page.style";
+import { useEditorPage } from "@/app/editor/[id]/useEditorPage";
 import { EditorScreen } from "@/features/editor/components/EditorScreen";
 
 export default function EditorPage() {
-  const params = useParams();
-  const id = typeof params.id === "string" ? params.id : "";
+  const { id } = useEditorPage();
 
   if (!id) {
-    return (
-      <div className="p-8 text-center text-zinc-500">Missing artwork id.</div>
-    );
+    return <div className={editorPage.missingId}>Missing artwork id.</div>;
   }
 
   return <EditorScreen artworkId={id} />;

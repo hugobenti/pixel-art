@@ -4,19 +4,13 @@
  */
 "use client";
 
-import { useState } from "react";
-
 import { Button } from "@/features/shared/components/Button";
 import { Input } from "@/features/shared/components/Input";
 import { Modal } from "@/features/shared/components/Modal";
 
+import { layerRenameModal } from "@/features/editor/components/LayersDrawer/LayerRenameModal.style";
 import type { LayerRenameSession } from "@/features/editor/components/LayersDrawer/hooks/useLayerRenameDialog";
-
-const titleClass = "text-base font-semibold text-zinc-900";
-
-const fieldWrapClass = "mt-3";
-
-const actionsClass = "mt-4 flex justify-end gap-2";
+import { useLayerRenameForm } from "@/features/editor/components/LayersDrawer/hooks/useLayerRenameForm";
 
 interface LayerRenameModalProps {
   session: LayerRenameSession | null;
@@ -43,17 +37,11 @@ function LayerRenameModalForm({
   onDismiss,
   onConfirm,
 }: LayerRenameModalFormProps) {
-  const [draft, setDraft] = useState(session.initialName);
-
-  const trimmed = draft.trim();
-  const canSave = trimmed.length > 0;
-
-  const submit = () => {
-    if (!canSave) {
-      return;
-    }
-    onConfirm(trimmed);
-  };
+  const { draft, canSave, submit, onDraftChange, onDraftKeyDown } = useLayerRenameForm({
+    initialName: session.initialName,
+    onDismiss,
+    onConfirm,
+  });
 
   return (
     <Modal
@@ -65,28 +53,19 @@ function LayerRenameModalForm({
       backdropBlur={false}
       overlayProps={{ "aria-labelledby": "layer-rename-title" }}
     >
-      <h3 id="layer-rename-title" className={titleClass}>
+      <h3 id="layer-rename-title" className={layerRenameModal.title}>
         Rename layer
       </h3>
-      <div className={fieldWrapClass}>
+      <div className={layerRenameModal.fieldWrap}>
         <Input
           autoFocus
           value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              e.preventDefault();
-              submit();
-            }
-            if (e.key === "Escape") {
-              e.preventDefault();
-              onDismiss();
-            }
-          }}
+          onChange={onDraftChange}
+          onKeyDown={onDraftKeyDown}
           aria-label="Layer name"
         />
       </div>
-      <div className={actionsClass}>
+      <div className={layerRenameModal.actions}>
         <Button type="button" variant="ghost" onClick={onDismiss}>
           Cancel
         </Button>

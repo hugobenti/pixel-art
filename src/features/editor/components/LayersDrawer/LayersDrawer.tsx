@@ -7,17 +7,7 @@
  */
 "use client";
 
-import { useEffect } from "react";
-
-import {
-  closestCenter,
-  DndContext,
-  PointerSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-} from "@dnd-kit/core";
+import { closestCenter, DndContext } from "@dnd-kit/core";
 import {
   SortableContext,
   verticalListSortingStrategy,
@@ -26,17 +16,11 @@ import {
 import { Button } from "@/features/shared/components/Button";
 import { SideDrawer, SideDrawerCloseButton } from "@/features/shared/components/SideDrawer";
 
-import {
-  actionsRowClass,
-  ANIMATION_MS,
-  footerClass,
-  listClass,
-  listWrapClass,
-} from "@/features/editor/components/LayersDrawer/layersDrawer.constants";
+import { ANIMATION_MS } from "@/features/editor/components/LayersDrawer/layersDrawer.constants";
+import { layersDrawer } from "@/features/editor/components/LayersDrawer/LayersDrawer.style";
 import { LayerRenameModal } from "@/features/editor/components/LayersDrawer/LayerRenameModal";
-import { useLayerRenameDialog } from "@/features/editor/components/LayersDrawer/hooks/useLayerRenameDialog";
+import { useLayersDrawer } from "@/features/editor/components/LayersDrawer/hooks/useLayersDrawer";
 import { SortableLayerItem } from "@/features/editor/components/LayersDrawer/SortableLayerItem";
-import { useLayersDrawerPanel } from "@/features/editor/components/LayersDrawer/useLayersDrawerPanel";
 
 import type { ArtworkLayer } from "@/features/shared/artwork/artwork.types";
 
@@ -69,51 +53,17 @@ export function LayersDrawer({
   onRenameLayer,
   onReorderLayers,
 }: LayersDrawerProps) {
-  const { panelEntered, handleClose } = useLayersDrawerPanel({ onClose });
-
-  const layerRename = useLayerRenameDialog(onRenameLayer);
-  const { session: renameSessionOpen, dismiss: dismissRename } = layerRename;
-
-  const handleRenameClick = (layerId: string) => {
-    const layer = layers.find((l) => l.id === layerId);
-    if (!layer) {
-      return;
-    }
-    layerRename.requestRename(layerId, layer.name);
-  };
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: 8 },
-    }),
-    useSensor(TouchSensor, {
-      activationConstraint: {
-        delay: 200,
-        tolerance: 6,
-      },
-    })
-  );
-
-  useEffect(() => {
-    const onKeyDown = (event: globalThis.KeyboardEvent) => {
-      if (event.key === "Escape") {
-        if (renameSessionOpen) {
-          dismissRename();
-          return;
-        }
-        handleClose();
-      }
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [handleClose, renameSessionOpen, dismissRename]);
-
-  const handleDragEnd = (event: DragEndEvent) => {
-    if (!event.over) {
-      return;
-    }
-    onReorderLayers(String(event.active.id), String(event.over.id));
-  };
+  const {
+    panelEntered,
+    handleClose,
+    sensors,
+    handleDragEnd,
+    handleRenameClick,
+    layerIds,
+    renameSession,
+    dismissRename,
+    confirmRename,
+  } = useLayersDrawer({ layers, onClose, onRenameLayer, onReorderLayers });
 
   return (
     <>
@@ -127,23 +77,25 @@ export function LayersDrawer({
           <SideDrawerCloseButton onClick={handleClose} aria-label="Close layers panel" />
         }
         belowHeader={
-          <div className={actionsRowClass}>
+          <div className={layersDrawer.actionsRow}>
             <Button
               type="button"
               variant="primary"
-              className="min-h-10 w-full touch-manipulation px-3 sm:min-h-9 sm:w-auto"
+              className={layersDrawer.addLayerButton}
               onClick={onAddLayer}
             >
               Add layer
             </Button>
           </div>
         }
-        footer={<footer className={footerClass}>Top items render in front of lower items.</footer>}
+        footer={
+          <footer className={layersDrawer.footer}>Top items render in front of lower items.</footer>
+        }
       >
-        <div className={listWrapClass}>
+        <div className={layersDrawer.listWrap}>
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-            <SortableContext items={layers.map((layer) => layer.id)} strategy={verticalListSortingStrategy}>
-              <div className={listClass}>
+            <SortableContext items={layerIds} strategy={verticalListSortingStrategy}>
+              <div className={layersDrawer.list}>
                 {layers.map((layer) => (
                   <SortableLayerItem
                     key={layer.id}
@@ -166,9 +118,9 @@ export function LayersDrawer({
       </SideDrawer>
 
       <LayerRenameModal
-        session={layerRename.session}
-        onDismiss={layerRename.dismiss}
-        onConfirm={layerRename.confirm}
+        session={renameSession}
+        onDismiss={dismissRename}
+        onConfirm={confirmRename}
       />
     </>
   );

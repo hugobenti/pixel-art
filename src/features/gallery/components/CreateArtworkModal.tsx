@@ -8,15 +8,11 @@ import { Button } from "@/features/shared/components/Button";
 import { FormField } from "@/features/shared/components/FormField";
 import { Input } from "@/features/shared/components/Input";
 import { Modal } from "@/features/shared/components/Modal";
+import { createArtworkModal } from "@/features/gallery/components/CreateArtworkModal.style";
 import { useCreateArtworkForm } from "@/features/gallery/hooks/useCreateArtworkForm";
 
 import type { CreateArtworkInput } from "@/features/shared/artwork/artworkService";
 import { MAX_CANVAS_DIMENSION } from "@/features/shared/artwork/artworkService";
-
-const colorRowClass = "flex flex-wrap items-center gap-3";
-
-const colorPickerClass =
-  "h-10 w-14 shrink-0 cursor-pointer rounded border border-zinc-300 bg-white p-1";
 
 interface CreateArtworkModalProps {
   open: boolean;
@@ -42,13 +38,10 @@ export function CreateArtworkModal({
     handleSubmit,
   } = useCreateArtworkForm({ onCreate });
 
-  const bgHint =
-    "If this color is not in the default palette, it is added when the artwork is created.";
-
   return (
     <Modal open={open} onClose={onClose} placement="center" size="md">
-      <h2 className="text-lg font-semibold text-zinc-900">New artwork</h2>
-      <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
+      <h2 className={createArtworkModal.title}>New artwork</h2>
+      <form className={createArtworkModal.form} onSubmit={handleSubmit}>
         <FormField label="Title" htmlFor="create-artwork-title">
           <Input
             id="create-artwork-title"
@@ -57,7 +50,7 @@ export function CreateArtworkModal({
             required
           />
         </FormField>
-        <div className="grid grid-cols-2 gap-3">
+        <div className={createArtworkModal.sizeGrid}>
           <FormField label="Width (px)" htmlFor="create-artwork-width">
             <Input
               id="create-artwork-width"
@@ -84,23 +77,23 @@ export function CreateArtworkModal({
         <FormField
           label="Background color"
           htmlFor="create-artwork-bg"
-          hint={bgHint}
+          hint="If this color is not in the default palette, it is added when the artwork is created."
         >
-          <div className={colorRowClass}>
+          <div className={createArtworkModal.colorRow}>
             <input
               type="color"
               id="create-artwork-bg"
               value={backgroundColor}
               onChange={(ev) => setBackgroundColor(ev.target.value)}
-              className={colorPickerClass}
+              className={createArtworkModal.colorPicker}
               aria-label="Canvas background color"
             />
           </div>
         </FormField>
-        <p className="text-xs text-zinc-500">
+        <p className={createArtworkModal.maxSizeHint}>
           Maximum {MAX_CANVAS_DIMENSION} × {MAX_CANVAS_DIMENSION} pixels.
         </p>
-        <div className="mt-2 flex justify-end gap-2">
+        <div className={createArtworkModal.actions}>
           <Button type="button" variant="ghost" onClick={onClose}>
             Cancel
           </Button>

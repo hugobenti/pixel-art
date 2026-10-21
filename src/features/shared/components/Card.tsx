@@ -6,17 +6,16 @@
 
 import type { HTMLAttributes, ReactNode } from "react";
 
-const cardBaseClass =
-  "rounded-xl border border-zinc-200 bg-white shadow-sm";
+import { card } from "@/features/shared/components/Card.style";
+import { cx } from "@/features/shared/utils/cx";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
 }
 
-export function Card({ children, className = "", ...rest }: CardProps) {
-  const classes = `${cardBaseClass} ${className}`.trim();
+export function Card({ children, className, ...rest }: CardProps) {
   return (
-    <div className={classes} {...rest}>
+    <div className={cx(card.base, className)} {...rest}>
       {children}
     </div>
   );

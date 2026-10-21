@@ -6,13 +6,18 @@
 
 import type { RefObject } from "react";
 
-const canvasClass =
-  "pointer-events-none absolute inset-0 block h-full w-full";
+import { referenceImageOverlay } from "@/features/editor/components/ReferenceImageOverlay.style";
 
 interface ReferenceImageOverlayProps {
   canvasRef: RefObject<HTMLCanvasElement | null>;
 }
 
 export function ReferenceImageOverlay({ canvasRef }: ReferenceImageOverlayProps) {
-  return <canvas ref={canvasRef} className={canvasClass} aria-hidden />;
+  return (
+    <canvas
+      ref={canvasRef}
+      className={referenceImageOverlay.canvas}
+      aria-hidden
+    />
+  );
 }

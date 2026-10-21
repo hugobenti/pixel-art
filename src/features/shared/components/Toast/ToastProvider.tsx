@@ -8,17 +8,14 @@
  */
 "use client";
 
-import {
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type ReactNode,
-} from "react";
+import type { ReactNode } from "react";
 
-export type ToastTone = "neutral" | "success" | "error";
+import { useToastQueue } from "@/features/shared/components/Toast/hooks/useToastQueue";
+import { ToastContext } from "@/features/shared/components/Toast/ToastContext";
+import { toast as toastStyle } from "@/features/shared/components/Toast/ToastProvider.style";
+import { cx } from "@/features/shared/utils/cx";
+
+export type ToastTone = keyof typeof toastStyle.tone;
 
 export interface ToastRecord {
   id: string;
@@ -39,37 +36,8 @@ export interface ToastContextValue {
   dismissToast: (id: string) => void;
 }
 
-export const ToastContext = createContext<ToastContextValue | null>(null);
-
-const DEFAULT_DURATION_MS = 4500;
-
-const stackRegionClass = `
-  pointer-events-none fixed inset-x-0 top-0 z-[100]
-  flex flex-col items-center gap-2
-  px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-4
-`;
-
-function toastSurfaceClass(tone: ToastTone): string {
-  const base =
-    "pointer-events-auto flex min-h-12 w-full max-w-lg items-start gap-3 rounded-lg border px-4 py-3 shadow-lg sm:min-w-[280px]";
-
-  if (tone === "success") {
-    return `${base} border-green-200 bg-green-50 text-green-950`;
-  }
-  if (tone === "error") {
-    return `${base} border-red-200 bg-red-50 text-red-950`;
-  }
-  return `${base} border-zinc-200 bg-white text-zinc-900`;
-}
-
-const messageClass =
-  "min-w-0 flex-1 text-sm font-medium leading-snug";
-
-const dismissButtonClass =
-  "shrink-0 rounded-md px-1.5 py-0.5 text-lg leading-none text-current opacity-70 hover:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2";
-
 interface ToastStackProps {
-  toasts: ToastRecord[];
+  toasts: Array<ToastRecord & { domId: string }>;
   onDismiss: (id: string) => void;
 }
 
@@ -79,18 +47,18 @@ function ToastStack({ toasts, onDismiss }: ToastStackProps) {
   }
 
   return (
-    <div className={stackRegionClass} aria-live="polite" aria-relevant="additions">
+    <div className={toastStyle.stack} aria-live="polite" aria-relevant="additions">
       {toasts.map((toast) => (
         <div
           key={toast.id}
-          id={`toast-${toast.id}`}
+          id={toast.domId}
           role="status"
-          className={toastSurfaceClass(toast.tone)}
+          className={cx(toastStyle.surface, toastStyle.tone[toast.tone])}
         >
-          <p className={messageClass}>{toast.message}</p>
+          <p className={toastStyle.message}>{toast.message}</p>
           <button
             type="button"
-            className={dismissButtonClass}
+            className={toastStyle.dismiss}
             aria-label="Dismiss notification"
             onClick={() => {
               onDismiss(toast.id);
@@ -109,61 +77,7 @@ interface ToastProviderProps {
 }
 
 export function ToastProvider({ children }: ToastProviderProps) {
-  const [toasts, setToasts] = useState<ToastRecord[]>([]);
-  const timersRef = useRef<Map<string, number>>(new Map());
-
-  const dismissToast = useCallback((id: string) => {
-    const pending = timersRef.current.get(id);
-    if (pending != null) {
-      window.clearTimeout(pending);
-      timersRef.current.delete(id);
-    }
-    setToasts((prev) => prev.filter((t) => t.id !== id));
-  }, []);
-
-  const showToast = useCallback(
-    (input: ShowToastInput | string) => {
-      const normalized: ShowToastInput =
-        typeof input === "string" ? { message: input } : input;
-      const id =
-        typeof crypto !== "undefined" && crypto.randomUUID
-          ? crypto.randomUUID()
-          : `toast-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-      const tone: ToastTone = normalized.tone ?? "neutral";
-      const durationMs = normalized.durationMs ?? DEFAULT_DURATION_MS;
-      const skipDup = normalized.skipDuplicateActiveToast === true;
-
-      setToasts((prev) => {
-        if (
-          skipDup &&
-          prev.some((t) => t.message === normalized.message && t.tone === tone)
-        ) {
-          return prev;
-        }
-        if (!timersRef.current.has(id)) {
-          const tid = window.setTimeout(() => {
-            dismissToast(id);
-          }, durationMs);
-          timersRef.current.set(id, tid);
-        }
-        return [...prev, { id, message: normalized.message, tone }];
-      });
-    },
-    [dismissToast]
-  );
-
-  useEffect(() => {
-    const timersMap = timersRef.current;
-    return () => {
-      timersMap.forEach((tid) => window.clearTimeout(tid));
-      timersMap.clear();
-    };
-  }, []);
-
-  const value = useMemo(
-    () => ({ showToast, dismissToast }),
-    [showToast, dismissToast]
-  );
+  const { value, toasts, dismissToast } = useToastQueue();
 
   return (
     <ToastContext.Provider value={value}>

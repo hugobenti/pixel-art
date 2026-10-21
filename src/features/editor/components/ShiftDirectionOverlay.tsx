@@ -6,6 +6,7 @@
 
 import type { ShiftDirection } from "@/features/editor/logic/pixelShift";
 
+import { shiftDirectionOverlay } from "@/features/editor/components/ShiftDirectionOverlay.style";
 import { Button } from "@/features/shared/components/Button";
 
 interface ShiftDirectionOverlayProps {
@@ -13,24 +14,6 @@ interface ShiftDirectionOverlayProps {
   onClose: () => void;
   onShift: (direction: ShiftDirection) => void;
 }
-
-const backdropClass = `
-  fixed inset-0 z-40 bg-zinc-900/30 
-`;
-
-const bottomControlsClass = `
-  pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-6 pt-4
-`;
-
-const arrowPadClass = `
-  pointer-events-auto flex flex-col items-center rounded-full border border-zinc-200 bg-mist-800 opacity-90 p-2 shadow-lg w-40 h-40
-`;
-
-const arrowSideRowClass = `flex items-center justify-between w-36 gap-2`;
-
-const arrowButtonClass = `
-  flex h-12 min-w-12 items-center justify-center rounded-xl px-2 text-xl font-semibold bg-white
-`;
 
 export function ShiftDirectionOverlay({
   open,
@@ -41,48 +24,48 @@ export function ShiftDirectionOverlay({
     return null;
   }
 
-  const handleShift = (direction: ShiftDirection) => {
-    onShift(direction);
-  };
-
   return (
     <>
       <button
         type="button"
-        className={backdropClass}
+        className={shiftDirectionOverlay.backdrop}
         aria-label="Close shift controls"
         onClick={onClose}
       />
-      <div className={bottomControlsClass}>
-        <div className={arrowPadClass} role="group" aria-label="Shift pixels">
+      <div className={shiftDirectionOverlay.bottomControls}>
+        <div
+          className={shiftDirectionOverlay.arrowPad}
+          role="group"
+          aria-label="Shift pixels"
+        >
           <Button
             type="button"
             variant="ghost"
-            className={arrowButtonClass}
+            className={shiftDirectionOverlay.arrowButton}
             title="Shift up (wrap)"
             aria-label="Shift pixels up"
-            onClick={() => handleShift("up")}
+            onClick={() => onShift("up")}
           >
             ↑
           </Button>
-          <div className={arrowSideRowClass}>
+          <div className={shiftDirectionOverlay.arrowSideRow}>
             <Button
               type="button"
               variant="ghost"
-              className={arrowButtonClass}
+              className={shiftDirectionOverlay.arrowButton}
               title="Shift left (wrap)"
               aria-label="Shift pixels left"
-              onClick={() => handleShift("left")}
+              onClick={() => onShift("left")}
             >
               ←
             </Button>
             <Button
               type="button"
               variant="ghost"
-              className={arrowButtonClass}
+              className={shiftDirectionOverlay.arrowButton}
               title="Shift right (wrap)"
               aria-label="Shift pixels right"
-              onClick={() => handleShift("right")}
+              onClick={() => onShift("right")}
             >
               →
             </Button>
@@ -90,10 +73,10 @@ export function ShiftDirectionOverlay({
           <Button
             type="button"
             variant="ghost"
-            className={arrowButtonClass}
+            className={shiftDirectionOverlay.arrowButton}
             title="Shift down (wrap)"
             aria-label="Shift pixels down"
-            onClick={() => handleShift("down")}
+            onClick={() => onShift("down")}
           >
             ↓
           </Button>

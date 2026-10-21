@@ -8,6 +8,7 @@ import { Button } from "@/features/shared/components/Button";
 import { FormField } from "@/features/shared/components/FormField";
 import { Input } from "@/features/shared/components/Input";
 
+import { editorSettingsCanvasSizePanel } from "@/features/editor/components/EditorSettingsDrawer/EditorSettingsCanvasSizePanel.style";
 import { MAX_CANVAS_DIMENSION } from "@/features/shared/artwork/artworkService";
 
 interface EditorSettingsCanvasSizePanelProps {
@@ -19,20 +20,6 @@ interface EditorSettingsCanvasSizePanelProps {
   onApply: () => void;
 }
 
-const rootClass = "flex min-h-0 flex-1 flex-col gap-4 px-4 pb-4 pt-0 sm:px-4";
-
-const gridClass = "grid grid-cols-2 gap-3";
-
-const hintClass = "text-xs font-normal leading-relaxed text-zinc-500";
-
-const actionsClass = "flex flex-wrap items-center justify-end gap-2 pt-1";
-
-const cancelButtonClass =
-  "min-h-10 touch-manipulation px-4 sm:min-h-9";
-
-const applyButtonClass =
-  "min-h-10 touch-manipulation px-4 sm:min-h-9";
-
 export function EditorSettingsCanvasSizePanel({
   widthStr,
   heightStr,
@@ -42,13 +29,13 @@ export function EditorSettingsCanvasSizePanel({
   onApply,
 }: EditorSettingsCanvasSizePanelProps) {
   return (
-    <div className={rootClass}>
-      <p className={hintClass}>
+    <div className={editorSettingsCanvasSizePanel.root}>
+      <p className={editorSettingsCanvasSizePanel.hint}>
         Pixels stay anchored to the top-left. New cells use white from the palette when present,
         otherwise the first swatch. Undo history for this artwork is cleared after the size
         changes.
       </p>
-      <div className={gridClass}>
+      <div className={editorSettingsCanvasSizePanel.grid}>
         <FormField label="Width (px)" htmlFor="settings-canvas-width">
           <Input
             id="settings-canvas-width"
@@ -76,11 +63,11 @@ export function EditorSettingsCanvasSizePanel({
           />
         </FormField>
       </div>
-      <div className={actionsClass}>
+      <div className={editorSettingsCanvasSizePanel.actions}>
         <Button
           type="button"
           variant="outline"
-          className={cancelButtonClass}
+          className={editorSettingsCanvasSizePanel.cancelButton}
           onClick={onCancel}
         >
           Cancel
@@ -88,7 +75,7 @@ export function EditorSettingsCanvasSizePanel({
         <Button
           type="button"
           variant="primary"
-          className={applyButtonClass}
+          className={editorSettingsCanvasSizePanel.applyButton}
           onClick={onApply}
         >
           Apply

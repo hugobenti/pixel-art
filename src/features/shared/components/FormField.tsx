@@ -6,7 +6,8 @@
 
 import type { ReactNode } from "react";
 
-const rootClass = "flex flex-col gap-1 text-sm text-zinc-700";
+import { formField } from "@/features/shared/components/FormField.style";
+import { cx } from "@/features/shared/utils/cx";
 
 interface FormFieldProps {
   label: string;
@@ -23,14 +24,11 @@ export function FormField({
   children,
   className,
 }: FormFieldProps) {
-  const root = [rootClass, className].filter(Boolean).join(" ").trim();
   return (
-    <label htmlFor={htmlFor} className={root}>
+    <label htmlFor={htmlFor} className={cx(formField.base, className)}>
       {label}
       {children}
-      {hint ? (
-        <span className="text-xs font-normal text-zinc-500">{hint}</span>
-      ) : null}
+      {hint ? <span className={formField.hint}>{hint}</span> : null}
     </label>
   );
 }

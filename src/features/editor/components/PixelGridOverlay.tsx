@@ -6,13 +6,14 @@
 
 import type { RefObject } from "react";
 
-const canvasClass =
-  "pointer-events-none absolute inset-0 block h-full w-full";
+import { pixelGridOverlay } from "@/features/editor/components/PixelGridOverlay.style";
 
 interface PixelGridOverlayProps {
   canvasRef: RefObject<HTMLCanvasElement | null>;
 }
 
 export function PixelGridOverlay({ canvasRef }: PixelGridOverlayProps) {
-  return <canvas ref={canvasRef} className={canvasClass} aria-hidden />;
+  return (
+    <canvas ref={canvasRef} className={pixelGridOverlay.canvas} aria-hidden />
+  );
 }

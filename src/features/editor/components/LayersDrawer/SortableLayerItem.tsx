@@ -4,31 +4,18 @@
  */
 "use client";
 
-import { type KeyboardEvent } from "react";
 import Image from "next/image";
-
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 
 import type { ArtworkLayer } from "@/features/shared/artwork/artwork.types";
 
 import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
 import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
+import { cx } from "@/features/shared/utils/cx";
 
 import { LayerPreview } from "@/features/editor/components/LayersDrawer/LayerPreview";
-import {
-  dragHandleClass,
-  itemActiveClass,
-  itemClass,
-  itemIdleClass,
-  LAYER_ICON_SRC,
-  layerActionsClass,
-  layerIconButtonClass,
-  layerIconImgClass,
-  layerNameClass,
-  metadataClass,
-  previewWrapClass,
-} from "@/features/editor/components/LayersDrawer/layersDrawer.constants";
+import { LAYER_ICON_SRC } from "@/features/editor/components/LayersDrawer/layersDrawer.constants";
+import { sortableLayerItem } from "@/features/editor/components/LayersDrawer/SortableLayerItem.style";
+import { useSortableLayerItem } from "@/features/editor/components/LayersDrawer/hooks/useSortableLayerItem";
 
 interface SortableLayerItemProps {
   layer: ArtworkLayer;
@@ -55,82 +42,82 @@ export function SortableLayerItem({
   onRenameClick,
   drawerOpen,
 }: SortableLayerItemProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: layer.id });
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.65 : 1,
-  };
-  const rowClass = `${itemClass} ${isActive ? itemActiveClass : itemIdleClass}`;
-
-  const onRowKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      onSelectLayer(layer.id);
-    }
-  };
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    style,
+    previewKey,
+    onRowKeyDown,
+    onVisibilityClick,
+    onCopyClick,
+    onRenameButtonClick,
+  } = useSortableLayerItem({
+    layerId: layer.id,
+    drawerOpen,
+    onSelectLayer,
+    onToggleVisibility,
+    onCopyLayer,
+    onRenameClick,
+  });
 
   return (
     <div ref={setNodeRef} style={style}>
       <div
         role="button"
         tabIndex={0}
-        className={rowClass}
+        className={cx(
+          sortableLayerItem.item,
+          isActive ? sortableLayerItem.itemActive : sortableLayerItem.itemIdle
+        )}
         onClick={() => onSelectLayer(layer.id)}
         onKeyDown={onRowKeyDown}
         aria-current={isActive ? "true" : undefined}
       >
         <span
-          className={dragHandleClass}
+          className={sortableLayerItem.dragHandle}
           {...attributes}
           {...listeners}
           title="Drag to reorder (on touch: hold briefly, then drag)"
         >
-          <span className="sr-only">Reorder layer</span>
+          <span className={sortableLayerItem.srOnly}>Reorder layer</span>
           <Image
             src={LAYER_ICON_SRC.grip}
             alt=""
             width={20}
             height={20}
-            className={layerIconImgClass}
+            className={sortableLayerItem.layerIconImg}
           />
         </span>
-        <span className={previewWrapClass}>
+        <span className={sortableLayerItem.previewWrap}>
           <LayerPreview
-            key={`${layer.id}-${drawerOpen ? "open" : "closed"}`}
+            key={previewKey}
             layer={layer}
             palette={palette}
             width={width}
             height={height}
           />
         </span>
-        <span className={metadataClass}>
-          <span className={layerNameClass}>{layer.name}</span>
+        <span className={sortableLayerItem.metadata}>
+          <span className={sortableLayerItem.layerName}>{layer.name}</span>
         </span>
-        <div className={layerActionsClass}>
+        <div className={sortableLayerItem.layerActions}>
           <button
             type="button"
-            className={layerIconButtonClass}
-            onClick={(event) => {
-              event.stopPropagation();
-              onToggleVisibility(layer.id);
-            }}
+            className={sortableLayerItem.layerIconButton}
+            onClick={onVisibilityClick}
             title={layer.visible ? "Hide layer" : "Show layer"}
             aria-label={layer.visible ? "Hide layer" : "Show layer"}
           >
             <PublicMaskIcon
               src={layer.visible ? PUBLIC_ICONS.eye : PUBLIC_ICONS.eyeOff}
-              className={layerIconImgClass}
+              className={sortableLayerItem.layerIconImg}
             />
           </button>
           <button
             type="button"
-            className={layerIconButtonClass}
-            onClick={(event) => {
-              event.stopPropagation();
-              onCopyLayer(layer.id);
-            }}
+            className={sortableLayerItem.layerIconButton}
+            onClick={onCopyClick}
             title="Duplicate layer"
             aria-label="Duplicate layer"
           >
@@ -139,16 +126,13 @@ export function SortableLayerItem({
               alt=""
               width={20}
               height={20}
-              className={layerIconImgClass}
+              className={sortableLayerItem.layerIconImg}
             />
           </button>
           <button
             type="button"
-            className={layerIconButtonClass}
-            onClick={(event) => {
-              event.stopPropagation();
-              onRenameClick(layer.id);
-            }}
+            className={sortableLayerItem.layerIconButton}
+            onClick={onRenameButtonClick}
             title="Rename layer"
             aria-label="Rename layer"
           >
@@ -157,7 +141,7 @@ export function SortableLayerItem({
               alt=""
               width={20}
               height={20}
-              className={layerIconImgClass}
+              className={sortableLayerItem.layerIconImg}
             />
           </button>
         </div>

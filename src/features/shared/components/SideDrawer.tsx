@@ -11,23 +11,10 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 
 import { Button } from "@/features/shared/components/Button";
 import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
+import { sideDrawer } from "@/features/shared/components/SideDrawer.style";
+import { useSideDrawer } from "@/features/shared/components/useSideDrawer";
 import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
-
-import {
-  drawerBackdropBaseClass,
-  drawerBackdropClosedClass,
-  drawerBackdropOpenClass,
-  drawerHeaderClass,
-  drawerPanelBaseClass,
-  drawerPanelClosedClass,
-  drawerPanelOpenClass,
-  drawerShellRootClass,
-  drawerTitleClass,
-} from "@/features/shared/components/drawer.styles";
-
-const headerIconMaskClass = "h-5 w-5 text-zinc-800";
-
-const headerIconButtonClass = "shrink-0 touch-manipulation";
+import { cx } from "@/features/shared/utils/cx";
 
 interface SideDrawerProps {
   entered: boolean;
@@ -55,36 +42,36 @@ export function SideDrawer({
   children,
   backdropAriaLabel = "Close panel",
 }: SideDrawerProps) {
-  const motionStyle = {
-    transitionDuration: `${motionDurationMs}ms`,
-  } as const;
-
-  const backdropClass = `${drawerBackdropBaseClass} ${
-    entered ? drawerBackdropOpenClass : drawerBackdropClosedClass
-  }`;
-  const panelClass = `${drawerPanelBaseClass} ${
-    entered ? drawerPanelOpenClass : drawerPanelClosedClass
-  }`;
+  const { motionStyle } = useSideDrawer(motionDurationMs);
 
   return (
     <div
-      className={`${drawerShellRootClass} pointer-events-auto`}
+      className={sideDrawer.root}
       aria-hidden={false}
       aria-modal="true"
       role="dialog"
     >
       <button
         type="button"
-        className={backdropClass}
+        className={cx(
+          sideDrawer.backdrop,
+          entered ? sideDrawer.backdropOpen : sideDrawer.backdropClosed
+        )}
         style={motionStyle}
         onClick={onBackdropClick}
         aria-label={backdropAriaLabel}
       />
-      <aside className={panelClass} style={motionStyle}>
-        <header className={drawerHeaderClass}>
-          <div className="flex min-w-0 flex-1 items-center gap-2">
+      <aside
+        className={cx(
+          sideDrawer.panel,
+          entered ? sideDrawer.panelOpen : sideDrawer.panelClosed
+        )}
+        style={motionStyle}
+      >
+        <header className={sideDrawer.header}>
+          <div className={sideDrawer.headerStart}>
             {headerLeft}
-            <h2 className={`${drawerTitleClass} min-w-0 truncate`}>{title}</h2>
+            <h2 className={sideDrawer.title}>{title}</h2>
           </div>
           {headerRight}
         </header>
@@ -107,7 +94,7 @@ type HeaderIconButtonProps = Omit<
  * Ghost icon button for the leading header slot (drill-in back).
  */
 export function SideDrawerBackButton({
-  className = "",
+  className,
   ...rest
 }: HeaderIconButtonProps) {
   return (
@@ -115,10 +102,13 @@ export function SideDrawerBackButton({
       type="button"
       variant="ghost"
       size="icon"
-      className={`${headerIconButtonClass} ${className}`.trim()}
+      className={cx(sideDrawer.headerIconButton, className)}
       {...rest}
     >
-      <PublicMaskIcon src={PUBLIC_ICONS.chevronLeft} className={headerIconMaskClass} />
+      <PublicMaskIcon
+        src={PUBLIC_ICONS.chevronLeft}
+        className={sideDrawer.headerIcon}
+      />
     </Button>
   );
 }
@@ -127,7 +117,7 @@ export function SideDrawerBackButton({
  * Ghost icon button for dismissing the drawer (header trailing slot).
  */
 export function SideDrawerCloseButton({
-  className = "",
+  className,
   ...rest
 }: HeaderIconButtonProps) {
   return (
@@ -135,10 +125,10 @@ export function SideDrawerCloseButton({
       type="button"
       variant="ghost"
       size="icon"
-      className={`${headerIconButtonClass} ${className}`.trim()}
+      className={cx(sideDrawer.headerIconButton, className)}
       {...rest}
     >
-      <PublicMaskIcon src={PUBLIC_ICONS.xMark} className={headerIconMaskClass} />
+      <PublicMaskIcon src={PUBLIC_ICONS.xMark} className={sideDrawer.headerIcon} />
     </Button>
   );
 }

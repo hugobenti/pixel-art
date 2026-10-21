@@ -7,27 +7,23 @@
  */
 "use client";
 
-const maskLayoutClass =
-  "pointer-events-none inline-block shrink-0 bg-current [mask-size:contain] [mask-repeat:no-repeat] [mask-position:center]";
+import { publicMaskIcon } from "@/features/shared/components/PublicMaskIcon.style";
+import { usePublicMaskIcon } from "@/features/shared/components/usePublicMaskIcon";
+import { cx } from "@/features/shared/utils/cx";
 
 interface PublicMaskIconProps {
   src: string;
+  /** Replaces the default `h-5 w-5` size when given. */
   className?: string;
 }
 
-export function PublicMaskIcon({
-  src,
-  className = "h-5 w-5",
-}: PublicMaskIconProps) {
-  const maskUrl = `url("${src}")`;
+export function PublicMaskIcon({ src, className }: PublicMaskIconProps) {
+  const maskStyle = usePublicMaskIcon(src);
   return (
     <span
       aria-hidden
-      className={`${maskLayoutClass} ${className}`.trim()}
-      style={{
-        maskImage: maskUrl,
-        WebkitMaskImage: maskUrl,
-      }}
+      className={cx(publicMaskIcon.base, className ?? publicMaskIcon.defaultSize)}
+      style={maskStyle}
     />
   );
 }
