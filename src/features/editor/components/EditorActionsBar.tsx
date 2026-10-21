@@ -20,7 +20,7 @@ const leftClusterClass = "flex min-w-0 flex-1 items-center gap-3";
 const actionClusterClass = "flex flex-wrap items-center justify-end gap-2";
 
 const backLinkClass =
-  "shrink-0 text-sm font-medium text-zinc-600 underline-offset-4 hover:text-zinc-900 hover:underline";
+  "shrink-0 rounded-sm text-sm font-medium text-zinc-600 underline-offset-4 hover:text-zinc-900 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2";
 
 const titleClass =
   "min-w-0 truncate text-base font-semibold text-zinc-900";
@@ -81,11 +81,11 @@ export function EditorActionsBar({
     <div className={barClass}>
       <div className={leftClusterClass}>
         <Link href="/gallery" className={backLinkClass}>
-          ← Gallery
+          <span aria-hidden>←</span> Gallery
         </Link>
         <h1 className={titleClass}>{title}</h1>
       </div>
-      <div className={actionClusterClass}>
+      <div className={actionClusterClass} role="group" aria-label="Editor tools">
         <Button
           type="button"
           variant="ghost"

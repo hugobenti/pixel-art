@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import {
   closestCenter,
   DndContext,
+  KeyboardSensor,
   PointerSensor,
   TouchSensor,
   useSensor,
@@ -20,6 +21,7 @@ import {
 } from "@dnd-kit/core";
 import {
   SortableContext,
+  sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
@@ -91,12 +93,16 @@ export function LayersDrawer({
         delay: 200,
         tolerance: 6,
       },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
     })
   );
 
   useEffect(() => {
     const onKeyDown = (event: globalThis.KeyboardEvent) => {
-      if (event.key === "Escape") {
+      // dnd-kit prevents the Escape that cancels a keyboard drag; that one must not close the drawer.
+      if (event.key === "Escape" && !event.defaultPrevented) {
         if (renameSessionOpen) {
           dismissRename();
           return;
@@ -143,7 +149,7 @@ export function LayersDrawer({
         <div className={listWrapClass}>
           <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={layers.map((layer) => layer.id)} strategy={verticalListSortingStrategy}>
-              <div className={listClass}>
+              <ul className={listClass}>
                 {layers.map((layer) => (
                   <SortableLayerItem
                     key={layer.id}
@@ -159,7 +165,7 @@ export function LayersDrawer({
                     drawerOpen={panelEntered}
                   />
                 ))}
-              </div>
+              </ul>
             </SortableContext>
           </DndContext>
         </div>

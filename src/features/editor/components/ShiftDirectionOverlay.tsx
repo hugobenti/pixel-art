@@ -4,9 +4,12 @@
  */
 "use client";
 
+import { useRef } from "react";
+
 import type { ShiftDirection } from "@/features/editor/logic/pixelShift";
 
 import { Button } from "@/features/shared/components/Button";
+import { useFocusTrap } from "@/features/shared/hooks/useFocusTrap";
 
 interface ShiftDirectionOverlayProps {
   open: boolean;
@@ -37,6 +40,9 @@ export function ShiftDirectionOverlay({
   onClose,
   onShift,
 }: ShiftDirectionOverlayProps) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(dialogRef, open);
+
   if (!open) {
     return null;
   }
@@ -46,15 +52,16 @@ export function ShiftDirectionOverlay({
   };
 
   return (
-    <>
+    <div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Shift pixels">
       <button
         type="button"
+        tabIndex={-1}
         className={backdropClass}
         aria-label="Close shift controls"
         onClick={onClose}
       />
       <div className={bottomControlsClass}>
-        <div className={arrowPadClass} role="group" aria-label="Shift pixels">
+        <div className={arrowPadClass} role="group" aria-label="Shift directions">
           <Button
             type="button"
             variant="ghost"
@@ -99,6 +106,6 @@ export function ShiftDirectionOverlay({
           </Button>
         </div>
       </div>
-    </>
+    </div>
   );
 }

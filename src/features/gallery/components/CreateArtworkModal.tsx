@@ -46,8 +46,16 @@ export function CreateArtworkModal({
     "If this color is not in the default palette, it is added when the artwork is created.";
 
   return (
-    <Modal open={open} onClose={onClose} placement="center" size="md">
-      <h2 className="text-lg font-semibold text-zinc-900">New artwork</h2>
+    <Modal
+      open={open}
+      onClose={onClose}
+      placement="center"
+      size="md"
+      overlayProps={{ "aria-labelledby": "create-artwork-heading" }}
+    >
+      <h2 id="create-artwork-heading" className="text-lg font-semibold text-zinc-900">
+        New artwork
+      </h2>
       <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
         <FormField label="Title" htmlFor="create-artwork-title">
           <Input

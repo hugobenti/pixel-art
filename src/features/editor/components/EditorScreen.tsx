@@ -50,23 +50,26 @@ export function EditorScreen({ artworkId }: EditorScreenProps) {
 
   if (loadError) {
     return (
-      <div className="mx-auto max-w-lg px-4 py-16 text-center">
-        <p className="text-red-600">{loadError}</p>
+      <main className="mx-auto max-w-lg px-4 py-16 text-center">
+        <p role="alert" className="text-red-600">{loadError}</p>
         <a
           href="/gallery"
-          className="mt-4 inline-block text-zinc-700 underline"
+          className="mt-4 inline-block text-zinc-700 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
         >
           Back to gallery
         </a>
-      </div>
+      </main>
     );
   }
 
   if (!artwork) {
     return (
-      <div className="mx-auto max-w-lg px-4 py-16 text-center text-zinc-500">
+      <main
+        role="status"
+        className="mx-auto max-w-lg px-4 py-16 text-center text-zinc-500"
+      >
         Loading artwork…
-      </div>
+      </main>
     );
   }
 

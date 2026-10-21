@@ -74,17 +74,12 @@ interface ToastStackProps {
 }
 
 function ToastStack({ toasts, onDismiss }: ToastStackProps) {
-  if (toasts.length === 0) {
-    return null;
-  }
-
   return (
     <div className={stackRegionClass} aria-live="polite" aria-relevant="additions">
       {toasts.map((toast) => (
         <div
           key={toast.id}
           id={`toast-${toast.id}`}
-          role="status"
           className={toastSurfaceClass(toast.tone)}
         >
           <p className={messageClass}>{toast.message}</p>

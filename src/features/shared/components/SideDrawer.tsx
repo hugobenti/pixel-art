@@ -7,11 +7,12 @@
  */
 "use client";
 
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { useId, useRef, type ButtonHTMLAttributes, type ReactNode } from "react";
 
 import { Button } from "@/features/shared/components/Button";
 import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
 import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
+import { useFocusTrap } from "@/features/shared/hooks/useFocusTrap";
 
 import {
   drawerBackdropBaseClass,
@@ -55,6 +56,10 @@ export function SideDrawer({
   children,
   backdropAriaLabel = "Close panel",
 }: SideDrawerProps) {
+  const titleId = useId();
+  const rootRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(rootRef, true);
+
   const motionStyle = {
     transitionDuration: `${motionDurationMs}ms`,
   } as const;
@@ -68,13 +73,15 @@ export function SideDrawer({
 
   return (
     <div
+      ref={rootRef}
       className={`${drawerShellRootClass} pointer-events-auto`}
-      aria-hidden={false}
       aria-modal="true"
+      aria-labelledby={titleId}
       role="dialog"
     >
       <button
         type="button"
+        tabIndex={-1}
         className={backdropClass}
         style={motionStyle}
         onClick={onBackdropClick}
@@ -84,7 +91,7 @@ export function SideDrawer({
         <header className={drawerHeaderClass}>
           <div className="flex min-w-0 flex-1 items-center gap-2">
             {headerLeft}
-            <h2 className={`${drawerTitleClass} min-w-0 truncate`}>{title}</h2>
+            <h2 id={titleId} className={`${drawerTitleClass} min-w-0 truncate`}>{title}</h2>
           </div>
           {headerRight}
         </header>

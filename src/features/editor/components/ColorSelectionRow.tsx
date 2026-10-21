@@ -47,20 +47,21 @@ export function ColorSelectionRow({
         role="group"
         aria-label="Palette colors and edit"
       >
-        <div role="list" className={swatchListClass}>
+        <ul className={swatchListClass}>
           {palette.map((color, index) => (
-            <ColorSwatch
-              key={`swatch-${index}`}
-              density="comfortable"
-              color={color}
-              index={index}
-              isPrimary={index === primaryIndex}
-              isSecondary={index === secondaryIndex}
-              isFocused={index === safeFocus}
-              onClick={() => onSwatchPick(index)}
-            />
+            <li key={`swatch-${index}`}>
+              <ColorSwatch
+                density="comfortable"
+                color={color}
+                index={index}
+                isPrimary={index === primaryIndex}
+                isSecondary={index === secondaryIndex}
+                isFocused={index === safeFocus}
+                onClick={() => onSwatchPick(index)}
+              />
+            </li>
           ))}
-        </div>
+        </ul>
         <Button
           type="button"
           variant="outline"

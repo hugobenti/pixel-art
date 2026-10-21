@@ -4,7 +4,6 @@
  */
 "use client";
 
-import { type KeyboardEvent } from "react";
 import Image from "next/image";
 
 import { useSortable } from "@dnd-kit/sortable";
@@ -21,6 +20,7 @@ import {
   itemActiveClass,
   itemClass,
   itemIdleClass,
+  itemWrapClass,
   LAYER_ICON_SRC,
   layerActionsClass,
   layerIconButtonClass,
@@ -28,6 +28,7 @@ import {
   layerNameClass,
   metadataClass,
   previewWrapClass,
+  selectButtonClass,
 } from "@/features/editor/components/LayersDrawer/layersDrawer.constants";
 
 interface SortableLayerItemProps {
@@ -64,23 +65,9 @@ export function SortableLayerItem({
   };
   const rowClass = `${itemClass} ${isActive ? itemActiveClass : itemIdleClass}`;
 
-  const onRowKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      onSelectLayer(layer.id);
-    }
-  };
-
   return (
-    <div ref={setNodeRef} style={style}>
-      <div
-        role="button"
-        tabIndex={0}
-        className={rowClass}
-        onClick={() => onSelectLayer(layer.id)}
-        onKeyDown={onRowKeyDown}
-        aria-current={isActive ? "true" : undefined}
-      >
+    <li ref={setNodeRef} style={style} className={itemWrapClass}>
+      <div className={rowClass}>
         <span
           className={dragHandleClass}
           {...attributes}
@@ -96,18 +83,25 @@ export function SortableLayerItem({
             className={layerIconImgClass}
           />
         </span>
-        <span className={previewWrapClass}>
-          <LayerPreview
-            key={`${layer.id}-${drawerOpen ? "open" : "closed"}`}
-            layer={layer}
-            palette={palette}
-            width={width}
-            height={height}
-          />
-        </span>
-        <span className={metadataClass}>
-          <span className={layerNameClass}>{layer.name}</span>
-        </span>
+        <button
+          type="button"
+          className={selectButtonClass}
+          onClick={() => onSelectLayer(layer.id)}
+          aria-pressed={isActive}
+        >
+          <span className={previewWrapClass}>
+            <LayerPreview
+              key={`${layer.id}-${drawerOpen ? "open" : "closed"}`}
+              layer={layer}
+              palette={palette}
+              width={width}
+              height={height}
+            />
+          </span>
+          <span className={metadataClass}>
+            <span className={layerNameClass}>{layer.name}</span>
+          </span>
+        </button>
         <div className={layerActionsClass}>
           <button
             type="button"
@@ -162,6 +156,6 @@ export function SortableLayerItem({
           </button>
         </div>
       </div>
-    </div>
+    </li>
   );
 }

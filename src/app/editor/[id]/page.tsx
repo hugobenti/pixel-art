@@ -14,7 +14,7 @@ export default function EditorPage() {
 
   if (!id) {
     return (
-      <div className="p-8 text-center text-zinc-500">Missing artwork id.</div>
+      <main className="p-8 text-center text-zinc-500">Missing artwork id.</main>
     );
   }
 

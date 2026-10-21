@@ -89,7 +89,7 @@ export function PaletteEditModal({
             type="color"
             value={editHex}
             onChange={(e) => onApplyHex(safeFocus, e.target.value)}
-            className="h-10 w-12 cursor-pointer rounded border border-zinc-300 bg-white p-1"
+            className="h-10 w-12 cursor-pointer rounded border border-zinc-300 bg-white p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
             aria-label="Color value for selected swatch"
           />
         </label>
@@ -131,7 +131,7 @@ function PaletteAddSection({
           value={newHex}
           disabled={maxPaletteReached}
           onChange={(e) => setNewHex(e.target.value)}
-          className="h-10 w-12 cursor-pointer rounded border border-zinc-300 bg-white p-1 disabled:opacity-50"
+          className="h-10 w-12 cursor-pointer rounded border border-zinc-300 bg-white p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50"
           aria-label="Pick new color to append"
         />
         <Button

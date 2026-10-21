@@ -49,6 +49,8 @@ export function ArtworkCard({
       <Card className={cardInnerClass}>
         <Link
           href={`/editor/${artwork.id}`}
+          aria-hidden
+          tabIndex={-1}
           className="relative block aspect-square w-full overflow-hidden rounded-lg bg-zinc-100"
         >
           <Image
@@ -64,7 +66,9 @@ export function ArtworkCard({
         {renaming ? (
           <form onSubmit={handleRenameSubmit} className="flex gap-2">
             <Input
+              // eslint-disable-next-line jsx-a11y/no-autofocus -- moves focus to the field that replaces the Rename button the user just pressed
               autoFocus
+              aria-label="Artwork title"
               value={title}
               onChange={(ev) => setTitle(ev.target.value)}
             />
@@ -86,7 +90,7 @@ export function ArtworkCard({
           <div className={metaRowClass}>
             <Link
               href={`/editor/${artwork.id}`}
-              className="min-w-0 flex-1 truncate font-medium text-zinc-900"
+              className="min-w-0 flex-1 truncate rounded-sm font-medium text-zinc-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
             >
               {artwork.title}
             </Link>

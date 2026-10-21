@@ -37,6 +37,7 @@ import { usePixelPainting } from "@/features/editor/hooks/usePixelPainting";
 import { usePixelShift } from "@/features/editor/hooks/usePixelShift";
 import { useReferenceImage } from "@/features/editor/hooks/useReferenceImage";
 import { useToolbarCenterZoom } from "@/features/editor/hooks/useToolbarCenterZoom";
+import { useViewportKeyboardPan } from "@/features/editor/hooks/useViewportKeyboardPan";
 import {
   attachViewportPinchZoom,
   attachViewportWheel,
@@ -190,6 +191,8 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
     viewportScale: viewport.scale,
   });
 
+  useViewportKeyboardPan(wrapRef, setViewport);
+
   useEditorAutosave({
     artworkRef,
     artworkId: artwork.id,
@@ -306,7 +309,7 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
 
   return (
     <div className={shellClass}>
-      <div className={chromeClass}>
+      <header className={chromeClass}>
         <ColorSelectionRow
           palette={artwork.palette}
           primaryIndex={primaryPaint}
@@ -338,7 +341,7 @@ export function EditorWorkspace({ initialArtwork }: EditorWorkspaceProps) {
           settingsDrawerOpen={settingsDrawerOpen}
           onToggleSettingsDrawer={() => setSettingsDrawerOpen((v) => !v)}
         />
-      </div>
+      </header>
 
       <PaletteEditModal
         open={paletteModalOpen}

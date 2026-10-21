@@ -65,12 +65,11 @@ function LayerRenameModalForm({
       backdropBlur={false}
       overlayProps={{ "aria-labelledby": "layer-rename-title" }}
     >
-      <h3 id="layer-rename-title" className={titleClass}>
+      <h2 id="layer-rename-title" className={titleClass}>
         Rename layer
-      </h3>
+      </h2>
       <div className={fieldWrapClass}>
         <Input
-          autoFocus
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => {

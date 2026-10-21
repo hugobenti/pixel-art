@@ -20,10 +20,13 @@ const layerZ: Record<ModalLayer, string> = {
 };
 
 const sizePanel: Record<ModalSize, string> = {
-  sm: "w-full max-w-sm rounded-xl border border-zinc-200 bg-white p-4 shadow-lg",
-  md: "flex w-full max-w-md flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-6 shadow-xl",
-  lg: "flex max-h-[85vh] w-full max-w-lg flex-col gap-4 overflow-y-auto rounded-xl border border-zinc-200 bg-white p-5 shadow-xl",
+  sm: "relative w-full max-w-sm rounded-xl border border-zinc-200 bg-white p-4 shadow-lg",
+  md: "relative flex w-full max-w-md flex-col gap-4 rounded-xl border border-zinc-200 bg-white p-6 shadow-xl",
+  lg: "relative flex max-h-[85vh] w-full max-w-lg flex-col gap-4 overflow-y-auto rounded-xl border border-zinc-200 bg-white p-5 shadow-xl",
 };
+
+/** Full-overlay dismiss target behind the panel (pointer only; Escape covers keyboard). */
+export const modalBackdropClass = "absolute inset-0 cursor-default";
 
 export function modalOverlayClasses(options: {
   placement: ModalPlacement;

@@ -26,9 +26,12 @@ interface ColorSwatchGridProps {
 
 export type ColorSwatchProps = ColorSwatchRowProps | ColorSwatchGridProps;
 
-const baseComfortable = "h-10 w-10 shrink-0 rounded-md";
+const focusRing =
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2";
 
-const baseCompact = "h-9 w-9 rounded-md";
+const baseComfortable = `h-10 w-10 shrink-0 rounded-md ${focusRing}`;
+
+const baseCompact = `h-9 w-9 rounded-md ${focusRing}`;
 
 export function ColorSwatch(props: ColorSwatchProps) {
   const { color, index, onClick } = props;
@@ -43,7 +46,7 @@ export function ColorSwatch(props: ColorSwatchProps) {
       <button
         type="button"
         title={`Color ${n}`}
-        aria-label={`Select palette color ${n}`}
+        aria-label={`Select palette color ${n} (${color})`}
         aria-pressed={selected}
         className={`${baseCompact} ${ring}`}
         style={{ backgroundColor: color }}
@@ -65,12 +68,13 @@ export function ColorSwatch(props: ColorSwatchProps) {
     ? " outline outline-2 outline-offset-2 outline-dashed outline-zinc-500"
     : "";
 
+  const slotNames = `${isPrimary ? ", primary" : ""}${isSecondary ? ", secondary" : ""}`;
+
   return (
     <button
       type="button"
-      role="listitem"
       title={`Palette ${n}`}
-      aria-label={`Select palette color ${n}`}
+      aria-label={`Select palette color ${n} (${color})${slotNames}`}
       aria-current={isFocused ? "true" : undefined}
       className={`${baseComfortable} ${ring}${focusOutline}`}
       style={{ backgroundColor: color }}

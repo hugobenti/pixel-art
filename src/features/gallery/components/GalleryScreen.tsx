@@ -53,7 +53,7 @@ export function GalleryScreen() {
   });
 
   return (
-    <div className={shellClass}>
+    <main className={shellClass}>
       <header className={headerClass}>
         <div>
           <h1 className={titleClass}>Gallery</h1>
@@ -82,13 +82,13 @@ export function GalleryScreen() {
       </header>
 
       {error ? (
-        <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800">
+        <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-800">
           {error}
         </p>
       ) : null}
 
       {loading ? (
-        <p className="text-zinc-500">Loading…</p>
+        <p role="status" className="text-zinc-500">Loading…</p>
       ) : (
         <GalleryGrid
           artworks={artworks}
@@ -111,6 +111,6 @@ export function GalleryScreen() {
           }
         }}
       />
-    </div>
+    </main>
   );
 }
