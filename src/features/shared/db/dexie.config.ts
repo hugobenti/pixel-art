@@ -4,7 +4,7 @@
  */
 import Dexie, { type Table } from "dexie";
 
-import type { Artwork } from "@/features/editor/types/editor.types";
+import type { Artwork } from "@/features/shared/artwork/artwork.types";
 
 export class PixelCraftDB extends Dexie {
   artworks!: Table<Artwork, string>;

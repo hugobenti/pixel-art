@@ -13,7 +13,8 @@ import { EDITOR_ROOT_CSS_VARS } from "@/features/editor/constants/editorRootCssV
 import { renderCanvas } from "@/features/editor/logic/canvasRender";
 import { renderPixelGrid } from "@/features/editor/logic/gridRender";
 import { renderReferenceImage } from "@/features/editor/logic/referenceImageRender";
-import type { Artwork, ViewportState } from "@/features/editor/types/editor.types";
+import type { Artwork } from "@/features/shared/artwork/artwork.types";
+import type { ViewportState } from "@/features/editor/types/editor.types";
 
 interface UseCanvasEngineParams {
   artwork: Artwork | null;

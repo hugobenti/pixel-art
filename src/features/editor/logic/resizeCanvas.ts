@@ -4,10 +4,10 @@
  *
  * Notes:
  * New cells use fillPaletteIndexForExpansion (white swatch when present, else index 0).
- * Validation delegates to galleryService.validateDimensions.
+ * Validation delegates to artworkService.validateDimensions.
  */
-import type { Artwork } from "@/features/editor/types/editor.types";
-import { validateDimensions } from "@/features/gallery/services/galleryService";
+import type { Artwork } from "@/features/shared/artwork/artwork.types";
+import { validateDimensions } from "@/features/shared/artwork/artworkService";
 import { normalizeHexColor } from "@/features/shared/utils/colorConverter";
 
 const WHITE_HEX = "#FFFFFF";

@@ -4,7 +4,7 @@
  */
 "use client";
 
-import type { Artwork } from "@/features/editor/types/editor.types";
+import type { Artwork } from "@/features/shared/artwork/artwork.types";
 
 import { ArtworkCard } from "@/features/gallery/components/ArtworkCard";
 

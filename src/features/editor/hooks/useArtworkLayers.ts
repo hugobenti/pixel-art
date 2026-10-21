@@ -7,7 +7,7 @@
 import { useCallback, useMemo } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
-import type { Artwork, ArtworkLayer } from "@/features/editor/types/editor.types";
+import type { Artwork, ArtworkLayer } from "@/features/shared/artwork/artwork.types";
 import { clonePixelBuffer } from "@/features/shared/utils/binaryHelpers";
 
 interface UseArtworkLayersParams {

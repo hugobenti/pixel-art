@@ -10,8 +10,8 @@ import { Input } from "@/features/shared/components/Input";
 import { Modal } from "@/features/shared/components/Modal";
 import { useCreateArtworkForm } from "@/features/gallery/hooks/useCreateArtworkForm";
 
-import type { CreateArtworkInput } from "@/features/gallery/services/galleryService";
-import { MAX_CANVAS_DIMENSION } from "@/features/gallery/services/galleryService";
+import type { CreateArtworkInput } from "@/features/shared/artwork/artworkService";
+import { MAX_CANVAS_DIMENSION } from "@/features/shared/artwork/artworkService";
 
 const colorRowClass = "flex flex-wrap items-center gap-3";
 

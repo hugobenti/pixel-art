@@ -3,7 +3,7 @@
  * Rasterize artwork into a WebP data URL for gallery thumbnails (~150×150).
  */
 import { renderCanvas } from "@/features/editor/logic/canvasRender";
-import type { Artwork } from "@/features/editor/types/editor.types";
+import type { Artwork } from "@/features/shared/artwork/artwork.types";
 import type { ViewportState } from "@/features/editor/types/editor.types";
 
 const DEFAULT_SIZE = 150;

@@ -8,7 +8,7 @@ import { Button } from "@/features/shared/components/Button";
 import { FormField } from "@/features/shared/components/FormField";
 import { Input } from "@/features/shared/components/Input";
 
-import { MAX_CANVAS_DIMENSION } from "@/features/gallery/services/galleryService";
+import { MAX_CANVAS_DIMENSION } from "@/features/shared/artwork/artworkService";
 
 interface EditorSettingsCanvasSizePanelProps {
   widthStr: string;

@@ -4,7 +4,8 @@
  */
 "use client";
 
-import type { Artwork, ViewportState } from "@/features/editor/types/editor.types";
+import type { Artwork } from "@/features/shared/artwork/artwork.types";
+import type { ViewportState } from "@/features/editor/types/editor.types";
 
 import { useImageDetailPanel } from "@/features/editor/components/EditorSettingsDrawer/hooks/useImageDetailPanel";
 

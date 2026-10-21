@@ -9,7 +9,7 @@ import { useCallback, useState, type FormEvent } from "react";
 import {
   DEFAULT_PALETTE,
   type CreateArtworkInput,
-} from "@/features/gallery/services/galleryService";
+} from "@/features/shared/artwork/artworkService";
 
 type UseCreateArtworkFormOptions = {
   onCreate: (input: CreateArtworkInput) => Promise<unknown>;

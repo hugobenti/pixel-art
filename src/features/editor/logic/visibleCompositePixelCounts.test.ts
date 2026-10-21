@@ -10,7 +10,8 @@ import {
   countVisibleCompositePixelsByPaletteIndex,
   isArtworkPixelVisibleInViewport,
 } from "@/features/editor/logic/visibleCompositePixelCounts";
-import type { Artwork, ViewportState } from "@/features/editor/types/editor.types";
+import type { Artwork } from "@/features/shared/artwork/artwork.types";
+import type { ViewportState } from "@/features/editor/types/editor.types";
 
 function layer(id: string, pixels: number[]): Artwork["layers"][0] {
   return {

@@ -16,8 +16,8 @@ import { useEffect, useRef } from "react";
 
 import { screenToWorldCoordinates } from "@/features/editor/logic/coordinateMath";
 import { mergeStrokeDeltas } from "@/features/editor/logic/mergeStrokeDeltas";
+import type { Artwork } from "@/features/shared/artwork/artwork.types";
 import type {
-  Artwork,
   HistoryCommand,
   PixelDelta,
   ViewportState,

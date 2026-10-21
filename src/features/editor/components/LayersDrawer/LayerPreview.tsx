@@ -10,7 +10,7 @@
 
 import { useMemo } from "react";
 
-import type { ArtworkLayer } from "@/features/editor/types/editor.types";
+import type { ArtworkLayer } from "@/features/shared/artwork/artwork.types";
 
 import {
   LAYER_PREVIEW_MAX_EDGE_PX,

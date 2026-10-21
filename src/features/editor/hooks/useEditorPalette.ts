@@ -7,7 +7,7 @@
 import { useCallback, useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
-import type { Artwork } from "@/features/editor/types/editor.types";
+import type { Artwork } from "@/features/shared/artwork/artwork.types";
 import {
   appendPaletteColor,
   clampPaletteIndex,

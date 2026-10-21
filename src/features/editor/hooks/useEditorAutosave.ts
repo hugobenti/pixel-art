@@ -3,15 +3,15 @@
  * Debounced IndexedDB persistence for the open artwork plus a final save on editor unmount.
  *
  * Notes:
- * Shares one implementation path for thumbnail encoding and galleryService.saveArtwork (DRY).
+ * Shares one implementation path for thumbnail encoding and artworkService.saveArtwork (DRY).
  */
 "use client";
 
 import { type RefObject, useCallback, useEffect, useRef } from "react";
 
-import * as galleryService from "@/features/gallery/services/galleryService";
+import * as artworkService from "@/features/shared/artwork/artworkService";
 
-import type { Artwork } from "@/features/editor/types/editor.types";
+import type { Artwork } from "@/features/shared/artwork/artwork.types";
 import { artworkToWebpThumbnail } from "@/features/editor/utils/thumbnail";
 
 const AUTOSAVE_DEBOUNCE_MS = 650;
@@ -35,7 +35,7 @@ export function useEditorAutosave({
       return;
     }
     const thumb = artworkToWebpThumbnail(current);
-    void galleryService.saveArtwork({
+    void artworkService.saveArtwork({
       ...current,
       thumbnail: thumb || current.thumbnail,
     });
