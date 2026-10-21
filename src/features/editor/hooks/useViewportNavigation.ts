@@ -266,6 +266,8 @@ export function useViewportNavigation(options: UseViewportNavigationOptions) {
     // Interacting with the canvas moves focus to the viewport, so Space+drag targets it rather than the
     // last-clicked control (painting's pointerdown preventDefault suppresses the default mousedown focus).
     e.currentTarget.focus({ preventScroll: true });
+    // Script focus matches :focus-visible; mark it pointer-originated so the keyboard-only ring stays hidden.
+    e.currentTarget.dataset.pointerFocus = "";
     if (
       e.pointerType === "touch" &&
       touchPointersRef.current.size > 1
@@ -350,8 +352,9 @@ export function useViewportNavigation(options: UseViewportNavigationOptions) {
     focusedCanvasRef.current = e.currentTarget;
   }, []);
 
-  const onBlur = useCallback(() => {
+  const onBlur = useCallback((e: React.FocusEvent<HTMLDivElement>) => {
     focusedCanvasRef.current = null;
+    delete e.currentTarget.dataset.pointerFocus;
   }, []);
 
   const deferPrimaryPaint = useCallback(() => {
