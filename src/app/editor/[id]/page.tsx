@@ -6,6 +6,7 @@
 
 import { useParams } from "next/navigation";
 
+import { editor } from "@/content/editor";
 import { EditorScreen } from "@/features/editor/components/EditorScreen";
 
 export default function EditorPage() {
@@ -14,7 +15,7 @@ export default function EditorPage() {
 
   if (!id) {
     return (
-      <main className="p-8 text-center text-muted">Missing artwork id.</main>
+      <main className="p-8 text-center text-muted">{editor.route.missingId}</main>
     );
   }
 

@@ -6,6 +6,7 @@
 
 import Link from "next/link";
 
+import { editor } from "@/content/editor";
 import { Button } from "@/features/shared/components/Button";
 import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
 import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
@@ -72,7 +73,8 @@ export function EditorActionsBar({
   settingsDrawerOpen,
   onToggleSettingsDrawer,
 }: EditorActionsBarProps) {
-  const slotLabel = activeSlot === "primary" ? "Primary" : "Secondary";
+  const slotLabel =
+    activeSlot === "primary" ? editor.toolbar.slot.primary : editor.toolbar.slot.secondary;
 
   const slotToggleButtonClass =
     "min-h-10 min-w-[12ch] shrink-0 touch-manipulation px-3";
@@ -81,7 +83,7 @@ export function EditorActionsBar({
     <div className={barClass}>
       <div className={leftClusterClass}>
         <Link href="/gallery" className={backLinkClass}>
-          <span aria-hidden>←</span> Gallery
+          <span aria-hidden>{editor.toolbar.backArrow}</span> {editor.toolbar.back}
         </Link>
         <h1 className={titleClass}>{title}</h1>
       </div>
@@ -92,8 +94,8 @@ export function EditorActionsBar({
           size="icon"
           disabled={!canUndo}
           onClick={onUndo}
-          aria-label="Undo"
-          title="Undo (Ctrl+Z)"
+          aria-label={editor.toolbar.undo.label}
+          title={editor.toolbar.undo.title}
         >
           <PublicMaskIcon src={PUBLIC_ICONS.undo} />
         </Button>
@@ -103,8 +105,8 @@ export function EditorActionsBar({
           size="icon"
           disabled={!canRedo}
           onClick={onRedo}
-          aria-label="Redo"
-          title="Redo (Ctrl+Shift+Z)"
+          aria-label={editor.toolbar.redo.label}
+          title={editor.toolbar.redo.title}
         >
           <PublicMaskIcon src={PUBLIC_ICONS.redo} />
         </Button>
@@ -114,8 +116,8 @@ export function EditorActionsBar({
           size="icon"
           onClick={onTogglePanMode}
           aria-pressed={panMode}
-          aria-label="Pan mode"
-          title="Pan mode: drag to move the canvas (or hold Space)"
+          aria-label={editor.toolbar.pan.label}
+          title={editor.toolbar.pan.title}
         >
           <PublicMaskIcon src={PUBLIC_ICONS.pan} />
         </Button>
@@ -125,8 +127,8 @@ export function EditorActionsBar({
           size="icon"
           onClick={onToggleBucketMode}
           aria-pressed={bucketMode}
-          aria-label="Paint bucket mode"
-          title="Paint bucket mode"
+          aria-label={editor.toolbar.bucket.label}
+          title={editor.toolbar.bucket.title}
         >
           <PublicMaskIcon src={PUBLIC_ICONS.bucket} />
         </Button>
@@ -136,8 +138,8 @@ export function EditorActionsBar({
           size="icon"
           disabled={!canZoomOut}
           onClick={onZoomOut}
-          aria-label="Zoom out"
-          title="Zoom out"
+          aria-label={editor.toolbar.zoomOut.label}
+          title={editor.toolbar.zoomOut.title}
         >
           <PublicMaskIcon src={PUBLIC_ICONS.zoomOut} />
         </Button>
@@ -147,8 +149,8 @@ export function EditorActionsBar({
           size="icon"
           disabled={!canZoomIn}
           onClick={onZoomIn}
-          aria-label="Zoom in"
-          title="Zoom in"
+          aria-label={editor.toolbar.zoomIn.label}
+          title={editor.toolbar.zoomIn.title}
         >
           <PublicMaskIcon src={PUBLIC_ICONS.zoomIn} />
         </Button>
@@ -158,8 +160,8 @@ export function EditorActionsBar({
           size="icon"
           onClick={onToggleShiftOverlay}
           aria-pressed={shiftOverlayOpen}
-          aria-label="Shift pixels"
-          title="Shift rows/columns (wrap)"
+          aria-label={editor.toolbar.shift.label}
+          title={editor.toolbar.shift.title}
         >
           <PublicMaskIcon src={PUBLIC_ICONS.panArrows} />
         </Button>
@@ -169,8 +171,8 @@ export function EditorActionsBar({
           size="icon"
           onClick={onToggleLayersDrawer}
           aria-pressed={layersDrawerOpen}
-          aria-label="Layers"
-          title="Open layers panel"
+          aria-label={editor.toolbar.layers.label}
+          title={editor.toolbar.layers.title}
         >
           <PublicMaskIcon src={PUBLIC_ICONS.layers} />
         </Button>
@@ -179,8 +181,8 @@ export function EditorActionsBar({
           variant={activeSlot === "primary" ? "primary" : "outline"}
           className={slotToggleButtonClass}
           onClick={onToggleActiveSlot}
-          aria-label={`Painting slot: ${slotLabel}. Click to switch.`}
-          title="Switch primary / secondary painting slot"
+          aria-label={editor.toolbar.slot.label(slotLabel)}
+          title={editor.toolbar.slot.title}
         >
           {slotLabel}
         </Button>
@@ -190,8 +192,8 @@ export function EditorActionsBar({
           size="icon"
           onClick={onToggleSettingsDrawer}
           aria-pressed={settingsDrawerOpen}
-          aria-label="Editor settings"
-          title="Editor settings"
+          aria-label={editor.toolbar.settings.label}
+          title={editor.toolbar.settings.title}
         >
           <PublicMaskIcon src={PUBLIC_ICONS.cog} />
         </Button>

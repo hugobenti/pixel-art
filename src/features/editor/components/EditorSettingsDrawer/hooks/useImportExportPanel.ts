@@ -6,6 +6,7 @@
 
 import { useCallback } from "react";
 
+import { editor } from "@/content/editor";
 import {
   exportArtworkAsJson,
   exportArtworkAsPng,
@@ -24,15 +25,15 @@ export function useImportExportPanel({
 
   const exportJson = useCallback(() => {
     exportArtworkAsJson(artwork);
-    showToast({ message: "JSON file exported.", tone: "success" });
+    showToast({ message: editor.settings.export.jsonDone, tone: "success" });
   }, [artwork, showToast]);
 
   const exportPng = useCallback(async () => {
     try {
       await exportArtworkAsPng(artwork);
-      showToast({ message: "PNG file exported.", tone: "success" });
+      showToast({ message: editor.settings.export.pngDone, tone: "success" });
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to export PNG.";
+      const message = error instanceof Error ? error.message : editor.settings.export.pngFailed;
       showToast({ message, tone: "error" });
     }
   }, [artwork, showToast]);

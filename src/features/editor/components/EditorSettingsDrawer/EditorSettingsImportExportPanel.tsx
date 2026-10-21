@@ -4,6 +4,7 @@
  */
 "use client";
 
+import { editor } from "@/content/editor";
 import { Button } from "@/features/shared/components/Button";
 
 interface EditorSettingsImportExportPanelProps {
@@ -24,19 +25,16 @@ export function EditorSettingsImportExportPanel({
 }: EditorSettingsImportExportPanelProps) {
   return (
     <div className={rootClass}>
-      <p className={hintClass}>
-        Export a snapshot of the current artwork as PNG or export the full editable document as
-        JSON.
-      </p>
+      <p className={hintClass}>{editor.settings.export.hint}</p>
 
-      <section className={sectionClass} aria-label="Export document">
-        <h3 className={sectionTitleClass}>Export</h3>
+      <section className={sectionClass} aria-label={editor.settings.export.sectionLabel}>
+        <h3 className={sectionTitleClass}>{editor.settings.export.title}</h3>
         <div className={actionsClass}>
           <Button type="button" variant="outline" className={buttonClass} onClick={onExportPng}>
-            Export PNG
+            {editor.settings.export.png}
           </Button>
           <Button type="button" variant="outline" className={buttonClass} onClick={onExportJson}>
-            Export JSON
+            {editor.settings.export.json}
           </Button>
         </div>
       </section>

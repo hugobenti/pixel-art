@@ -4,6 +4,7 @@
  */
 import { create } from "zustand";
 
+import { gallery } from "@/content/gallery";
 import type { Artwork } from "@/features/shared/artwork/artwork.types";
 import type { ImportedArtworkData } from "@/features/shared/artwork/artworkFileService";
 import * as artworkService from "@/features/shared/artwork/artworkService";
@@ -31,7 +32,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       const artworks = await artworkService.listArtworks();
       set({ artworks, loading: false });
     } catch (e) {
-      const message = e instanceof Error ? e.message : "Failed to load gallery.";
+      const message = e instanceof Error ? e.message : gallery.errors.load;
       set({ error: message, loading: false });
     }
   },
@@ -43,7 +44,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       await get().loadArtworks();
       return created;
     } catch (e) {
-      const message = e instanceof Error ? e.message : "Could not create artwork.";
+      const message = e instanceof Error ? e.message : gallery.errors.create;
       set({ error: message });
       return null;
     }
@@ -56,7 +57,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       await get().loadArtworks();
       return created;
     } catch (e) {
-      const message = e instanceof Error ? e.message : "Could not import artwork.";
+      const message = e instanceof Error ? e.message : gallery.errors.import;
       set({ error: message });
       return null;
     }
@@ -68,7 +69,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       await artworkService.renameArtwork(id, title);
       await get().loadArtworks();
     } catch (e) {
-      const message = e instanceof Error ? e.message : "Rename failed.";
+      const message = e instanceof Error ? e.message : gallery.errors.rename;
       set({ error: message });
     }
   },
@@ -80,7 +81,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       await get().loadArtworks();
       return clone;
     } catch (e) {
-      const message = e instanceof Error ? e.message : "Clone failed.";
+      const message = e instanceof Error ? e.message : gallery.errors.clone;
       set({ error: message });
       return undefined;
     }
@@ -92,7 +93,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       await artworkService.deleteArtwork(id);
       await get().loadArtworks();
     } catch (e) {
-      const message = e instanceof Error ? e.message : "Delete failed.";
+      const message = e instanceof Error ? e.message : gallery.errors.delete;
       set({ error: message });
     }
   },

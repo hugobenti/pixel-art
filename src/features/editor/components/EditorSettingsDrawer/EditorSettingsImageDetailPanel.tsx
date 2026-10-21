@@ -4,6 +4,7 @@
  */
 "use client";
 
+import { editor } from "@/content/editor";
 import type { Artwork } from "@/features/shared/artwork/artwork.types";
 import type { ViewportState } from "@/features/editor/types/editor.types";
 
@@ -59,19 +60,20 @@ export function EditorSettingsImageDetailPanel({
     paintRevision,
   });
 
+  const copy = editor.settings.imageDetail;
   const summaryPrefix =
     totalViewportCells === 0
-      ? "No artwork pixels intersect the visible viewport."
-      : `${totalCompositeOpaque} composited pixel${totalCompositeOpaque === 1 ? "" : "s"} across ${totalViewportCells} visible cell${totalViewportCells === 1 ? "" : "s"} (layers stacked; no double counting).`;
+      ? copy.noIntersection
+      : copy.summary(totalCompositeOpaque, totalViewportCells);
 
   return (
     <div className={rootClass}>
       <p className={hintClass}>{summaryPrefix}</p>
       {totalViewportCells === 0 ? (
-        <div className={emptyClass}>Pan or zoom so the canvas viewport overlaps your artwork.</div>
+        <div className={emptyClass}>{copy.emptyViewport}</div>
       ) : totalCompositeOpaque === 0 ? (
         <div className={emptyClass}>
-          Every visible cell is fully transparent in the composite stack.
+          {copy.allTransparent}
         </div>
       ) : (
         <ul className={listClass}>
@@ -90,11 +92,11 @@ export function EditorSettingsImageDetailPanel({
                   aria-hidden
                 />
                 <div className={rowMetaClass}>
-                  <span className={rowTitleClass}>Palette #{row.paletteIndex}</span>
+                  <span className={rowTitleClass}>{copy.paletteEntry(row.paletteIndex)}</span>
                   <span className={rowSubClass}>{row.color}</span>
                 </div>
                 <span className={countClass}>{row.count}</span>
-                <span className={pctClass}>{pct}%</span>
+                <span className={pctClass}>{copy.percent(pct)}</span>
               </li>
             );
           })}

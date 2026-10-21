@@ -8,6 +8,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
+import { gallery } from "@/content/gallery";
+import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
 import { Card } from "@/features/shared/components/Card";
 import { Input } from "@/features/shared/components/Input";
@@ -73,7 +75,7 @@ export function ArtworkCard({
               onChange={(ev) => setTitle(ev.target.value)}
             />
             <Button type="submit" variant="primary">
-              Save
+              {shared.actions.save}
             </Button>
             <Button
               type="button"
@@ -83,7 +85,7 @@ export function ArtworkCard({
                 setRenaming(false);
               }}
             >
-              Cancel
+              {shared.actions.cancel}
             </Button>
           </form>
         ) : (
@@ -99,10 +101,10 @@ export function ArtworkCard({
 
         <div className="flex flex-wrap gap-2">
           <Button variant="ghost" type="button" onClick={() => setRenaming(true)}>
-            Rename
+            {shared.actions.rename}
           </Button>
           <Button variant="ghost" type="button" onClick={() => onClone(artwork.id)}>
-            Clone
+            {gallery.card.clone}
           </Button>
           <Button
             variant="danger"
@@ -110,13 +112,13 @@ export function ArtworkCard({
             onClick={() => {
               if (
                 typeof window !== "undefined" &&
-                window.confirm("Delete this artwork permanently?")
+                window.confirm(gallery.card.confirmDelete)
               ) {
                 void onDelete(artwork.id);
               }
             }}
           >
-            Delete
+            {gallery.card.delete}
           </Button>
         </div>
       </Card>

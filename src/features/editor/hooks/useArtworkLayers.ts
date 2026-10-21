@@ -7,6 +7,7 @@
 import { useCallback, useMemo } from "react";
 import type { Dispatch, SetStateAction } from "react";
 
+import { editor } from "@/content/editor";
 import type { Artwork, ArtworkLayer } from "@/features/shared/artwork/artwork.types";
 import { clonePixelBuffer } from "@/features/shared/utils/binaryHelpers";
 
@@ -117,7 +118,7 @@ export function useArtworkLayers({
       const pixelCount = prev.width * prev.height;
       const nextLayer: ArtworkLayer = {
         id: crypto.randomUUID(),
-        name: `Layer ${prev.layers.length + 1}`,
+        name: editor.layers.newLayerName(prev.layers.length + 1),
         visible: true,
         pixelData: new Uint8Array(pixelCount),
       };
@@ -143,7 +144,7 @@ export function useArtworkLayers({
         const source = prev.layers[idx];
         const duplicated: ArtworkLayer = {
           id: crypto.randomUUID(),
-          name: `${source.name} copy`,
+          name: editor.layers.copyName(source.name),
           visible: source.visible,
           pixelData: clonePixelBuffer(source.pixelData),
         };

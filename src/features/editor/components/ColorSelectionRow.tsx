@@ -4,6 +4,7 @@
  */
 "use client";
 
+import { editor } from "@/content/editor";
 import { Button } from "@/features/shared/components/Button";
 import { ColorSwatch } from "@/features/shared/components/ColorSwatch";
 
@@ -45,7 +46,7 @@ export function ColorSelectionRow({
       <div
         className={scrollerClass}
         role="group"
-        aria-label="Palette colors and edit"
+        aria-label={editor.paletteRow.groupLabel}
       >
         <ul className={swatchListClass}>
           {palette.map((color, index) => (
@@ -68,7 +69,7 @@ export function ColorSelectionRow({
           className={editPaletteButtonClass}
           onClick={onOpenPaletteModal}
         >
-          Edit palette
+          {editor.paletteRow.edit}
         </Button>
       </div>
     </div>

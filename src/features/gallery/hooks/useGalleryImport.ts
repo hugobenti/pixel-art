@@ -6,6 +6,7 @@
 
 import { useCallback, useRef } from "react";
 
+import { gallery } from "@/content/gallery";
 import { importArtworkFromJsonFile } from "@/features/shared/artwork/artworkFileService";
 import { useToast } from "@/features/shared/components/Toast/hooks/useToast";
 
@@ -36,10 +37,10 @@ export function useGalleryImport({ importArtwork, onImported }: UseGalleryImport
         if (!created) {
           return;
         }
-        showToast({ message: "Artwork imported.", tone: "success" });
+        showToast({ message: gallery.import.success, tone: "success" });
         onImported(created);
       } catch (error) {
-        const message = error instanceof Error ? error.message : "Could not import JSON file.";
+        const message = error instanceof Error ? error.message : gallery.import.failed;
         showToast({ message, tone: "error" });
       }
     },

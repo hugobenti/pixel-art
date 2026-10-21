@@ -18,6 +18,7 @@ export type { ToastTone };
 export function useToast(): ToastContextValue {
   const ctx = useContext(ToastContext);
   if (!ctx) {
+    // eslint-disable-next-line no-restricted-syntax -- developer error for a missing provider, never shown in the UI
     throw new Error("useToast must be used within a ToastProvider.");
   }
   return ctx;

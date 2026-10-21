@@ -4,6 +4,8 @@
  */
 "use client";
 
+import { editor } from "@/content/editor";
+import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
 import { FormField } from "@/features/shared/components/FormField";
 import { Input } from "@/features/shared/components/Input";
@@ -43,13 +45,9 @@ export function EditorSettingsCanvasSizePanel({
 }: EditorSettingsCanvasSizePanelProps) {
   return (
     <div className={rootClass}>
-      <p className={hintClass}>
-        Pixels stay anchored to the top-left. New cells use white from the palette when present,
-        otherwise the first swatch. Undo history for this artwork is cleared after the size
-        changes.
-      </p>
+      <p className={hintClass}>{editor.settings.canvasSize.hint}</p>
       <div className={gridClass}>
-        <FormField label="Width (px)" htmlFor="settings-canvas-width">
+        <FormField label={shared.fields.width} htmlFor="settings-canvas-width">
           <Input
             id="settings-canvas-width"
             inputMode="numeric"
@@ -62,7 +60,7 @@ export function EditorSettingsCanvasSizePanel({
             required
           />
         </FormField>
-        <FormField label="Height (px)" htmlFor="settings-canvas-height">
+        <FormField label={shared.fields.height} htmlFor="settings-canvas-height">
           <Input
             id="settings-canvas-height"
             inputMode="numeric"
@@ -83,7 +81,7 @@ export function EditorSettingsCanvasSizePanel({
           className={cancelButtonClass}
           onClick={onCancel}
         >
-          Cancel
+          {shared.actions.cancel}
         </Button>
         <Button
           type="button"
@@ -91,7 +89,7 @@ export function EditorSettingsCanvasSizePanel({
           className={applyButtonClass}
           onClick={onApply}
         >
-          Apply
+          {shared.actions.apply}
         </Button>
       </div>
     </div>

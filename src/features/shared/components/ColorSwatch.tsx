@@ -4,6 +4,8 @@
  */
 "use client";
 
+import { shared } from "@/content/shared";
+
 export type ColorSwatchDensity = "comfortable" | "compact";
 
 interface ColorSwatchRowProps {
@@ -45,8 +47,8 @@ export function ColorSwatch(props: ColorSwatchProps) {
     return (
       <button
         type="button"
-        title={`Color ${n}`}
-        aria-label={`Select palette color ${n} (${color})`}
+        title={shared.colorSwatch.compactTitle(n)}
+        aria-label={shared.colorSwatch.selectLabel(n, color)}
         aria-pressed={selected}
         className={`${baseCompact} ${ring}`}
         style={{ backgroundColor: color }}
@@ -68,13 +70,11 @@ export function ColorSwatch(props: ColorSwatchProps) {
     ? " outline outline-2 outline-offset-2 outline-dashed outline-focus"
     : "";
 
-  const slotNames = `${isPrimary ? ", primary" : ""}${isSecondary ? ", secondary" : ""}`;
-
   return (
     <button
       type="button"
-      title={`Palette ${n}`}
-      aria-label={`Select palette color ${n} (${color})${slotNames}`}
+      title={shared.colorSwatch.comfortableTitle(n)}
+      aria-label={shared.colorSwatch.selectLabel(n, color, { primary: isPrimary, secondary: isSecondary })}
       aria-current={isFocused ? "true" : undefined}
       className={`${baseComfortable} ${ring}${focusOutline}`}
       style={{ backgroundColor: color }}

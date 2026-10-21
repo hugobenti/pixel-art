@@ -4,6 +4,7 @@
  */
 "use client";
 
+import { gallery } from "@/content/gallery";
 import type { Artwork } from "@/features/shared/artwork/artwork.types";
 
 import { ArtworkCard } from "@/features/gallery/components/ArtworkCard";
@@ -27,7 +28,7 @@ export function GalleryGrid({
   if (artworks.length === 0) {
     return (
       <p className="rounded-xl border border-dashed border-line-strong p-12 text-center text-muted">
-        No artworks yet. Create one to get started.
+        {gallery.grid.empty}
       </p>
     );
   }

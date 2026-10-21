@@ -6,6 +6,8 @@
 
 import { useState } from "react";
 
+import { editor } from "@/content/editor";
+import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
 import { Input } from "@/features/shared/components/Input";
 import { Modal } from "@/features/shared/components/Modal";
@@ -66,7 +68,7 @@ function LayerRenameModalForm({
       overlayProps={{ "aria-labelledby": "layer-rename-title" }}
     >
       <h2 id="layer-rename-title" className={titleClass}>
-        Rename layer
+        {editor.layers.renameModal.title}
       </h2>
       <div className={fieldWrapClass}>
         <Input
@@ -82,12 +84,12 @@ function LayerRenameModalForm({
               onDismiss();
             }
           }}
-          aria-label="Layer name"
+          aria-label={editor.layers.renameModal.nameLabel}
         />
       </div>
       <div className={actionsClass}>
         <Button type="button" variant="ghost" onClick={onDismiss}>
-          Cancel
+          {shared.actions.cancel}
         </Button>
         <Button
           type="button"
@@ -95,7 +97,7 @@ function LayerRenameModalForm({
           disabled={!canSave}
           onClick={submit}
         >
-          Save
+          {shared.actions.save}
         </Button>
       </div>
     </Modal>

@@ -7,8 +7,11 @@
  */
 "use client";
 
+import { shared } from "@/content/shared";
 import type { Artwork, ArtworkLayer } from "@/features/shared/artwork/artwork.types";
 import { MAX_PALETTE_ENTRIES, validateDimensions } from "@/features/shared/artwork/artworkService";
+
+const errors = shared.artworkFile.errors;
 
 const FILE_SCHEMA_VERSION = 2;
 const JSON_MIME = "application/json";
@@ -91,7 +94,7 @@ function base64ToUint8Array(base64: string): Uint8Array {
   try {
     binary = atob(base64);
   } catch {
-    throw new Error("Layer pixel data is not valid Base64.");
+    throw new Error(errors.invalidBase64);
   }
   const buffer = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i += 1) {
@@ -120,14 +123,14 @@ function toArtworkFile(artwork: Artwork): ArtworkFileV2 {
 
 function validateParsedArtwork(value: unknown): ImportedArtworkData {
   if (!value || typeof value !== "object") {
-    throw new Error("Invalid file format.");
+    throw new Error(errors.invalidFormat);
   }
   const file = value as Partial<ArtworkFileV1 | ArtworkFileV2>;
   if (file.version !== 1 && file.version !== 2) {
-    throw new Error("Unsupported file version.");
+    throw new Error(errors.unsupportedVersion);
   }
   if (typeof file.title !== "string") {
-    throw new Error("Invalid artwork title.");
+    throw new Error(errors.invalidTitle);
   }
   if (
     typeof file.width !== "number" ||
@@ -135,37 +138,37 @@ function validateParsedArtwork(value: unknown): ImportedArtworkData {
     !Number.isInteger(file.width) ||
     !Number.isInteger(file.height)
   ) {
-    throw new Error("Invalid artwork dimensions.");
+    throw new Error(errors.invalidDimensions);
   }
   const { width, height } = file;
   validateDimensions(width, height);
 
   if (!Array.isArray(file.palette) || file.palette.length === 0) {
-    throw new Error("Artwork palette is missing.");
+    throw new Error(errors.paletteMissing);
   }
   if (file.palette.length > MAX_PALETTE_ENTRIES) {
-    throw new Error(`Palette cannot exceed ${MAX_PALETTE_ENTRIES} colors.`);
+    throw new Error(shared.artwork.errors.paletteTooLarge(MAX_PALETTE_ENTRIES));
   }
   for (const color of file.palette) {
     if (typeof color !== "string" || !HEX_COLOR.test(color)) {
-      throw new Error("Palette entries must be valid #RRGGBB strings.");
+      throw new Error(errors.invalidPaletteEntry);
     }
   }
 
   const pixelCount = width * height;
   if (!Array.isArray(file.layers) || file.layers.length === 0) {
-    throw new Error("Artwork layers are missing.");
+    throw new Error(errors.layersMissing);
   }
 
   const layers: ArtworkLayer[] = file.layers.map((layer, layerIndex) => {
     if (!layer || typeof layer !== "object") {
-      throw new Error(`Layer #${layerIndex + 1} is invalid.`);
+      throw new Error(errors.layerInvalid(layerIndex + 1));
     }
     if (typeof layer.id !== "string" || layer.id.length === 0) {
-      throw new Error(`Layer #${layerIndex + 1} has an invalid id.`);
+      throw new Error(errors.layerInvalidId(layerIndex + 1));
     }
     if (typeof layer.name !== "string" || layer.name.length === 0) {
-      throw new Error(`Layer #${layerIndex + 1} has an invalid name.`);
+      throw new Error(errors.layerInvalidName(layerIndex + 1));
     }
     const buffer = new Uint8Array(pixelCount);
     if (file.version === 2) {
@@ -173,19 +176,19 @@ function validateParsedArtwork(value: unknown): ImportedArtworkData {
         !("pixelDataBase64" in layer) ||
         typeof layer.pixelDataBase64 !== "string"
       ) {
-        throw new Error(`Layer "${layer.name}" is missing compact pixel data.`);
+        throw new Error(errors.layerMissingCompactData(layer.name));
       }
       const decoded = base64ToUint8Array(layer.pixelDataBase64);
       if (decoded.length !== pixelCount) {
-        throw new Error(`Layer "${layer.name}" has invalid pixel data length.`);
+        throw new Error(errors.layerInvalidLength(layer.name));
       }
       buffer.set(decoded);
     } else {
       if (!("pixelData" in layer) || !Array.isArray(layer.pixelData)) {
-        throw new Error(`Layer "${layer.name}" is missing pixel data.`);
+        throw new Error(errors.layerMissingPixelData(layer.name));
       }
       if (layer.pixelData.length !== pixelCount) {
-        throw new Error(`Layer "${layer.name}" has invalid pixel data length.`);
+        throw new Error(errors.layerInvalidLength(layer.name));
       }
       for (let i = 0; i < pixelCount; i += 1) {
         const paletteIndex = layer.pixelData[i];
@@ -194,7 +197,7 @@ function validateParsedArtwork(value: unknown): ImportedArtworkData {
           paletteIndex < 0 ||
           paletteIndex >= file.palette!.length
         ) {
-          throw new Error(`Layer "${layer.name}" has out-of-range palette indices.`);
+          throw new Error(errors.layerPaletteOutOfRange(layer.name));
         }
         buffer[i] = paletteIndex;
       }
@@ -202,7 +205,7 @@ function validateParsedArtwork(value: unknown): ImportedArtworkData {
 
     for (let i = 0; i < pixelCount; i += 1) {
       if (buffer[i] >= file.palette!.length) {
-        throw new Error(`Layer "${layer.name}" has out-of-range palette indices.`);
+        throw new Error(errors.layerPaletteOutOfRange(layer.name));
       }
     }
     return {
@@ -223,11 +226,11 @@ function validateParsedArtwork(value: unknown): ImportedArtworkData {
     file.referenceImageDataUrl != null &&
     typeof file.referenceImageDataUrl !== "string"
   ) {
-    throw new Error("Invalid reference image payload.");
+    throw new Error(errors.invalidReferenceImage);
   }
 
   return {
-    title: file.title.trim() || "Untitled",
+    title: file.title.trim() || shared.artwork.untitled,
     width,
     height,
     palette: [...file.palette],
@@ -250,7 +253,7 @@ function drawArtworkToCanvas(artwork: Artwork): HTMLCanvasElement {
   canvas.height = artwork.height;
   const ctx = canvas.getContext("2d");
   if (!ctx) {
-    throw new Error("Unable to initialize canvas context.");
+    throw new Error(errors.canvasUnavailable);
   }
 
   ctx.clearRect(0, 0, artwork.width, artwork.height);
@@ -297,7 +300,7 @@ export async function importArtworkFromJsonFile(file: File): Promise<ImportedArt
   try {
     parsed = JSON.parse(text);
   } catch {
-    throw new Error("File is not valid JSON.");
+    throw new Error(errors.invalidJson);
   }
   return validateParsedArtwork(parsed);
 }

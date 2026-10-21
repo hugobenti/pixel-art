@@ -6,6 +6,7 @@
 
 import { useCallback, useState } from "react";
 
+import { editor } from "@/content/editor";
 import { resizeArtworkDimensions } from "@/features/editor/logic/resizeCanvas";
 import type { Artwork } from "@/features/shared/artwork/artwork.types";
 import { useToast } from "@/features/shared/components/Toast/hooks/useToast";
@@ -54,7 +55,7 @@ export function useCanvasSizePanel({
     const h = Number.parseInt(heightStr, 10);
     if (!Number.isFinite(w) || !Number.isFinite(h)) {
       showToast({
-        message: "Enter valid width and height.",
+        message: editor.settings.canvasSize.invalidSize,
         tone: "error",
       });
       return;
@@ -63,15 +64,13 @@ export function useCanvasSizePanel({
       validateDimensions(w, h);
     } catch (e) {
       const message =
-        e instanceof Error ? e.message : "Dimensions are out of range.";
+        e instanceof Error ? e.message : editor.settings.canvasSize.outOfRange;
       showToast({ message, tone: "error" });
       return;
     }
     const losesPixels = w < artwork.width || h < artwork.height;
     if (losesPixels) {
-      const ok = window.confirm(
-        "A smaller canvas permanently removes pixels outside the top-left region. Continue?"
-      );
+      const ok = window.confirm(editor.settings.canvasSize.confirmShrink);
       if (!ok) {
         return;
       }

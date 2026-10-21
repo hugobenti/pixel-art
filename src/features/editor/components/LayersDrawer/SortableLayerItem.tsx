@@ -9,6 +9,7 @@ import Image from "next/image";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
+import { editor } from "@/content/editor";
 import type { ArtworkLayer } from "@/features/shared/artwork/artwork.types";
 
 import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
@@ -72,9 +73,9 @@ export function SortableLayerItem({
           className={dragHandleClass}
           {...attributes}
           {...listeners}
-          title="Drag to reorder (on touch: hold briefly, then drag)"
+          title={editor.layers.item.dragTitle}
         >
-          <span className="sr-only">Reorder layer</span>
+          <span className="sr-only">{editor.layers.item.reorder}</span>
           <Image
             src={LAYER_ICON_SRC.grip}
             alt=""
@@ -110,8 +111,8 @@ export function SortableLayerItem({
               event.stopPropagation();
               onToggleVisibility(layer.id);
             }}
-            title={layer.visible ? "Hide layer" : "Show layer"}
-            aria-label={layer.visible ? "Hide layer" : "Show layer"}
+            title={layer.visible ? editor.layers.item.hide : editor.layers.item.show}
+            aria-label={layer.visible ? editor.layers.item.hide : editor.layers.item.show}
           >
             <PublicMaskIcon
               src={layer.visible ? PUBLIC_ICONS.eye : PUBLIC_ICONS.eyeOff}
@@ -125,8 +126,8 @@ export function SortableLayerItem({
               event.stopPropagation();
               onCopyLayer(layer.id);
             }}
-            title="Duplicate layer"
-            aria-label="Duplicate layer"
+            title={editor.layers.item.duplicate}
+            aria-label={editor.layers.item.duplicate}
           >
             <Image
               src={LAYER_ICON_SRC.copy}
@@ -143,8 +144,8 @@ export function SortableLayerItem({
               event.stopPropagation();
               onRenameClick(layer.id);
             }}
-            title="Rename layer"
-            aria-label="Rename layer"
+            title={editor.layers.item.rename}
+            aria-label={editor.layers.item.rename}
           >
             <Image
               src={LAYER_ICON_SRC.pencil}
