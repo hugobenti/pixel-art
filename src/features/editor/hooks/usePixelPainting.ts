@@ -10,50 +10,23 @@
  * Bucket mode flood-fills using the visible composite color (all visible layers), with 4-way connectivity.
  */
 "use client";
-
-import type { RefObject } from "react";
 import { useEffect, useRef } from "react";
 
 import { screenToWorldCoordinates } from "@/features/editor/logic/coordinateMath";
 import { mergeStrokeDeltas } from "@/features/editor/logic/mergeStrokeDeltas";
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
+import type { IArtwork } from "@/features/shared/artwork/artwork.type";
 import type {
-  HistoryCommand,
-  PixelDelta,
-  ViewportState,
-} from "@/features/editor/types/editor.types";
-
-import type { ColorSlot } from "@/features/editor/logic/paletteMutations";
-
-interface UsePixelPaintingParams {
-  artwork: Artwork;
-  activeLayerId: string | null;
-  /** When false and `activeLayerId` is set, paint gestures are ignored (layer hidden in UI). */
-  activeLayerVisible: boolean;
-  activeLayerPixelData: Uint8Array | null;
-  viewport: ViewportState;
-  canvasRef: React.RefObject<HTMLCanvasElement | null>;
-  activeSlot: ColorSlot;
-  primaryPaletteIndex: number;
-  secondaryPaletteIndex: number;
-  onCommitStroke: (cmd: HistoryCommand) => void;
-  onPixelsChanged: () => void;
-  /** When true, primary-button painting is skipped (Space pan / pan mode). */
-  deferPrimaryPaint?: () => boolean;
-  /** True enables one-shot flood fill on pointer down. */
-  bucketMode?: boolean;
-  /** Shared touch Set from useEditorPointerContacts; hook order must place contacts before painting. */
-  touchPointersRef: RefObject<Set<number>>;
-  /** Fires when the user tries to paint while the active layer is hidden. */
-  onHiddenActiveLayerPaintAttempt?: () => void;
-}
+  IPixelDelta
+} from "@/features/editor/types/editor.type";
+import type { TColorSlot } from "@/features/editor/logic/paletteMutations.type";
+import type { IUsePixelPaintingParams } from "./usePixelPainting.type";
 
 /**
  * Main button / touch uses the active slot; right button paints the opposite slot (desktop).
  */
 function paletteIndexForButtons(
   buttons: number,
-  activeSlot: ColorSlot,
+  activeSlot: TColorSlot,
   primary: number,
   secondary: number
 ) {
@@ -64,7 +37,7 @@ function paletteIndexForButtons(
 }
 
 function sameCompositeColor(
-  artwork: Artwork,
+  artwork: IArtwork,
   activeLayerId: string,
   originalActivePixels: Uint8Array,
   pixelOffset: number,
@@ -103,7 +76,7 @@ export function usePixelPainting({
   bucketMode = false,
   touchPointersRef,
   onHiddenActiveLayerPaintAttempt,
-}: UsePixelPaintingParams) {
+}: IUsePixelPaintingParams) {
   const artworkRef = useRef(artwork);
   const activeLayerIdRef = useRef(activeLayerId);
   const activeLayerVisibleRef = useRef(activeLayerVisible);
@@ -118,7 +91,7 @@ export function usePixelPainting({
     viewportRef.current = viewport;
   }, [artwork, activeLayerId, activeLayerVisible, activeLayerPixelData, viewport]);
 
-  const strokeRaw = useRef<PixelDelta[]>([]);
+  const strokeRaw = useRef<IPixelDelta[]>([]);
   /** True while a paint stroke is active for the captured pointer (draw permission). */
   const painting = useRef(false);
   const activePaintingPointerId = useRef<number | null>(null);
@@ -310,7 +283,7 @@ export function usePixelPainting({
 
         const queue = [index];
         const visited = new Uint8Array(art.width * art.height);
-        const deltas: PixelDelta[] = [];
+        const deltas: IPixelDelta[] = [];
         while (queue.length > 0) {
           const current = queue.pop();
           if (current === undefined) {

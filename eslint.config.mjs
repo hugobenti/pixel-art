@@ -112,9 +112,30 @@ const copyMessageRules = [
   "CallExpression[callee.property.name='confirm'] > :matches(Literal, TemplateLiteral)",
 ].map((selector) => ({ selector, message: COPY_MESSAGE }));
 
+// Types rule (AGENTS.md): every interface/type lives in an X.type.ts file next to its user; tests may
+// keep local types. Merged into the same no-restricted-syntax arrays as the copy rules: in flat config
+// a second no-restricted-syntax block for the same files would silently replace the first.
+const TYPE_FILE_MESSAGE =
+  "Types live in an X.type.ts file next to the file that uses them (AGENTS.md); tests may keep local types.";
+const typeFileRules = ["TSInterfaceDeclaration", "TSTypeAliasDeclaration"].map((selector) => ({
+  selector,
+  message: TYPE_FILE_MESSAGE,
+}));
+
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  {
+    files: ["src/**/*.{ts,tsx}"],
+    rules: {
+      // Interfaces are IName, type aliases TName (AGENTS.md); the rest of the name is PascalCase.
+      "@typescript-eslint/naming-convention": [
+        "error",
+        { selector: "interface", format: ["PascalCase"], prefix: ["I"] },
+        { selector: "typeAlias", format: ["PascalCase"], prefix: ["T"] },
+      ],
+    },
+  },
   {
     files: featureFiles("shared"),
     rules: {
@@ -156,15 +177,23 @@ const eslintConfig = defineConfig([
   },
   {
     files: ["src/**/*.tsx"],
+    ignores: ["src/**/*.test.tsx"],
     rules: {
-      "no-restricted-syntax": ["error", ...copyRules, ...copyMessageRules],
+      "no-restricted-syntax": ["error", ...copyRules, ...copyMessageRules, ...typeFileRules],
     },
   },
   {
     files: ["src/**/*.ts"],
-    ignores: ["src/content/**", "src/**/*.test.ts"],
+    ignores: ["src/content/**", "src/**/*.test.ts", "src/**/*.type.ts"],
     rules: {
-      "no-restricted-syntax": ["error", ...copyMessageRules],
+      "no-restricted-syntax": ["error", ...copyMessageRules, ...typeFileRules],
+    },
+  },
+  {
+    files: ["src/content/**/*.ts"],
+    ignores: ["src/content/**/*.type.ts", "src/content/**/*.test.ts"],
+    rules: {
+      "no-restricted-syntax": ["error", ...typeFileRules],
     },
   },
   // Override default ignores of eslint-config-next.

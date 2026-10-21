@@ -3,20 +3,19 @@
  * Pure viewport zoom math: screen-anchored scale changes with optional pixel-grid snapping.
  */
 
-import type { ViewportState } from "@/features/editor/types/editor.types";
-
-import type { NormalizeViewportOptions } from "@/features/editor/logic/viewportPixelAlign";
+import type { IViewportState } from "@/features/editor/types/editor.type";
+import type { INormalizeViewportOptions } from "@/features/editor/logic/viewportPixelAlign.type";
 import { normalizeViewportToPixelGrid } from "@/features/editor/logic/viewportPixelAlign";
 
 /**
  * Applies a new scale while keeping the given screen-space point aligned with the same world pixel.
  */
 export function zoomViewportTowardScreenPoint(
-  v: ViewportState,
+  v: IViewportState,
   newScale: number,
   mx: number,
   my: number
-): ViewportState {
+): IViewportState {
   const worldX = (mx - v.viewOffset.x) / v.scale;
   const worldY = (my - v.viewOffset.y) / v.scale;
   return {
@@ -34,12 +33,12 @@ export function zoomViewportTowardScreenPoint(
  * when rounding yields no zoom change (visible as pan drift on touch / button zoom).
  */
 export function zoomViewportTowardScreenPointSnapped(
-  v: ViewportState,
+  v: IViewportState,
   candidateScale: number,
   mx: number,
   my: number,
-  normalizeOpts: NormalizeViewportOptions
-): ViewportState {
+  normalizeOpts: INormalizeViewportOptions
+): IViewportState {
   const snappedPreview = normalizeViewportToPixelGrid(
     { ...v, scale: candidateScale },
     normalizeOpts

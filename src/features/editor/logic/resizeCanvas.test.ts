@@ -10,7 +10,7 @@ import {
   resizeLayerPixelData,
 } from "@/features/editor/logic/resizeCanvas";
 
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
+import type { IArtwork } from "@/features/shared/artwork/artwork.type";
 
 describe("resizeLayerPixelData", () => {
   it("copies top-left region when expanding", () => {
@@ -50,7 +50,7 @@ describe("fillPaletteIndexForExpansion", () => {
 
 describe("resizeArtworkDimensions", () => {
   it("returns same reference when dimensions unchanged", () => {
-    const artwork: Artwork = {
+    const artwork: IArtwork = {
       id: "a",
       title: "t",
       width: 2,

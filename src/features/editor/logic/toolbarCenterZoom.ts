@@ -6,14 +6,13 @@
  * Used by useToolbarCenterZoom; logs optional debug when DEBUG_EDITOR_ZOOM=1 or in development.
  */
 
-import type { ViewportState } from "@/features/editor/types/editor.types";
-
-import type { NormalizeViewportOptions } from "@/features/editor/logic/viewportPixelAlign";
+import type { IViewportState } from "@/features/editor/types/editor.type";
 import {
   MAX_VIEWPORT_SCALE,
   normalizeViewportToPixelGrid,
 } from "@/features/editor/logic/viewportPixelAlign";
 import { zoomViewportTowardScreenPointSnapped } from "@/features/editor/logic/viewportZoomMath";
+import type { IToolbarCenterZoomContext } from "./toolbarCenterZoom.type";
 
 /** Initial multiplicative step; integer bump applied when rounding yields no change (typical at low scales). */
 export const VIEWPORT_ZOOM_FACTOR_IN = 1.08;
@@ -30,20 +29,14 @@ export function editorZoomDebug(payload: Record<string, unknown>) {
   }
 }
 
-export interface ToolbarCenterZoomContext {
-  wrapEl: HTMLElement;
-  minScale: number;
-  normalizeOpts: NormalizeViewportOptions;
-}
-
 /**
  * Computes next viewport state when zooming from toolbar toward the wrap element center.
  */
 export function computeToolbarZoomAroundCenter(
-  v: ViewportState,
+  v: IViewportState,
   direction: "in" | "out",
-  ctx: ToolbarCenterZoomContext
-): ViewportState {
+  ctx: IToolbarCenterZoomContext
+): IViewportState {
   const rect = ctx.wrapEl.getBoundingClientRect();
   const mx = rect.width / 2;
   const my = rect.height / 2;

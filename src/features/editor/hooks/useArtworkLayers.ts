@@ -5,19 +5,12 @@
 "use client";
 
 import { useCallback, useMemo } from "react";
-import type { Dispatch, SetStateAction } from "react";
-
 import { editor } from "@/content/editor";
-import type { Artwork, ArtworkLayer } from "@/features/shared/artwork/artwork.types";
+import type { IArtworkLayer } from "@/features/shared/artwork/artwork.type";
 import { clonePixelBuffer } from "@/features/shared/utils/binaryHelpers";
+import type { IUseArtworkLayersParams } from "./useArtworkLayers.type";
 
-interface UseArtworkLayersParams {
-  artwork: Artwork;
-  setArtwork: Dispatch<SetStateAction<Artwork>>;
-  onLayersChanged: () => void;
-}
-
-function moveLayerByIds(layers: ArtworkLayer[], activeId: string, overId: string) {
+function moveLayerByIds(layers: IArtworkLayer[], activeId: string, overId: string) {
   const from = layers.findIndex((layer) => layer.id === activeId);
   const to = layers.findIndex((layer) => layer.id === overId);
   if (from < 0 || to < 0 || from === to) {
@@ -36,7 +29,7 @@ export function useArtworkLayers({
   artwork,
   setArtwork,
   onLayersChanged,
-}: UseArtworkLayersParams) {
+}: IUseArtworkLayersParams) {
   const layers = artwork.layers;
 
   const activeLayer = useMemo(
@@ -116,7 +109,7 @@ export function useArtworkLayers({
     let createdLayerId = "";
     setArtwork((prev) => {
       const pixelCount = prev.width * prev.height;
-      const nextLayer: ArtworkLayer = {
+      const nextLayer: IArtworkLayer = {
         id: crypto.randomUUID(),
         name: editor.layers.newLayerName(prev.layers.length + 1),
         visible: true,
@@ -142,7 +135,7 @@ export function useArtworkLayers({
           return prev;
         }
         const source = prev.layers[idx];
-        const duplicated: ArtworkLayer = {
+        const duplicated: IArtworkLayer = {
           id: crypto.randomUUID(),
           name: editor.layers.copyName(source.name),
           visible: source.visible,

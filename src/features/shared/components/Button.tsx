@@ -3,28 +3,18 @@
  * Accessible button primitive with variants and compact sizes for toolbars (outline/icon/step).
  */
 "use client";
-
-import type { ButtonHTMLAttributes } from "react";
-
-export type ButtonVariant = "primary" | "ghost" | "danger" | "outline";
-
-export type ButtonSize = "default" | "icon" | "step";
-
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-};
+import type { TButtonVariant, TButtonSize, TButtonProps } from "./Button.type";
 
 const focusRing =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-50";
 
-const sizeClasses: Record<ButtonSize, string> = {
+const sizeClasses: Record<TButtonSize, string> = {
   default: "min-h-10 px-3 py-2 text-sm rounded-lg",
   icon: "h-10 min-w-10 shrink-0 rounded-lg px-2 text-base font-semibold",
   step: "h-9 min-w-9 rounded-md text-lg font-semibold leading-none disabled:cursor-not-allowed",
 };
 
-const variantClasses: Record<ButtonVariant, string> = {
+const variantClasses: Record<TButtonVariant, string> = {
   primary:
     "bg-accent text-on-accent hover:bg-accent-hover focus-visible:outline-accent",
   ghost: "bg-transparent text-fg-soft hover:bg-surface-muted",
@@ -40,7 +30,7 @@ export function Button({
   className = "",
   type = "button",
   ...rest
-}: ButtonProps) {
+}: TButtonProps) {
   const ghostStepAdjust =
     variant === "ghost" && size === "step"
       ? "hover:bg-surface-muted disabled:opacity-40"

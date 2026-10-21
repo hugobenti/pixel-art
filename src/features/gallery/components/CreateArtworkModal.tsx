@@ -11,26 +11,19 @@ import { FormField } from "@/features/shared/components/FormField";
 import { Input } from "@/features/shared/components/Input";
 import { Modal } from "@/features/shared/components/Modal";
 import { useCreateArtworkForm } from "@/features/gallery/hooks/useCreateArtworkForm";
-
-import type { CreateArtworkInput } from "@/features/shared/artwork/artworkService";
 import { MAX_CANVAS_DIMENSION } from "@/features/shared/artwork/artworkService";
+import type { ICreateArtworkModalProps } from "./CreateArtworkModal.type";
 
 const colorRowClass = "flex flex-wrap items-center gap-3";
 
 const colorPickerClass =
   "h-10 w-14 shrink-0 cursor-pointer rounded border border-line-strong bg-surface p-1";
 
-interface CreateArtworkModalProps {
-  open: boolean;
-  onClose: () => void;
-  onCreate: (input: CreateArtworkInput) => Promise<unknown>;
-}
-
 export function CreateArtworkModal({
   open,
   onClose,
   onCreate,
-}: CreateArtworkModalProps) {
+}: ICreateArtworkModalProps) {
   const {
     title,
     setTitle,

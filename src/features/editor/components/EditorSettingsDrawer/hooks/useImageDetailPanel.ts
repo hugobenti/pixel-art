@@ -10,22 +10,7 @@
 import { useMemo } from "react";
 
 import { countVisibleCompositePixelsByPaletteIndex } from "@/features/editor/logic/visibleCompositePixelCounts";
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
-import type { ViewportState } from "@/features/editor/types/editor.types";
-
-export interface ImageDetailRow {
-  paletteIndex: number;
-  count: number;
-  color: string;
-}
-
-interface UseImageDetailPanelParams {
-  artwork: Artwork;
-  viewport: ViewportState;
-  viewportCssWidth: number;
-  viewportCssHeight: number;
-  paintRevision: number;
-}
+import type { IImageDetailRow, IUseImageDetailPanelParams } from "./useImageDetailPanel.type";
 
 export function useImageDetailPanel({
   artwork,
@@ -33,7 +18,7 @@ export function useImageDetailPanel({
   viewportCssWidth,
   viewportCssHeight,
   paintRevision,
-}: UseImageDetailPanelParams) {
+}: IUseImageDetailPanelParams) {
   return useMemo(() => {
     const summary = countVisibleCompositePixelsByPaletteIndex(
       artwork,
@@ -42,7 +27,7 @@ export function useImageDetailPanel({
       viewportCssHeight
     );
 
-    const rows: ImageDetailRow[] = [...summary.countsByPaletteIndex.entries()]
+    const rows: IImageDetailRow[] = [...summary.countsByPaletteIndex.entries()]
       .map(([paletteIndex, count]) => ({
         paletteIndex,
         count,

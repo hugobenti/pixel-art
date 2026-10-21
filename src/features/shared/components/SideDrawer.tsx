@@ -7,7 +7,7 @@
  */
 "use client";
 
-import { useId, useRef, type ButtonHTMLAttributes, type ReactNode } from "react";
+import { useId, useRef } from "react";
 
 import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
@@ -26,24 +26,11 @@ import {
   drawerShellRootClass,
   drawerTitleClass,
 } from "@/features/shared/components/drawer.styles";
+import type { ISideDrawerProps, THeaderIconButtonProps } from "./SideDrawer.type";
 
 const headerIconMaskClass = "h-5 w-5 text-fg-soft";
 
 const headerIconButtonClass = "shrink-0 touch-manipulation";
-
-interface SideDrawerProps {
-  entered: boolean;
-  onBackdropClick: () => void;
-  title: string;
-  /** Renders before the title (e.g. back control for drill-in navigation). */
-  headerLeft?: ReactNode;
-  headerRight?: ReactNode;
-  belowHeader?: ReactNode;
-  footer?: ReactNode;
-  motionDurationMs: number;
-  children: ReactNode;
-  backdropAriaLabel?: string;
-}
 
 export function SideDrawer({
   entered,
@@ -56,7 +43,7 @@ export function SideDrawer({
   motionDurationMs,
   children,
   backdropAriaLabel = shared.sideDrawer.closeLabel,
-}: SideDrawerProps) {
+}: ISideDrawerProps) {
   const titleId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
   useFocusTrap(rootRef, true);
@@ -104,20 +91,13 @@ export function SideDrawer({
   );
 }
 
-type HeaderIconButtonProps = Omit<
-  ButtonHTMLAttributes<HTMLButtonElement>,
-  "type" | "children"
-> & {
-  "aria-label": string;
-};
-
 /**
  * Ghost icon button for the leading header slot (drill-in back).
  */
 export function SideDrawerBackButton({
   className = "",
   ...rest
-}: HeaderIconButtonProps) {
+}: THeaderIconButtonProps) {
   return (
     <Button
       type="button"
@@ -137,7 +117,7 @@ export function SideDrawerBackButton({
 export function SideDrawerCloseButton({
   className = "",
   ...rest
-}: HeaderIconButtonProps) {
+}: THeaderIconButtonProps) {
   return (
     <Button
       type="button"

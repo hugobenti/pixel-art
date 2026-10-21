@@ -7,18 +7,15 @@
  */
 "use client";
 
+import type { IPublicMaskIconProps } from "./PublicMaskIcon.type";
+
 const maskLayoutClass =
   "pointer-events-none inline-block shrink-0 bg-current [mask-size:contain] [mask-repeat:no-repeat] [mask-position:center]";
-
-interface PublicMaskIconProps {
-  src: string;
-  className?: string;
-}
 
 export function PublicMaskIcon({
   src,
   className = "h-5 w-5",
-}: PublicMaskIconProps) {
+}: IPublicMaskIconProps) {
   const maskUrl = `url("${src}")`;
   return (
     <span

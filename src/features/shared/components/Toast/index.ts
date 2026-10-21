@@ -4,10 +4,5 @@
  */
 
 export { ToastProvider } from "@/features/shared/components/Toast/ToastProvider";
-export type {
-  ShowToastInput,
-  ToastContextValue,
-  ToastRecord,
-  ToastTone,
-} from "@/features/shared/components/Toast/ToastProvider";
+export type { IShowToastInput, IToastContextValue, IToastRecord, TToastTone } from "@/features/shared/components/Toast/ToastProvider.type";
 export { useToast } from "@/features/shared/components/Toast/hooks/useToast";

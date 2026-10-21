@@ -9,17 +9,14 @@ import { useEffect, useState } from "react";
 import { editor } from "@/content/editor";
 import { EditorWorkspace } from "@/features/editor/components/EditorWorkspace";
 
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
+import type { IArtwork } from "@/features/shared/artwork/artwork.type";
 
 import * as artworkService from "@/features/shared/artwork/artworkService";
 import { clonePixelBuffer } from "@/features/shared/utils/binaryHelpers";
+import type { IEditorScreenProps } from "./EditorScreen.type";
 
-interface EditorScreenProps {
-  artworkId: string;
-}
-
-export function EditorScreen({ artworkId }: EditorScreenProps) {
-  const [artwork, setArtwork] = useState<Artwork | null>(null);
+export function EditorScreen({ artworkId }: IEditorScreenProps) {
+  const [artwork, setArtwork] = useState<IArtwork | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {

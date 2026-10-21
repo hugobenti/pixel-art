@@ -8,27 +8,16 @@ import { useCallback, useState } from "react";
 
 import { editor } from "@/content/editor";
 import { resizeArtworkDimensions } from "@/features/editor/logic/resizeCanvas";
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
 import { useToast } from "@/features/shared/components/Toast/hooks/useToast";
 import { validateDimensions } from "@/features/shared/artwork/artworkService";
-
-export type EditorSettingsView =
-  | "menu"
-  | "canvasSize"
-  | "imageDetail"
-  | "importExport";
-
-interface UseCanvasSizePanelParams {
-  artwork: Artwork;
-  onApplyResized: (next: Artwork) => void;
-}
+import type { TEditorSettingsView, IUseCanvasSizePanelParams } from "./useCanvasSizePanel.type";
 
 export function useCanvasSizePanel({
   artwork,
   onApplyResized,
-}: UseCanvasSizePanelParams) {
+}: IUseCanvasSizePanelParams) {
   const { showToast } = useToast();
-  const [settingsView, setSettingsView] = useState<EditorSettingsView>("menu");
+  const [settingsView, setSettingsView] = useState<TEditorSettingsView>("menu");
   const [widthStr, setWidthStr] = useState(String(artwork.width));
   const [heightStr, setHeightStr] = useState(String(artwork.height));
 

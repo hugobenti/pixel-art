@@ -5,16 +5,12 @@
 "use client";
 
 import { useCallback, useState } from "react";
-
-export interface LayerRenameSession {
-  layerId: string;
-  initialName: string;
-}
+import type { ILayerRenameSession } from "./useLayerRenameDialog.type";
 
 export function useLayerRenameDialog(
   onRename: (layerId: string, nextName: string) => void
 ) {
-  const [session, setSession] = useState<LayerRenameSession | null>(null);
+  const [session, setSession] = useState<ILayerRenameSession | null>(null);
 
   const requestRename = useCallback((layerId: string, initialName: string) => {
     setSession({ layerId, initialName });

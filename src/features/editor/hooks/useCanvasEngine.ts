@@ -13,20 +13,7 @@ import { EDITOR_ROOT_CSS_VARS } from "@/features/editor/constants/editorRootCssV
 import { renderCanvas } from "@/features/editor/logic/canvasRender";
 import { renderPixelGrid } from "@/features/editor/logic/gridRender";
 import { renderReferenceImage } from "@/features/editor/logic/referenceImageRender";
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
-import type { ViewportState } from "@/features/editor/types/editor.types";
-
-interface UseCanvasEngineParams {
-  artwork: Artwork | null;
-  viewport: ViewportState;
-  showPixelGrid: boolean;
-  showReferenceImage: boolean;
-  referenceImage: HTMLImageElement | null;
-  referenceImageAlpha: number;
-  /** Bumps when pixel buffer or history mutates without artwork reference changes. */
-  paintRevision: number;
-  historyRevision: number;
-}
+import type { IUseCanvasEngineParams } from "./useCanvasEngine.type";
 
 function readRootCssColor(cssVar: string): string {
   if (typeof document === "undefined") {
@@ -46,7 +33,7 @@ export function useCanvasEngine({
   referenceImageAlpha,
   paintRevision,
   historyRevision,
-}: UseCanvasEngineParams) {
+}: IUseCanvasEngineParams) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const artworkCanvasRef = useRef<HTMLCanvasElement>(null);
   const referenceImageCanvasRef = useRef<HTMLCanvasElement>(null);

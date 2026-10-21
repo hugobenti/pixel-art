@@ -6,11 +6,7 @@
 
 import { editor } from "@/content/editor";
 import { Button } from "@/features/shared/components/Button";
-
-interface EditorSettingsImportExportPanelProps {
-  onExportPng: () => void;
-  onExportJson: () => void;
-}
+import type { IEditorSettingsImportExportPanelProps } from "./EditorSettingsImportExportPanel.type";
 
 const rootClass = "flex min-h-0 flex-1 flex-col gap-4 px-4 pb-4 pt-0 sm:px-4";
 const hintClass = "text-xs font-normal leading-relaxed text-subtle";
@@ -22,7 +18,7 @@ const buttonClass = "min-h-10 touch-manipulation px-4 sm:min-h-9";
 export function EditorSettingsImportExportPanel({
   onExportPng,
   onExportJson,
-}: EditorSettingsImportExportPanelProps) {
+}: IEditorSettingsImportExportPanelProps) {
   return (
     <div className={rootClass}>
       <p className={hintClass}>{editor.settings.export.hint}</p>

@@ -4,7 +4,7 @@
  * the artwork bounds without distortion (contain) and centered in world space.
  */
 
-import type { ViewportState } from "@/features/editor/types/editor.types";
+import type { IViewportState } from "@/features/editor/types/editor.type";
 
 function computeContainedDestRect(
   imageWidth: number,
@@ -29,7 +29,7 @@ export function renderReferenceImage(
   image: HTMLImageElement,
   artworkWidth: number,
   artworkHeight: number,
-  viewport: ViewportState,
+  viewport: IViewportState,
   alpha: number
 ): void {
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);

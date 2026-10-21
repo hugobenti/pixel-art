@@ -7,6 +7,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { editor } from "@/content/editor";
+import type { IUseReferenceImageParams, IUseReferenceImageResult } from "./useReferenceImage.type";
 
 const errors = editor.referenceImage.errors;
 const ACCEPTED_IMAGE_TYPES = "image/png,image/jpeg,image/webp,image/gif,image/bmp";
@@ -51,24 +52,10 @@ async function compressReferenceImageDataUrl(rawDataUrl: string): Promise<string
   return canvas.toDataURL("image/webp", 0.82);
 }
 
-interface UseReferenceImageParams {
-  initialReferenceImageDataUrl?: string;
-  onReferenceImageChange: (dataUrl?: string) => void;
-}
-
-interface UseReferenceImageResult {
-  showReferenceImage: boolean;
-  hasReferenceImage: boolean;
-  referenceImageElement: HTMLImageElement | null;
-  referenceAlpha: number;
-  onToggleReferenceImage: () => void;
-  onLoadReferenceImage: () => void;
-}
-
 export function useReferenceImage({
   initialReferenceImageDataUrl,
   onReferenceImageChange,
-}: UseReferenceImageParams): UseReferenceImageResult {
+}: IUseReferenceImageParams): IUseReferenceImageResult {
   const [showReferenceImage, setShowReferenceImage] = useState(
     Boolean(initialReferenceImageDataUrl)
   );

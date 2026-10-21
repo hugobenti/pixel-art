@@ -11,8 +11,7 @@ import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
 import { Input } from "@/features/shared/components/Input";
 import { Modal } from "@/features/shared/components/Modal";
-
-import type { LayerRenameSession } from "@/features/editor/components/LayersDrawer/hooks/useLayerRenameDialog";
+import type { ILayerRenameModalProps, ILayerRenameModalFormProps } from "./LayerRenameModal.type";
 
 const titleClass = "text-base font-semibold text-fg";
 
@@ -20,13 +19,7 @@ const fieldWrapClass = "mt-3";
 
 const actionsClass = "mt-4 flex justify-end gap-2";
 
-interface LayerRenameModalProps {
-  session: LayerRenameSession | null;
-  onDismiss: () => void;
-  onConfirm: (nextName: string) => void;
-}
-
-export function LayerRenameModal(props: LayerRenameModalProps) {
+export function LayerRenameModal(props: ILayerRenameModalProps) {
   const { session } = props;
   if (!session) {
     return null;
@@ -34,17 +27,11 @@ export function LayerRenameModal(props: LayerRenameModalProps) {
   return <LayerRenameModalForm key={session.layerId} {...props} session={session} />;
 }
 
-interface LayerRenameModalFormProps {
-  session: LayerRenameSession;
-  onDismiss: () => void;
-  onConfirm: (nextName: string) => void;
-}
-
 function LayerRenameModalForm({
   session,
   onDismiss,
   onConfirm,
-}: LayerRenameModalFormProps) {
+}: ILayerRenameModalFormProps) {
   const [draft, setDraft] = useState(session.initialName);
 
   const trimmed = draft.trim();

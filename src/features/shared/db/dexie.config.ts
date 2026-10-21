@@ -4,10 +4,10 @@
  */
 import Dexie, { type Table } from "dexie";
 
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
+import type { IArtwork } from "@/features/shared/artwork/artwork.type";
 
 export class PixelCraftDB extends Dexie {
-  artworks!: Table<Artwork, string>;
+  artworks!: Table<IArtwork, string>;
 
   constructor() {
     super("PixelCraftDB");
@@ -22,7 +22,7 @@ export class PixelCraftDB extends Dexie {
         tx
           .table("artworks")
           .toCollection()
-          .modify((record: Partial<Artwork>) => {
+          .modify((record: Partial<IArtwork>) => {
             if (typeof record.referenceImageDataUrl !== "string") {
               record.referenceImageDataUrl = undefined;
             }
@@ -36,7 +36,7 @@ export class PixelCraftDB extends Dexie {
         tx
           .table("artworks")
           .toCollection()
-          .modify((record: Partial<Artwork>) => {
+          .modify((record: Partial<IArtwork>) => {
             if (!Array.isArray(record.layers)) {
               record.layers = [];
             }

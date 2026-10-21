@@ -8,11 +8,7 @@
  * DOM-free (duck-typed targets) so it runs under Vitest's node environment.
  */
 
-/** Minimal shape of a keyboard event target needed to detect text entry. */
-export interface KeyboardTargetLike {
-  tagName?: string;
-  isContentEditable?: boolean;
-}
+import type { IKeyboardTargetLike, TEditorShortcut, IShortcutKeyLike, ISpacePanClaimInput } from "./editorKeyboardGuards.type";
 
 const TEXT_ENTRY_TAGS: Record<string, true> = {
   INPUT: true,
@@ -22,7 +18,7 @@ const TEXT_ENTRY_TAGS: Record<string, true> = {
 
 /** True when the target is an input, textarea, select or contenteditable element. */
 export function isTextEntryTarget(
-  target: KeyboardTargetLike | null | undefined
+  target: IKeyboardTargetLike | null | undefined
 ): boolean {
   if (!target) {
     return false;
@@ -33,21 +29,11 @@ export function isTextEntryTarget(
   return TEXT_ENTRY_TAGS[target.tagName?.toUpperCase() ?? ""] === true;
 }
 
-export type EditorShortcut = "toggleGrid" | "undo" | "redo";
-
-export interface ShortcutKeyLike {
-  key: string;
-  ctrlKey: boolean;
-  metaKey: boolean;
-  altKey: boolean;
-  shiftKey: boolean;
-}
-
 /** Editor shortcut for a key press, or null when the key must be left to the browser. */
 export function editorShortcutForKey(
-  e: ShortcutKeyLike,
+  e: IShortcutKeyLike,
   targetIsTextEntry: boolean
-): EditorShortcut | null {
+): TEditorShortcut | null {
   if (targetIsTextEntry) {
     return null;
   }
@@ -61,15 +47,6 @@ export function editorShortcutForKey(
   return null;
 }
 
-export interface SpacePanClaimInput {
-  code: string;
-  /** Keyboard event target (the focused element, or body when nothing is focused). */
-  target: KeyboardTargetLike | null | undefined;
-  /** The canvas viewport element, if mounted. */
-  canvas: KeyboardTargetLike | null | undefined;
-  pointerOverCanvas: boolean;
-}
-
 /**
  * Space may be claimed for Space+drag panning only inside the canvas context: when the viewport itself has focus,
  * or nothing is focused (body/html) while the pointer is over it. Focused controls and text fields keep Space.
@@ -79,7 +56,7 @@ export function shouldClaimSpaceForCanvasPan({
   target,
   canvas,
   pointerOverCanvas,
-}: SpacePanClaimInput): boolean {
+}: ISpacePanClaimInput): boolean {
   if (code !== "Space" || !target) {
     return false;
   }

@@ -6,8 +6,7 @@
  * useZoomPan requires touchPointersRef from useEditorPointerContacts — same contract as useViewportNavigation.
  */
 "use client";
-
-export type { UseViewportNavigationOptions } from "@/features/editor/hooks/useViewportNavigation";
+export type { IUseViewportNavigationOptions } from "@/features/editor/hooks/useViewportNavigation.type";
 export {
   attachViewportWheel as attachWheelZoom,
   useViewportNavigation as useZoomPan,

@@ -9,16 +9,9 @@ import { useCallback, useRef } from "react";
 import { gallery } from "@/content/gallery";
 import { importArtworkFromJsonFile } from "@/features/shared/artwork/artworkFileService";
 import { useToast } from "@/features/shared/components/Toast/hooks/useToast";
+import type { IUseGalleryImportParams } from "./useGalleryImport.type";
 
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
-import type { ImportedArtworkData } from "@/features/shared/artwork/artworkFileService";
-
-interface UseGalleryImportParams {
-  importArtwork: (input: ImportedArtworkData) => Promise<Artwork | null>;
-  onImported: (artwork: Artwork) => void;
-}
-
-export function useGalleryImport({ importArtwork, onImported }: UseGalleryImportParams) {
+export function useGalleryImport({ importArtwork, onImported }: IUseGalleryImportParams) {
   const { showToast } = useToast();
   const importInputRef = useRef<HTMLInputElement | null>(null);
 

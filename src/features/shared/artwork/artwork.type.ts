@@ -3,7 +3,7 @@
  * Core TypeScript contracts for PixelCraft artwork documents, shared by persistence, the editor and the gallery.
  */
 
-export interface Artwork {
+export interface IArtwork {
   id: string;
   title: string;
   width: number;
@@ -12,7 +12,7 @@ export interface Artwork {
   updatedAt: number;
   thumbnail: string;
   palette: string[];
-  layers: ArtworkLayer[];
+  layers: IArtworkLayer[];
   activeLayerId: string;
   /** Legacy mono-layer payload kept for backward compatibility during hydration. */
   pixelData?: Uint8Array;
@@ -20,7 +20,7 @@ export interface Artwork {
   referenceImageDataUrl?: string;
 }
 
-export interface ArtworkLayer {
+export interface IArtworkLayer {
   id: string;
   name: string;
   visible: boolean;

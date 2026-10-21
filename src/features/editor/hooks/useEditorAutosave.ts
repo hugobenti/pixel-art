@@ -7,28 +7,20 @@
  */
 "use client";
 
-import { type RefObject, useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 import * as artworkService from "@/features/shared/artwork/artworkService";
-
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
 import { artworkToWebpThumbnail } from "@/features/editor/utils/thumbnail";
+import type { IUseEditorAutosaveParams } from "./useEditorAutosave.type";
 
 const AUTOSAVE_DEBOUNCE_MS = 650;
-
-export interface UseEditorAutosaveParams {
-  artworkRef: RefObject<Artwork>;
-  artworkId: string;
-  paintRevision: number;
-  historyRevision: number;
-}
 
 export function useEditorAutosave({
   artworkRef,
   artworkId,
   paintRevision,
   historyRevision,
-}: UseEditorAutosaveParams) {
+}: IUseEditorAutosaveParams) {
   const persistCurrent = useCallback(() => {
     const current = artworkRef.current;
     if (!current || typeof document === "undefined") {

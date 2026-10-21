@@ -10,23 +10,17 @@
 
 import { useMemo } from "react";
 
-import type { ArtworkLayer } from "@/features/shared/artwork/artwork.types";
+import type { IArtworkLayer } from "@/features/shared/artwork/artwork.type";
 
 import {
   LAYER_PREVIEW_MAX_EDGE_PX,
   previewImageClass,
   previewPlaceholderClass,
 } from "@/features/editor/components/LayersDrawer/layersDrawer.constants";
-
-interface LayerPreviewProps {
-  layer: ArtworkLayer;
-  palette: string[];
-  width: number;
-  height: number;
-}
+import type { ILayerPreviewProps } from "./LayerPreview.type";
 
 function rasterizeLayerToCanvas(
-  layer: ArtworkLayer,
+  layer: IArtworkLayer,
   palette: string[],
   width: number,
   height: number
@@ -81,7 +75,7 @@ export function LayerPreview({
   palette,
   width,
   height,
-}: LayerPreviewProps) {
+}: ILayerPreviewProps) {
   const previewUrl = useMemo(() => {
     if (typeof document === "undefined") {
       return "";

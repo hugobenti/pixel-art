@@ -26,25 +26,7 @@ import { ANIMATION_MS } from "@/features/editor/components/LayersDrawer/layersDr
 import { useCanvasSizePanel } from "@/features/editor/components/EditorSettingsDrawer/hooks/useCanvasSizePanel";
 import { useEditorSettingsDrawer } from "@/features/editor/components/EditorSettingsDrawer/hooks/useEditorSettingsDrawer";
 import { useImportExportPanel } from "@/features/editor/components/EditorSettingsDrawer/hooks/useImportExportPanel";
-
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
-import type { ViewportState } from "@/features/editor/types/editor.types";
-
-interface EditorSettingsDrawerProps {
-  artwork: Artwork;
-  onApplyCanvasSize: (next: Artwork) => void;
-  viewport: ViewportState;
-  viewportCssWidth: number;
-  viewportCssHeight: number;
-  paintRevision: number;
-  showPixelGrid: boolean;
-  onToggleGrid: () => void;
-  showReferenceImage: boolean;
-  hasReferenceImage: boolean;
-  onToggleReferenceImage: () => void;
-  onLoadReferenceImage: () => void;
-  onClose: () => void;
-}
+import type { IEditorSettingsDrawerProps } from "./EditorSettingsDrawer.type";
 
 const menuRootClass = "min-h-0 flex-1 overflow-y-auto px-0 pb-3 pt-0 sm:pb-4";
 
@@ -81,7 +63,7 @@ export function EditorSettingsDrawer({
   onToggleReferenceImage,
   onLoadReferenceImage,
   onClose,
-}: EditorSettingsDrawerProps) {
+}: IEditorSettingsDrawerProps) {
   const {
     settingsView,
     widthStr,

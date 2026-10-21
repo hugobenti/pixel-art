@@ -7,13 +7,14 @@
  * Palette entries resolved to "transparent" do not occlude layers below (same rule as LayerPreview).
  */
 
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
-import type { ViewportState } from "@/features/editor/types/editor.types";
+import type { IArtwork } from "@/features/shared/artwork/artwork.type";
+import type { IViewportState } from "@/features/editor/types/editor.type";
+import type { IVisibleCompositeCountResult } from "./visibleCompositePixelCounts.type";
 
 export function isArtworkPixelVisibleInViewport(
   ax: number,
   ay: number,
-  viewport: ViewportState,
+  viewport: IViewportState,
   cssW: number,
   cssH: number
 ): boolean {
@@ -26,7 +27,7 @@ export function isArtworkPixelVisibleInViewport(
 }
 
 export function compositeOpaquePaletteIndexAt(
-  artwork: Pick<Artwork, "width" | "height" | "layers" | "palette">,
+  artwork: Pick<IArtwork, "width" | "height" | "layers" | "palette">,
   x: number,
   y: number
 ): number | null {
@@ -49,21 +50,12 @@ export function compositeOpaquePaletteIndexAt(
   return null;
 }
 
-export interface VisibleCompositeCountResult {
-  /** Palette index -> number of visible artwork pixels showing that index after compositing. */
-  countsByPaletteIndex: Map<number, number>;
-  /** Sum of counted composite pixels (opaque in the visible viewport region). */
-  totalCompositeOpaque: number;
-  /** Canvas pixels (artwork cells) intersecting the viewport, including fully transparent composite. */
-  totalViewportCells: number;
-}
-
 export function countVisibleCompositePixelsByPaletteIndex(
-  artwork: Pick<Artwork, "width" | "height" | "layers" | "palette">,
-  viewport: ViewportState,
+  artwork: Pick<IArtwork, "width" | "height" | "layers" | "palette">,
+  viewport: IViewportState,
   cssW: number,
   cssH: number
-): VisibleCompositeCountResult {
+): IVisibleCompositeCountResult {
   const { width, height } = artwork;
   const countsByPaletteIndex = new Map<number, number>();
   let totalCompositeOpaque = 0;

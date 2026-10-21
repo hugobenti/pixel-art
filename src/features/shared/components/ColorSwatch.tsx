@@ -5,28 +5,7 @@
 "use client";
 
 import { shared } from "@/content/shared";
-
-export type ColorSwatchDensity = "comfortable" | "compact";
-
-interface ColorSwatchRowProps {
-  density: "comfortable";
-  color: string;
-  index: number;
-  isPrimary: boolean;
-  isSecondary: boolean;
-  isFocused: boolean;
-  onClick: () => void;
-}
-
-interface ColorSwatchGridProps {
-  density: "compact";
-  color: string;
-  index: number;
-  selected: boolean;
-  onClick: () => void;
-}
-
-export type ColorSwatchProps = ColorSwatchRowProps | ColorSwatchGridProps;
+import type { TColorSwatchProps } from "./ColorSwatch.type";
 
 const focusRing =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2";
@@ -35,7 +14,7 @@ const baseComfortable = `h-10 w-10 shrink-0 rounded-md ${focusRing}`;
 
 const baseCompact = `h-9 w-9 rounded-md ${focusRing}`;
 
-export function ColorSwatch(props: ColorSwatchProps) {
+export function ColorSwatch(props: TColorSwatchProps) {
   const { color, index, onClick } = props;
   const n = index + 1;
 

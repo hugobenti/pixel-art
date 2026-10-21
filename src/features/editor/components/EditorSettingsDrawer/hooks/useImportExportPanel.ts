@@ -11,16 +11,12 @@ import {
   exportArtworkAsJson,
   exportArtworkAsPng,
 } from "@/features/shared/artwork/artworkFileService";
-import type { Artwork } from "@/features/shared/artwork/artwork.types";
 import { useToast } from "@/features/shared/components/Toast/hooks/useToast";
-
-interface UseImportExportPanelParams {
-  artwork: Artwork;
-}
+import type { IUseImportExportPanelParams } from "./useImportExportPanel.type";
 
 export function useImportExportPanel({
   artwork,
-}: UseImportExportPanelParams) {
+}: IUseImportExportPanelParams) {
   const { showToast } = useToast();
 
   const exportJson = useCallback(() => {
