@@ -82,6 +82,36 @@ const designTokensPlugin = {
   },
 };
 
+const COPY_MESSAGE =
+  "UI copy lives in src/content (AGENTS.md \"Copy\"): import the text from there instead of writing it here.";
+
+// Attributes whose value people read or hear: tooltips, accessible names, alt text, field labels.
+const COPY_ATTRIBUTE = "JSXAttribute[name.name=/^(aria-label|title|alt|placeholder|label|hint|.*Label)$/]";
+const NON_EMPTY_STRING = "Literal[value=/\\S/]";
+
+// Text in markup: JSX text, string children, and string attributes people read.
+const copyRules = [
+  "JSXText[value=/\\S/]",
+  `:matches(JSXElement, JSXFragment) > JSXExpressionContainer > ${NON_EMPTY_STRING}`,
+  ":matches(JSXElement, JSXFragment) > JSXExpressionContainer > TemplateLiteral",
+  `:matches(JSXElement, JSXFragment) > JSXExpressionContainer > :matches(ConditionalExpression, LogicalExpression) > ${NON_EMPTY_STRING}`,
+  `${COPY_ATTRIBUTE} > ${NON_EMPTY_STRING}`,
+  `${COPY_ATTRIBUTE} > JSXExpressionContainer > ${NON_EMPTY_STRING}`,
+  `${COPY_ATTRIBUTE} > JSXExpressionContainer > TemplateLiteral`,
+  `${COPY_ATTRIBUTE} > JSXExpressionContainer > :matches(ConditionalExpression, LogicalExpression) > ${NON_EMPTY_STRING}`,
+  `AssignmentPattern[left.name=/Label$/] > ${NON_EMPTY_STRING}`,
+].map((selector) => ({ selector, message: COPY_MESSAGE }));
+
+// Messages that reach people from any module: thrown errors and their fallbacks (shown in toasts),
+// toast messages, confirm dialogs, page metadata, and default artwork/layer names.
+const copyMessageRules = [
+  "NewExpression[callee.name='Error'] > :matches(Literal, TemplateLiteral)",
+  "ConditionalExpression[test.right.name='Error'] > :matches(Literal, TemplateLiteral)",
+  "Property[key.name=/^(message|title|description|name)$/] > :matches(Literal, TemplateLiteral)",
+  "Property[key.name=/^(title|name)$/] > LogicalExpression > :matches(Literal, TemplateLiteral)",
+  "CallExpression[callee.property.name='confirm'] > :matches(Literal, TemplateLiteral)",
+].map((selector) => ({ selector, message: COPY_MESSAGE }));
+
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
@@ -123,6 +153,19 @@ const eslintConfig = defineConfig([
     ignores: ["src/**/*.test.ts"],
     plugins: { "design-tokens": designTokensPlugin },
     rules: { "design-tokens/no-raw-color": "error" },
+  },
+  {
+    files: ["src/**/*.tsx"],
+    rules: {
+      "no-restricted-syntax": ["error", ...copyRules, ...copyMessageRules],
+    },
+  },
+  {
+    files: ["src/**/*.ts"],
+    ignores: ["src/content/**", "src/**/*.test.ts"],
+    rules: {
+      "no-restricted-syntax": ["error", ...copyMessageRules],
+    },
   },
   // Override default ignores of eslint-config-next.
   globalIgnores([
