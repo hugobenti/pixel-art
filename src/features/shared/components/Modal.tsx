@@ -7,6 +7,7 @@
 import { useEffect, useRef } from "react";
 import type { HTMLAttributes, ReactNode } from "react";
 
+import { shared } from "@/content/shared";
 import {
   type ModalLayer,
   type ModalPlacement,
@@ -97,7 +98,7 @@ export function Modal({
         <button
           type="button"
           tabIndex={-1}
-          aria-label="Close dialog"
+          aria-label={shared.modal.backdropLabel}
           className={modalBackdropClass}
           onMouseDown={onClose}
         />

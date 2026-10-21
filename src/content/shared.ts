@@ -22,6 +22,9 @@ export const shared: ISharedContent = {
   sideDrawer: {
     closeLabel: "Close panel",
   },
+  modal: {
+    backdropLabel: "Close dialog",
+  },
   colorSwatch: {
     compactTitle: (position) => `Color ${position}`,
     comfortableTitle: (position) => `Palette ${position}`,

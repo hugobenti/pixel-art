@@ -87,7 +87,7 @@ export function EditorActionsBar({
         </Link>
         <h1 className={titleClass}>{title}</h1>
       </div>
-      <div className={actionClusterClass} role="group" aria-label="Editor tools">
+      <div className={actionClusterClass} role="group" aria-label={editor.toolbar.groupLabel}>
         <Button
           type="button"
           variant="ghost"

@@ -9,9 +9,13 @@ export const editor: IEditorContent = {
     backToGallery: "Back to gallery",
     loading: "Loading artwork…",
   },
+  viewport: {
+    label: "Pixel canvas (arrow keys pan, Shift for larger steps)",
+  },
   toolbar: {
     back: "Gallery",
     backArrow: "←",
+    groupLabel: "Editor tools",
     undo: { label: "Undo", title: "Undo (Ctrl+Z)" },
     redo: { label: "Redo", title: "Redo (Ctrl+Shift+Z)" },
     pan: { label: "Pan mode", title: "Pan mode: drag to move the canvas (or hold Space)" },
@@ -43,7 +47,8 @@ export const editor: IEditorContent = {
   },
   shiftOverlay: {
     closeLabel: "Close shift controls",
-    groupLabel: "Shift pixels",
+    dialogLabel: "Shift pixels",
+    groupLabel: "Shift directions",
     directions: {
       up: { glyph: "↑", title: "Shift up (wrap)", label: "Shift pixels up" },
       left: { glyph: "←", title: "Shift left (wrap)", label: "Shift pixels left" },

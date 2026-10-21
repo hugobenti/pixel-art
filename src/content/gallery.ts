@@ -14,6 +14,7 @@ export const gallery: IGalleryContent = {
     clone: "Clone",
     delete: "Delete",
     confirmDelete: "Delete this artwork permanently?",
+    titleLabel: "Artwork title",
   },
   create: {
     title: "New artwork",

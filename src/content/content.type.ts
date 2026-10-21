@@ -33,6 +33,10 @@ export interface ISharedContent {
     /** Backdrop button name when the caller doesn't pass its own. */
     closeLabel: string;
   };
+  modal: {
+    /** Name of the click-outside button behind a dialog panel. */
+    backdropLabel: string;
+  };
   colorSwatch: {
     compactTitle: (position: number) => string;
     comfortableTitle: (position: number) => string;
@@ -96,6 +100,8 @@ export interface IGalleryContent {
     clone: string;
     delete: string;
     confirmDelete: string;
+    /** Accessible name of the inline rename field. */
+    titleLabel: string;
   };
   create: {
     title: string;
@@ -141,10 +147,14 @@ export interface IEditorContent {
     backToGallery: string;
     loading: string;
   };
+  viewport: {
+    label: string;
+  };
   toolbar: {
     back: string;
     /** Decorative arrow before the back link, hidden from screen readers. */
     backArrow: string;
+    groupLabel: string;
     undo: ILabeledControl;
     redo: ILabeledControl;
     pan: ILabeledControl;
@@ -176,6 +186,7 @@ export interface IEditorContent {
   };
   shiftOverlay: {
     closeLabel: string;
+    dialogLabel: string;
     groupLabel: string;
     directions: Record<TShiftDirectionKey, IShiftDirectionContent>;
   };

@@ -70,7 +70,7 @@ export function ArtworkCard({
             <Input
               // eslint-disable-next-line jsx-a11y/no-autofocus -- moves focus to the field that replaces the Rename button the user just pressed
               autoFocus
-              aria-label="Artwork title"
+              aria-label={gallery.card.titleLabel}
               value={title}
               onChange={(ev) => setTitle(ev.target.value)}
             />

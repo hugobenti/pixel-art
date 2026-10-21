@@ -53,7 +53,7 @@ export function ShiftDirectionOverlay({
   };
 
   return (
-    <div ref={dialogRef} role="dialog" aria-modal="true" aria-label="Shift pixels">
+    <div ref={dialogRef} role="dialog" aria-modal="true" aria-label={editor.shiftOverlay.dialogLabel}>
       <button
         type="button"
         tabIndex={-1}
