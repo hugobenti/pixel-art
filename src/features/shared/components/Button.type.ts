@@ -1,10 +1,7 @@
 import type { ButtonHTMLAttributes } from "react";
-
-export type TButtonVariant = "primary" | "ghost" | "danger" | "outline";
-
-export type TButtonSize = "default" | "icon" | "step";
+import type { button } from "./Button.style";
 
 export type TButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: TButtonVariant;
-  size?: TButtonSize;
+  variant?: keyof typeof button.variant;
+  size?: keyof typeof button.size;
 };

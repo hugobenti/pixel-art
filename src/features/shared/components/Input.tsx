@@ -6,13 +6,9 @@
 
 import type { InputHTMLAttributes } from "react";
 
-const inputClass =
-  "w-full rounded-lg border border-line-strong bg-surface px-3 py-2 text-sm text-fg shadow-sm placeholder:text-subtle focus-visible:border-focus focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus";
+import { cx } from "@/features/shared/utils/cx";
+import { input } from "./Input.style";
 
-export function Input({
-  className = "",
-  ...rest
-}: InputHTMLAttributes<HTMLInputElement>) {
-  const classes = `${inputClass} ${className}`.trim();
-  return <input className={classes} {...rest} />;
+export function Input({ className, ...rest }: InputHTMLAttributes<HTMLInputElement>) {
+  return <input className={cx(input.base, className)} {...rest} />;
 }

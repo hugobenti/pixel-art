@@ -4,15 +4,11 @@
  */
 "use client";
 
-import { useEffect, useRef } from "react";
 import { shared } from "@/content/shared";
-import {
-  modalBackdropClass,
-  modalOverlayClasses,
-  modalPanelClasses,
-} from "@/features/shared/components/modal.styles";
-import { useFocusTrap } from "@/features/shared/hooks/useFocusTrap";
+import { cx } from "@/features/shared/utils/cx";
+import { modal } from "./Modal.style";
 import type { IModalProps } from "./Modal.type";
+import { useModal } from "./useModal";
 
 export function Modal({
   open,
@@ -29,61 +25,43 @@ export function Modal({
   overlayProps,
   panelProps,
 }: IModalProps) {
-  const panelRef = useRef<HTMLDivElement>(null);
-  useFocusTrap(panelRef, open);
-
-  useEffect(() => {
-    if (!open || !closeOnEscape) {
-      return;
-    }
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        onClose();
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open, closeOnEscape, onClose]);
+  const { panelRef } = useModal({ open, closeOnEscape, onClose });
 
   if (!open) {
     return null;
   }
 
   const { className: overlayPropClass, ...restOverlay } = overlayProps ?? {};
-
   const { className: panelPropClass, ...restPanel } = panelProps ?? {};
 
-  const overlayClass = [
-    modalOverlayClasses({
-      placement,
-      layer,
-      backdropBlur,
-      extra: overlayClassName,
-    }),
-    overlayPropClass,
-  ]
-    .filter(Boolean)
-    .join(" ")
-    .trim();
-
-  const panelClass = [modalPanelClasses(size, panelClassName), panelPropClass]
-    .filter(Boolean)
-    .join(" ")
-    .trim();
-
   return (
-    <div className={overlayClass} role="dialog" aria-modal="true" {...restOverlay}>
+    <div
+      className={cx(
+        modal.overlay,
+        modal.layer[layer],
+        modal.placement[placement],
+        backdropBlur && modal.blur,
+        overlayClassName,
+        overlayPropClass,
+      )}
+      role="dialog"
+      aria-modal="true"
+      {...restOverlay}
+    >
       {closeOnBackdrop ? (
         <button
           type="button"
           tabIndex={-1}
           aria-label={shared.modal.backdropLabel}
-          className={modalBackdropClass}
+          className={modal.backdrop}
           onMouseDown={onClose}
         />
       ) : null}
-      <div ref={panelRef} className={panelClass} {...restPanel}>
+      <div
+        ref={panelRef}
+        className={cx(modal.size[size], panelClassName, panelPropClass)}
+        {...restPanel}
+      >
         {children}
       </div>
     </div>
