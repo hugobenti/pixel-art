@@ -84,8 +84,6 @@ export const editor: IEditorContent = {
     },
     canvasSize: {
       hint: "Pixels stay anchored to the top-left. New cells use white from the palette when present, otherwise the first swatch. Undo history for this artwork is cleared after the size changes.",
-      invalidSize: "Enter valid width and height.",
-      outOfRange: "Dimensions are out of range.",
       confirmShrink:
         "A smaller canvas permanently removes pixels outside the top-left region. Continue?",
     },

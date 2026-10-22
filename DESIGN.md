@@ -362,6 +362,9 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 - **Style:** `surface` fill, `control-border` border, `rounded-lg`, `px-3 py-2 text-sm fg`, `shadow-sm`; placeholder in `subtle`.
 - **Focus:** border turns `focus` with a 2px `focus` ring; no outline.
 - **Field label:** `text-sm fg-secondary` stacked over the control with `gap-1`; hint in `text-xs subtle`.
+- **Field error:** `text-xs danger-fg` under the control, linked with `aria-describedby`; the control gets a `danger` border via `aria-invalid`. Forms show errors inline and focus the first invalid field; toasts are for outcomes, not validation.
+- **NumberField:** a whole-number text field (`inputMode="numeric"`, no spinner) in `font-mono tabular-nums`; it checks its range on blur and the form checks again on submit.
+- **Size presets** (new artwork): a button group of mono chips (16 / 32 / 64 / 128) that fill width and height; the matching chip is pressed: `surface-strong` with an inset `line-strong` ring, never the accent.
 - **Button group:** a `surface` shell with a `line-strong` border, `rounded-lg`, `p-0.5`, `shadow-sm`, holding adjacent buttons.
 
 ### Color Swatch

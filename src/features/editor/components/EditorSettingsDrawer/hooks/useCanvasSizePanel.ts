@@ -8,15 +8,9 @@ import { useCallback, useState } from "react";
 
 import { editor } from "@/content/editor";
 import { resizeArtworkDimensions } from "@/features/editor/logic/resizeCanvas";
-import { useToast } from "@/features/shared/components/Toast/hooks/useToast";
-import { validateDimensions } from "@/features/shared/artwork/artworkService";
 import type { TEditorSettingsView, IUseCanvasSizePanelParams } from "./useCanvasSizePanel.type";
 
-export function useCanvasSizePanel({
-  artwork,
-  onApplyResized,
-}: IUseCanvasSizePanelParams) {
-  const { showToast } = useToast();
+export function useCanvasSizePanel({ artwork, onApplyResized }: IUseCanvasSizePanelParams) {
   const [settingsView, setSettingsView] = useState<TEditorSettingsView>("menu");
   const [widthStr, setWidthStr] = useState(String(artwork.width));
   const [heightStr, setHeightStr] = useState(String(artwork.height));
@@ -39,39 +33,25 @@ export function useCanvasSizePanel({
     setSettingsView("menu");
   }, []);
 
-  const applyCanvasSize = useCallback(() => {
-    const w = Number.parseInt(widthStr, 10);
-    const h = Number.parseInt(heightStr, 10);
-    if (!Number.isFinite(w) || !Number.isFinite(h)) {
-      showToast({
-        message: editor.settings.canvasSize.invalidSize,
-        tone: "error",
-      });
-      return;
-    }
-    try {
-      validateDimensions(w, h);
-    } catch (e) {
-      const message =
-        e instanceof Error ? e.message : editor.settings.canvasSize.outOfRange;
-      showToast({ message, tone: "error" });
-      return;
-    }
-    const losesPixels = w < artwork.width || h < artwork.height;
-    if (losesPixels) {
-      const ok = window.confirm(editor.settings.canvasSize.confirmShrink);
-      if (!ok) {
+  const applyCanvasSize = useCallback(
+    ({ width: w, height: h }: { width: number; height: number }) => {
+      const losesPixels = w < artwork.width || h < artwork.height;
+      if (losesPixels) {
+        const ok = window.confirm(editor.settings.canvasSize.confirmShrink);
+        if (!ok) {
+          return;
+        }
+      }
+      const next = resizeArtworkDimensions(artwork, w, h);
+      if (next === artwork) {
+        setSettingsView("menu");
         return;
       }
-    }
-    const next = resizeArtworkDimensions(artwork, w, h);
-    if (next === artwork) {
+      onApplyResized(next);
       setSettingsView("menu");
-      return;
-    }
-    onApplyResized(next);
-    setSettingsView("menu");
-  }, [widthStr, heightStr, artwork, onApplyResized, showToast]);
+    },
+    [artwork, onApplyResized],
+  );
 
   return {
     settingsView,

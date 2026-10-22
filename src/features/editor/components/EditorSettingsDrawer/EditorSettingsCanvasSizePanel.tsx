@@ -1,57 +1,47 @@
 /**
  * Purpose:
- * Form layout for editing canvas width and height inside the settings drawer drill-in view.
+ * Canvas width and height form inside the settings drawer drill-in view; Enter or Apply submits,
+ * invalid sizes show inline under their field.
  */
 "use client";
 
 import { editor } from "@/content/editor";
 import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
-import { FormField } from "@/features/shared/components/FormField";
-import { Input } from "@/features/shared/components/Input";
-
-import { MAX_CANVAS_DIMENSION } from "@/features/shared/artwork/artworkService";
+import { NumberField } from "@/features/shared/components/NumberField";
 import { editorSettingsCanvasSizePanel } from "./EditorSettingsCanvasSizePanel.style";
 import type { IEditorSettingsCanvasSizePanelProps } from "./EditorSettingsCanvasSizePanel.type";
+import { useEditorSettingsCanvasSizePanel } from "./useEditorSettingsCanvasSizePanel";
 
-export function EditorSettingsCanvasSizePanel({
-  widthStr,
-  heightStr,
-  onWidthChange,
-  onHeightChange,
-  onCancel,
-  onApply,
-}: IEditorSettingsCanvasSizePanelProps) {
+export function EditorSettingsCanvasSizePanel(props: IEditorSettingsCanvasSizePanelProps) {
+  const { widthStr, heightStr, onCancel } = props;
+  const { errors, widthRef, heightRef, maxDimension, changeWidth, changeHeight, submit } =
+    useEditorSettingsCanvasSizePanel(props);
+
   return (
-    <div className={editorSettingsCanvasSizePanel.root}>
+    <form className={editorSettingsCanvasSizePanel.root} onSubmit={submit}>
       <p className={editorSettingsCanvasSizePanel.hint}>{editor.settings.canvasSize.hint}</p>
       <div className={editorSettingsCanvasSizePanel.grid}>
-        <FormField label={shared.fields.width} htmlFor="settings-canvas-width">
-          <Input
-            id="settings-canvas-width"
-            inputMode="numeric"
-            min={1}
-            max={MAX_CANVAS_DIMENSION}
-            value={widthStr}
-            onChange={(ev) => {
-              onWidthChange(ev.target.value);
-            }}
-            required
-          />
-        </FormField>
-        <FormField label={shared.fields.height} htmlFor="settings-canvas-height">
-          <Input
-            id="settings-canvas-height"
-            inputMode="numeric"
-            min={1}
-            max={MAX_CANVAS_DIMENSION}
-            value={heightStr}
-            onChange={(ev) => {
-              onHeightChange(ev.target.value);
-            }}
-            required
-          />
-        </FormField>
+        <NumberField
+          ref={widthRef}
+          label={shared.fields.width}
+          name="width"
+          min={1}
+          max={maxDimension}
+          value={widthStr}
+          onChange={changeWidth}
+          error={errors.width}
+        />
+        <NumberField
+          ref={heightRef}
+          label={shared.fields.height}
+          name="height"
+          min={1}
+          max={maxDimension}
+          value={heightStr}
+          onChange={changeHeight}
+          error={errors.height}
+        />
       </div>
       <div className={editorSettingsCanvasSizePanel.actions}>
         <Button
@@ -62,15 +52,10 @@ export function EditorSettingsCanvasSizePanel({
         >
           {shared.actions.cancel}
         </Button>
-        <Button
-          type="button"
-          variant="primary"
-          className={editorSettingsCanvasSizePanel.button}
-          onClick={onApply}
-        >
+        <Button type="submit" variant="primary" className={editorSettingsCanvasSizePanel.button}>
           {shared.actions.apply}
         </Button>
       </div>
-    </div>
+    </form>
   );
 }
