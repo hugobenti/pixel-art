@@ -365,6 +365,7 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 - **Field error:** `text-xs danger-fg` under the control, linked with `aria-describedby`; the control gets a `danger` border via `aria-invalid`. Forms show errors inline and focus the first invalid field; toasts are for outcomes, not validation.
 - **NumberField:** a whole-number text field (`inputMode="numeric"`, no spinner) in `font-mono tabular-nums`; it checks its range on blur and the form checks again on submit.
 - **Size presets** (new artwork): a button group of mono chips (16 / 32 / 64 / 128) that fill width and height; the matching chip is pressed: `surface-strong` with an inset `line-strong` ring, never the accent.
+- **ColorField:** a 40px swatch (`rounded-md`, 1px `control-border` ring, no browser frame inside it) that opens the native picker, next to a mono upper-case hex input; picker and hex stay in sync, a pasted `#RRGGBB` applies at once, invalid hex shows inline. Used for the new-artwork background and in the palette editor.
 - **Button group:** a `surface` shell with a `line-strong` border, `rounded-lg`, `p-0.5`, `shadow-sm`, holding adjacent buttons.
 
 ### Color Swatch
@@ -392,7 +393,7 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 Agreed follow-ups, not yet in the code:
 
 - **Ghost Delete on cards.** Delete on artwork cards becomes a ghost action; the red `danger` fill appears only on the confirm button inside the delete dialog.
-- **Mono numeric readouts.** Canvas size, zoom percentage and hex values move to JetBrains Mono (The Measured in Mono Rule).
+- **Mono numeric readouts.** The settings size hint, zoom percentage and image-detail values move to JetBrains Mono (The Measured in Mono Rule); size fields and hex inputs already use it.
 - **Clean thumbnails.** Gallery thumbnails render without grid lines.
 - **Type migration.** Labels and buttons move from `text-sm` (14/20) to the 13/16 label style; off-scale headings (`text-lg`) move onto the scale.
 

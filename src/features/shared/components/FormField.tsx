@@ -13,6 +13,7 @@ import type { IFormFieldProps } from "./FormField.type";
 
 export function FormField({
   label,
+  hideLabel = false,
   htmlFor,
   hint,
   error,
@@ -22,7 +23,9 @@ export function FormField({
 }: IFormFieldProps) {
   return (
     <div className={cx(formField.base, className)}>
-      <label htmlFor={htmlFor}>{label}</label>
+      <label htmlFor={htmlFor} className={cx(hideLabel && formField.labelHidden)}>
+        {label}
+      </label>
       {children}
       {hint ? <span className={formField.hint}>{hint}</span> : null}
       {error ? (

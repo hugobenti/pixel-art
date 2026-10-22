@@ -5,7 +5,7 @@
  */
 "use client";
 
-import { useCallback, useRef, useState, type FormEvent } from "react";
+import { useCallback, useId, useRef, useState, type FormEvent } from "react";
 
 import { gallery } from "@/content/gallery";
 import { shared } from "@/content/shared";
@@ -20,6 +20,7 @@ import type {
 const SIZE_PRESETS = [16, 32, 64, 128];
 
 export function useCreateArtworkForm({ onCreate }: TUseCreateArtworkFormOptions) {
+  const titleId = useId();
   const [title, setTitle] = useState(shared.artwork.untitled);
   const [width, setWidth] = useState("64");
   const [height, setHeight] = useState("64");
@@ -66,6 +67,7 @@ export function useCreateArtworkForm({ onCreate }: TUseCreateArtworkFormOptions)
   };
 
   return {
+    titleId,
     title,
     setTitle,
     width,

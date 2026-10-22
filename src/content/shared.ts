@@ -28,6 +28,10 @@ export const shared: ISharedContent = {
   numberField: {
     range: (min, max) => `Enter a whole number from ${min} to ${max}.`,
   },
+  colorField: {
+    pickerLabel: (label) => `${label}: color picker`,
+    invalid: "Enter a hex color as #RRGGBB.",
+  },
   theme: {
     label: "Theme",
     options: { system: "System", light: "Light", dark: "Dark" },

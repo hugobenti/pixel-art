@@ -20,7 +20,6 @@ export const gallery: IGalleryContent = {
     title: "New artwork",
     titleLabel: "Title",
     backgroundLabel: "Background color",
-    backgroundAriaLabel: "Canvas background color",
     sizeLabel: "Canvas size",
     sizePresetsLabel: "Size presets",
     sizePresetLabel: (size) => `${size} × ${size} pixels`,
