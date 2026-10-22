@@ -6,7 +6,7 @@
  * The inline <head> script sets `data-theme` before first paint, so the page never flashes the wrong
  * theme; React doesn't know that attribute, hence suppressHydrationWarning on <html>.
  */
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
 import { AppProviders } from "@/app/AppProviders";
 import { siteMetadata } from "@/content/metadata";
@@ -14,10 +14,12 @@ import { themeInitScript } from "@/features/shared/theme/themePreference";
 import { cx } from "@/features/shared/utils/cx";
 import { fontMono, fontSans } from "./fonts";
 import { rootLayout } from "./layout.style";
+import { siteViewport } from "./viewport";
 
 import "./globals.css";
 
 export const metadata: Metadata = siteMetadata;
+export const viewport: Viewport = siteViewport;
 
 export default function RootLayout({
   children,

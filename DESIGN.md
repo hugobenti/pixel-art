@@ -11,6 +11,7 @@ colors:
   scrim: "#17181d"
   line: "#dcd8cd"
   line-strong: "#c5c0b3"
+  control-border: "#857f73"
   fg: "#1a1c24"
   fg-soft: "#262832"
   fg-secondary: "#3a3c46"
@@ -46,6 +47,7 @@ colors:
   scrim-dark: "#000000"
   line-dark: "#2f2d2a"
   line-strong-dark: "#46433f"
+  control-border-dark: "#78736b"
   fg-dark: "#efebe5"
   fg-soft-dark: "#ddd8d0"
   fg-secondary-dark: "#c3bdb4"
@@ -215,7 +217,8 @@ Every color token, as declared in `src/app/globals.css`. Light values are the `@
 | `surface-inverse`  | `#1c1e26`                                              | `#ece8e1`                                                 | Inverse surface: the editor's shift-direction arrow pad                 |
 | `scrim`            | `#17181d`                                              | `#000000`                                                 | Overlay behind modals (40%) and drawers (45%), never a surface          |
 | `line`             | `#dcd8cd`                                              | `#2f2d2a`                                                 | Sheet borders, dividers                                                 |
-| `line-strong`      | `#c5c0b3`                                              | `#46433f`                                                 | Control borders, drawer edge, idle swatch ring, empty-state dashes      |
+| `line-strong`      | `#c5c0b3`                                              | `#46433f`                                                 | Drawer edge, layer-row controls, empty-state dashes                     |
+| `control-border`   | `#857f73`                                              | `#78736b`                                                 | Input and outline-button borders, idle swatch ring (≥ 3:1, WCAG 1.4.11) |
 | `fg`               | `#1a1c24`                                              | `#efebe5`                                                 | Primary text, headings                                                  |
 | `fg-soft`          | `#262832`                                              | `#ddd8d0`                                                 | Button labels, header icons                                             |
 | `fg-secondary`     | `#3a3c46`                                              | `#c3bdb4`                                                 | Form labels                                                             |
@@ -249,7 +252,7 @@ Every color token, as declared in `src/app/globals.css`. Light values are the `@
 - **Switch.** The resolved theme is written to `data-theme` on `<html>`. An inline script rendered in `<head>` by `src/app/layout.tsx` sets it before first paint, so there is no flash of the wrong theme. `useThemeSync` (called in `src/app/AppProviders.tsx`) keeps it in sync when the OS setting changes while the user follows the system.
 - **Tokens.** Light values live in the `@theme static` block of `src/app/globals.css`; dark values override the same `--color-*` custom properties under `[data-theme="dark"]`, which also sets `color-scheme: dark`. Tailwind utilities (`bg-surface`, `text-muted`, `outline-focus`) resolve to whichever value is active.
 - **Canvas.** The editor's canvas renderers read the grid and guide colors from the CSS variables (`--color-grid-line`, `--color-guide-horizontal`, `--color-guide-vertical`) and re-read them when the resolved theme changes.
-- **Contrast.** `src/app/tokenContrast.test.ts` checks the same pair list against both token sets: text pairs at 4.5:1, UI pairs (focus, accent, danger, swatch rings, guides on the checkerboard, `surface` on `surface-inverse`) at 3:1. It also fails if the dark block leaves any color token undefined, so a light value can never leak into dark.
+- **Contrast.** `src/app/tokenContrast.test.ts` checks the same pair list against both token sets: text pairs at 4.5:1, UI pairs (focus, accent, danger, swatch rings, `control-border` on `bg` / `surface` / `surface-subtle`, guides on the checkerboard, `surface` on `surface-inverse`) at 3:1. It also fails if the dark block leaves any color token undefined, so a light value can never leak into dark.
 
 ### Named Rules
 
@@ -326,12 +329,12 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 ### Buttons
 
 - **Shape:** `rounded-lg` (10px), at least 40px tall, `px-3 py-2`, label in `text-sm font-medium`.
-- **Primary:** `accent` fill, `on-accent` text, `accent-hover` on hover, focus outline in `accent`. One per view (The One Accent Rule).
+- **Primary:** `accent` fill, `on-accent` text, `accent-hover` on hover. One per view (The One Accent Rule).
 - **Ghost:** transparent, `fg-soft` text, `surface-muted` fill on hover. The default for secondary actions (Rename, Clone, Cancel).
-- **Outline:** `surface` fill, `line-strong` border, `fg-soft` text, `shadow-sm`; `surface-subtle` on hover, `surface-muted` when pressed (Import JSON).
-- **Danger:** `danger` fill, `on-danger` text, `danger-hover` on hover, focus outline in `danger`.
+- **Outline:** `surface` fill, `control-border` border, `fg-soft` text, `shadow-sm`; `surface-subtle` on hover, `surface-muted` when pressed (Import JSON).
+- **Danger:** `danger` fill, `on-danger` text, `danger-hover` on hover.
 - **Icon / step sizes:** icon 40 × 40 (`rounded-lg`, `text-base font-semibold`); step 36 × 36 (`rounded-md`, `text-lg`), with ghost steps dimming to 40% when disabled.
-- **Focus:** 2px outline, offset 2px, on `:focus-visible` only (`focus.style.ts`). Primary and danger set the outline color explicitly; other variants inherit their text color.
+- **Focus:** 2px outline, offset 2px, on `:focus-visible` only (`focus.style.ts`). Every variant uses the `focus` color; the outline never falls back to the browser's default ring.
 - **Disabled:** 50% opacity, no pointer events.
 
 ### Cards
@@ -355,7 +358,7 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 
 ### Inputs / Fields
 
-- **Style:** `surface` fill, `line-strong` border, `rounded-lg`, `px-3 py-2 text-sm fg`, `shadow-sm`; placeholder in `subtle`.
+- **Style:** `surface` fill, `control-border` border, `rounded-lg`, `px-3 py-2 text-sm fg`, `shadow-sm`; placeholder in `subtle`.
 - **Focus:** border turns `focus` with a 2px `focus` ring; no outline.
 - **Field label:** `text-sm fg-secondary` stacked over the control with `gap-1`; hint in `text-xs subtle`.
 - **Button group:** a `surface` shell with a `line-strong` border, `rounded-lg`, `p-0.5`, `shadow-sm`, holding adjacent buttons.
@@ -363,7 +366,7 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 ### Color Swatch
 
 - 40 × 40 (comfortable) or 36 × 36 (compact), `rounded-md`, the swatch color itself as fill.
-- **Rings:** idle 1px `line-strong`; primary slot 2px `pick-primary`; secondary slot 2px `pick-secondary`; both slots 2px `accent`; selected (single-slot pickers) 2px `pick-primary` offset over `surface`. Rings offset by 2px so the swatch color is never touched.
+- **Rings:** idle 1px `control-border`; primary slot 2px `pick-primary`; secondary slot 2px `pick-secondary`; both slots 2px `accent`; selected (single-slot pickers) 2px `pick-primary` offset over `surface`. Rings offset by 2px over `bg` (the row's background) so the swatch color is never touched; the scroller pads 4px so the first ring is not clipped.
 - **Roving keyboard position:** a 2px dashed `focus` outline, offset 2px, distinct from the selection ring.
 
 ### Theme Toggle

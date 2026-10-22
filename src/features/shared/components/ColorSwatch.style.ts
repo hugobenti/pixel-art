@@ -12,11 +12,11 @@ export const colorSwatch = {
     compact: cx("h-9 w-9 rounded-md", focusRing),
   },
   ring: {
-    idle: "ring-1 ring-line-strong",
+    idle: "ring-1 ring-control-border",
     selected: "ring-2 ring-pick-primary ring-offset-2 ring-offset-surface",
-    primary: "ring-2 ring-pick-primary ring-offset-2",
-    secondary: "ring-2 ring-pick-secondary ring-offset-2",
-    both: "ring-2 ring-accent ring-offset-2",
+    primary: "ring-2 ring-pick-primary ring-offset-2 ring-offset-bg",
+    secondary: "ring-2 ring-pick-secondary ring-offset-2 ring-offset-bg",
+    both: "ring-2 ring-accent ring-offset-2 ring-offset-bg",
   },
   /** Roving keyboard position in the comfortable row. */
   focused: "outline outline-2 outline-offset-2 outline-dashed outline-focus",

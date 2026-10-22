@@ -58,6 +58,9 @@ const uiPairs = [
   ["guide-vertical", "checker-light"],
   ["guide-vertical", "checker-dark"],
   ["surface", "surface-inverse"],
+  ["control-border", "bg"],
+  ["control-border", "surface"],
+  ["control-border", "surface-subtle"],
 ];
 
 describe.each(themes)("%s theme tokens meet WCAG 2.2 AA", (_name, tokens) => {

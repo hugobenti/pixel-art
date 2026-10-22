@@ -4,8 +4,6 @@
  */
 "use client";
 
-import Image from "next/image";
-
 import { editor } from "@/content/editor";
 import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
 import { cx } from "@/features/shared/utils/cx";
@@ -47,13 +45,7 @@ export function SortableLayerItem(props: ISortableLayerItemProps) {
           title={editor.layers.item.dragTitle}
         >
           <span className={sortableLayerItem.srOnly}>{editor.layers.item.reorder}</span>
-          <Image
-            src={LAYER_ICON_SRC.grip}
-            alt=""
-            width={20}
-            height={20}
-            className={sortableLayerItem.icon}
-          />
+          <PublicMaskIcon src={LAYER_ICON_SRC.grip} className={sortableLayerItem.icon} />
         </span>
         <button
           type="button"
@@ -91,13 +83,7 @@ export function SortableLayerItem(props: ISortableLayerItemProps) {
             title={editor.layers.item.duplicate}
             aria-label={editor.layers.item.duplicate}
           >
-            <Image
-              src={LAYER_ICON_SRC.copy}
-              alt=""
-              width={20}
-              height={20}
-              className={sortableLayerItem.icon}
-            />
+            <PublicMaskIcon src={LAYER_ICON_SRC.copy} className={sortableLayerItem.icon} />
           </button>
           <button
             type="button"
@@ -106,13 +92,7 @@ export function SortableLayerItem(props: ISortableLayerItemProps) {
             title={editor.layers.item.rename}
             aria-label={editor.layers.item.rename}
           >
-            <Image
-              src={LAYER_ICON_SRC.pencil}
-              alt=""
-              width={20}
-              height={20}
-              className={sortableLayerItem.icon}
-            />
+            <PublicMaskIcon src={LAYER_ICON_SRC.pencil} className={sortableLayerItem.icon} />
           </button>
         </div>
       </div>
