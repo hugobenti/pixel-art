@@ -3,7 +3,8 @@
  * Bind editor canvases to viewport size and schedule artwork/reference/grid renders.
  *
  * Notes (optional):
- * Grid and symmetry-guide colors are read from the design-token CSS variables on :root (src/app/globals.css).
+ * Grid and symmetry-guide colors are read from the design-token CSS variables on :root (src/app/globals.css);
+ * the render effect depends on the resolved theme so a light/dark switch repaints them.
  */
 "use client";
 
@@ -13,6 +14,7 @@ import { EDITOR_ROOT_CSS_VARS } from "@/features/editor/constants/editorRootCssV
 import { renderCanvas } from "@/features/editor/logic/canvasRender";
 import { renderPixelGrid } from "@/features/editor/logic/gridRender";
 import { renderReferenceImage } from "@/features/editor/logic/referenceImageRender";
+import { useResolvedTheme } from "@/features/shared/theme/useThemePreference";
 import type { IUseCanvasEngineParams } from "./useCanvasEngine.type";
 
 function readRootCssColor(cssVar: string): string {
@@ -39,6 +41,7 @@ export function useCanvasEngine({
   const referenceImageCanvasRef = useRef<HTMLCanvasElement>(null);
   const gridCanvasRef = useRef<HTMLCanvasElement>(null);
   const [cssSize, setCssSize] = useState({ w: 320, h: 320 });
+  const theme = useResolvedTheme();
 
   useLayoutEffect(() => {
     const el = wrapRef.current;
@@ -128,6 +131,7 @@ export function useCanvasEngine({
     cssSize.h,
     paintRevision,
     historyRevision,
+    theme,
   ]);
 
   return { wrapRef, artworkCanvasRef, referenceImageCanvasRef, gridCanvasRef, cssSize };

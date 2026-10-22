@@ -1,16 +1,17 @@
 /**
  * Purpose:
- * App font definitions (next/font): Geist and Geist Mono, exposed as the CSS variables the
- * `font-sans` / `font-mono` tokens in globals.css read.
+ * App font definitions (next/font): Schibsted Grotesk for the interface and JetBrains Mono for
+ * numbers (sizes, zoom, hex), exposed as the CSS variables the `font-sans` / `font-mono` tokens in
+ * globals.css read. Both themes share them; see DESIGN.md "Typography".
  */
-import { Geist, Geist_Mono } from "next/font/google";
+import { JetBrains_Mono, Schibsted_Grotesk } from "next/font/google";
 
-export const geistSans = Geist({
-  variable: "--font-geist-sans",
+export const fontSans = Schibsted_Grotesk({
+  variable: "--font-schibsted-grotesk",
   subsets: ["latin"],
 });
 
-export const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+export const fontMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
   subsets: ["latin"],
 });

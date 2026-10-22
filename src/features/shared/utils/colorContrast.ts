@@ -49,3 +49,21 @@ export function readThemeColors(css: string): Record<string, string> {
   }
   return colors;
 }
+
+/**
+ * Color tokens declared in the plain CSS block for exactly `selector` (for example the dark theme's
+ * `[data-theme="dark"]` overrides), keyed like readThemeColors.
+ */
+export function readSelectorColors(css: string, selector: string): Record<string, string> {
+  const colors: Record<string, string> = {};
+  const uncommented = css.replace(/\/\*[\s\S]*?\*\//g, "");
+  for (const block of uncommented.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    if (block[1].trim() !== selector) {
+      continue;
+    }
+    for (const declaration of block[2].matchAll(COLOR_DECLARATION)) {
+      colors[declaration[1]] = declaration[2].trim();
+    }
+  }
+  return colors;
+}

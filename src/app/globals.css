@@ -1,75 +1,138 @@
 @import "tailwindcss";
 
 /**
- * Design tokens for PixelCraft (light theme), declared once here.
- * Tailwind generates the utilities (`bg-surface`, `text-muted`, `outline-focus`…); canvas renderers
- * read the same CSS variables via getComputedStyle. `static` keeps every token on :root even when
- * no utility uses it (canvas-only tokens). Tailwind's default palette is removed, so raw classes
- * such as `bg-zinc-200` generate no CSS. Contrast pairs are tested in src/app/tokenContrast.test.ts.
+ * Design tokens for PixelCraft, declared once here (system and rationale: DESIGN.md).
+ * Light theme ("Paper & Ink") is the `@theme static` block: Tailwind generates the utilities from it
+ * (`bg-surface`, `text-muted`, `outline-focus`…). Dark theme ("Studio Dark") overrides the same
+ * variables under `[data-theme="dark"]`, set on <html> before first paint (see
+ * src/features/shared/theme/themePreference.ts), so components never branch on theme.
+ * Canvas renderers read the same CSS variables via getComputedStyle. `static` keeps every token on
+ * :root even when no utility uses it (canvas-only tokens). Tailwind's default palette is removed, so
+ * raw classes such as `bg-zinc-200` generate no CSS. Both themes' contrast pairs are tested in
+ * src/app/tokenContrast.test.ts, which also requires the dark block to override every color token.
  */
 @theme static {
   --color-*: initial;
 
-  /* Surfaces */
-  --color-bg: #cfd9df;
-  --color-surface: #ffffff;
-  --color-surface-subtle: #fafafa;
-  --color-surface-muted: #f4f4f5;
-  --color-surface-strong: #e4e4e7;
-  --color-surface-inverse: #22292b;
-  --color-scrim: #000000;
+  /* Surfaces: warm paper */
+  --color-bg: #ece9e1;
+  --color-surface: #fcfbf7;
+  --color-surface-subtle: #f6f4ee;
+  --color-surface-muted: #efece5;
+  --color-surface-strong: #e3dfd5;
+  --color-surface-inverse: #1c1e26;
+  --color-scrim: #17181d;
 
   /* Borders and dividers */
-  --color-line: #e4e4e7;
-  --color-line-strong: #d4d4d8;
+  --color-line: #dcd8cd;
+  --color-line-strong: #c5c0b3;
 
-  /* Text */
-  --color-fg: #18181b;
-  --color-fg-soft: #27272a;
-  --color-fg-secondary: #3f3f46;
-  --color-muted: #52525c;
-  --color-subtle: #71717b;
+  /* Text: ink */
+  --color-fg: #1a1c24;
+  --color-fg-soft: #262832;
+  --color-fg-secondary: #3a3c46;
+  --color-muted: #52535c;
+  --color-subtle: #66666c;
 
-  /* Primary action and selection */
-  --color-accent: #18181b;
-  --color-accent-hover: #27272a;
-  --color-on-accent: #fafafa;
-  --color-focus: #71717b;
-  --color-pick-primary: #155dfc;
-  --color-pick-secondary: #e17100;
+  /* Primary action and selection: ultramarine ink */
+  --color-accent: #2b3a9e;
+  --color-accent-hover: #202c7d;
+  --color-on-accent: #fcfbf7;
+  --color-focus: #2b3a9e;
+  --color-pick-primary: #2b3a9e;
+  --color-pick-secondary: #b4500f;
 
   /* Status */
-  --color-danger: #e7000b;
-  --color-danger-hover: #c10007;
-  --color-on-danger: #ffffff;
-  --color-danger-surface: #fef2f2;
-  --color-danger-line: #ffc9c9;
-  --color-danger-fg: #9f0712;
-  --color-danger-fg-strong: #460809;
-  --color-success-surface: #f0fdf4;
-  --color-success-line: #b9f8cf;
-  --color-success-fg: #032e15;
+  --color-danger: #b3261e;
+  --color-danger-hover: #8e1d17;
+  --color-on-danger: #fcfbf7;
+  --color-danger-surface: #faeee9;
+  --color-danger-line: #ecc3b8;
+  --color-danger-fg: #8e1d17;
+  --color-danger-fg-strong: #4a0f0b;
+  --color-success-surface: #edf2e6;
+  --color-success-line: #bfd2b0;
+  --color-success-fg: #234a1c;
 
   /* Editor canvas: transparency checkerboard, pixel grid, symmetry guides */
-  --color-checker-light: #e4e4e7;
-  --color-checker-dark: #d4d4d8;
-  --color-grid-line: color-mix(in srgb, var(--color-fg) 52%, transparent);
-  --color-guide-horizontal: #e7000b;
-  --color-guide-vertical: #155dfc;
+  --color-checker-light: #e8e6e0;
+  --color-checker-dark: #d3d0c8;
+  --color-grid-line: color-mix(in srgb, var(--color-fg) 24%, transparent);
+  --color-guide-horizontal: #c0261d;
+  --color-guide-vertical: #2b3a9e;
+
+  /* Radius: sharp controls, softer sheets */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
 }
 
 @theme inline {
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-schibsted-grotesk);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+/* Dark theme: warm graphite. Same token names, every color overridden. */
+[data-theme="dark"] {
+  /* Surfaces: elevation is a step up in surface, not a shadow */
+  --color-bg: #141312;
+  --color-surface: #1c1b19;
+  --color-surface-subtle: #22211f;
+  --color-surface-muted: #292826;
+  --color-surface-strong: #353330;
+  --color-surface-inverse: #ece8e1;
+  --color-scrim: #000000;
+
+  /* Borders and dividers */
+  --color-line: #2f2d2a;
+  --color-line-strong: #46433f;
+
+  /* Text */
+  --color-fg: #efebe5;
+  --color-fg-soft: #ddd8d0;
+  --color-fg-secondary: #c3bdb4;
+  --color-muted: #a7a198;
+  --color-subtle: #948e85;
+
+  /* Primary action and selection: amber */
+  --color-accent: #eda743;
+  --color-accent-hover: #f5bb64;
+  --color-on-accent: #1b1307;
+  --color-focus: #f5bb64;
+  --color-pick-primary: #eda743;
+  --color-pick-secondary: #7cb2ff;
+
+  /* Status */
+  --color-danger: #f0605f;
+  --color-danger-hover: #ff7d7a;
+  --color-on-danger: #1d0707;
+  --color-danger-surface: #2a1717;
+  --color-danger-line: #5e2c2a;
+  --color-danger-fg: #ff8e8a;
+  --color-danger-fg-strong: #ffcdc9;
+  --color-success-surface: #15231a;
+  --color-success-line: #2d4a36;
+  --color-success-fg: #8fdca7;
+
+  /* Editor canvas */
+  --color-checker-light: #3a3835;
+  --color-checker-dark: #2d2b29;
+  --color-grid-line: color-mix(in srgb, var(--color-muted) 34%, transparent);
+  --color-guide-horizontal: #ff5c5c;
+  --color-guide-vertical: #5fa8ff;
+
+  color-scheme: dark;
 }
 
 html {
   color-scheme: light;
 }
 
+/* Font comes from the `font-sans` utility on <body> (layout.style.ts); an unlayered font-family here
+ * would override it. */
 body {
   color: var(--color-fg);
-  font-family: Arial, Helvetica, sans-serif;
 }
 
 /**
@@ -79,26 +142,10 @@ body {
   .pixel-checkerboard {
     background-color: var(--color-checker-light);
     background-image:
-      linear-gradient(
-        45deg,
-        var(--color-checker-dark) 25%,
-        transparent 25%
-      ),
-      linear-gradient(
-        -45deg,
-        var(--color-checker-dark) 25%,
-        transparent 25%
-      ),
-      linear-gradient(
-        45deg,
-        transparent 75%,
-        var(--color-checker-dark) 75%
-      ),
-      linear-gradient(
-        -45deg,
-        transparent 75%,
-        var(--color-checker-dark) 75%
-      );
+      linear-gradient(45deg, var(--color-checker-dark) 25%, transparent 25%),
+      linear-gradient(-45deg, var(--color-checker-dark) 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, var(--color-checker-dark) 75%),
+      linear-gradient(-45deg, transparent 75%, var(--color-checker-dark) 75%);
     background-size:
       20px 20px,
       20px 20px,

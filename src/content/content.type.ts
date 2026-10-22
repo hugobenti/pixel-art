@@ -37,6 +37,12 @@ export interface ISharedContent {
     /** Name of the click-outside button behind a dialog panel. */
     backdropLabel: string;
   };
+  theme: {
+    /** Name of the theme switch (visible in settings rows, screen-reader only in headers). */
+    label: string;
+    /** One label per theme preference (TThemePreference). */
+    options: { system: string; light: string; dark: string };
+  };
   colorSwatch: {
     compactTitle: (position: number) => string;
     comfortableTitle: (position: number) => string;

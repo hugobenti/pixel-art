@@ -2,6 +2,7 @@ import { describe, expect, test } from "vitest";
 
 import {
   contrastRatio,
+  readSelectorColors,
   readThemeColors,
 } from "@/features/shared/utils/colorContrast";
 
@@ -52,5 +53,29 @@ describe("readThemeColors", () => {
       @theme { --color-inside: #abcdef; }
     `;
     expect(readThemeColors(css)).toEqual({ inside: "#abcdef" });
+  });
+});
+
+describe("readSelectorColors", () => {
+  const css = `
+    @theme static { --color-surface: #ffffff; }
+    /* Dark theme: warm graphite. */
+    [data-theme="dark"] {
+      --color-surface: #1c1b19;
+      --color-grid-line: color-mix(in srgb, var(--color-muted) 34%, transparent);
+      color-scheme: dark;
+    }
+    [data-theme="dim"] { --color-surface: #333333; }
+  `;
+
+  test("reads the --color-* declarations of the exact selector's block", () => {
+    expect(readSelectorColors(css, '[data-theme="dark"]')).toEqual({
+      surface: "#1c1b19",
+      "grid-line": "color-mix(in srgb, var(--color-muted) 34%, transparent)",
+    });
+  });
+
+  test("returns nothing for a selector that has no block", () => {
+    expect(readSelectorColors(css, '[data-theme="sepia"]')).toEqual({});
   });
 });

@@ -25,6 +25,10 @@ export const shared: ISharedContent = {
   modal: {
     backdropLabel: "Close dialog",
   },
+  theme: {
+    label: "Theme",
+    options: { system: "System", light: "Light", dark: "Dark" },
+  },
   colorSwatch: {
     compactTitle: (position) => `Color ${position}`,
     comfortableTitle: (position) => `Palette ${position}`,
