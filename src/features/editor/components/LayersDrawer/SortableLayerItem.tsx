@@ -6,112 +6,88 @@
 
 import Image from "next/image";
 
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-
 import { editor } from "@/content/editor";
 import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
-import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
+import { cx } from "@/features/shared/utils/cx";
 
 import { LayerPreview } from "@/features/editor/components/LayersDrawer/LayerPreview";
-import {
-  dragHandleClass,
-  itemActiveClass,
-  itemClass,
-  itemIdleClass,
-  itemWrapClass,
-  LAYER_ICON_SRC,
-  layerActionsClass,
-  layerIconButtonClass,
-  layerIconImgClass,
-  layerNameClass,
-  metadataClass,
-  previewWrapClass,
-  selectButtonClass,
-} from "@/features/editor/components/LayersDrawer/layersDrawer.constants";
+import { LAYER_ICON_SRC } from "@/features/editor/components/LayersDrawer/layersDrawer.constants";
+import { sortableLayerItem } from "./SortableLayerItem.style";
 import type { ISortableLayerItemProps } from "./SortableLayerItem.type";
+import { useSortableLayerItem } from "./useSortableLayerItem";
 
-export function SortableLayerItem({
-  layer,
-  isActive,
-  palette,
-  width,
-  height,
-  onSelectLayer,
-  onToggleVisibility,
-  onCopyLayer,
-  onRenameClick,
-  drawerOpen,
-}: ISortableLayerItemProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: layer.id });
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.65 : 1,
-  };
-  const rowClass = `${itemClass} ${isActive ? itemActiveClass : itemIdleClass}`;
+export function SortableLayerItem(props: ISortableLayerItemProps) {
+  const { layer, isActive, palette, width, height } = props;
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    style,
+    previewKey,
+    visibilityLabel,
+    visibilityIcon,
+    select,
+    toggleVisibility,
+    copy,
+    rename,
+  } = useSortableLayerItem(props);
 
   return (
-    <li ref={setNodeRef} style={style} className={itemWrapClass}>
-      <div className={rowClass}>
+    <li ref={setNodeRef} style={style} className={sortableLayerItem.wrap}>
+      <div
+        className={cx(
+          sortableLayerItem.row,
+          isActive ? sortableLayerItem.rowState.active : sortableLayerItem.rowState.idle,
+        )}
+      >
         <span
-          className={dragHandleClass}
+          className={sortableLayerItem.dragHandle}
           {...attributes}
           {...listeners}
           title={editor.layers.item.dragTitle}
         >
-          <span className="sr-only">{editor.layers.item.reorder}</span>
+          <span className={sortableLayerItem.srOnly}>{editor.layers.item.reorder}</span>
           <Image
             src={LAYER_ICON_SRC.grip}
             alt=""
             width={20}
             height={20}
-            className={layerIconImgClass}
+            className={sortableLayerItem.icon}
           />
         </span>
         <button
           type="button"
-          className={selectButtonClass}
-          onClick={() => onSelectLayer(layer.id)}
+          className={sortableLayerItem.selectButton}
+          onClick={select}
           aria-pressed={isActive}
         >
-          <span className={previewWrapClass}>
+          <span className={sortableLayerItem.previewWrap}>
             <LayerPreview
-              key={`${layer.id}-${drawerOpen ? "open" : "closed"}`}
+              key={previewKey}
               layer={layer}
               palette={palette}
               width={width}
               height={height}
             />
           </span>
-          <span className={metadataClass}>
-            <span className={layerNameClass}>{layer.name}</span>
+          <span className={sortableLayerItem.metadata}>
+            <span className={sortableLayerItem.layerName}>{layer.name}</span>
           </span>
         </button>
-        <div className={layerActionsClass}>
+        <div className={sortableLayerItem.actions}>
           <button
             type="button"
-            className={layerIconButtonClass}
-            onClick={(event) => {
-              event.stopPropagation();
-              onToggleVisibility(layer.id);
-            }}
-            title={layer.visible ? editor.layers.item.hide : editor.layers.item.show}
-            aria-label={layer.visible ? editor.layers.item.hide : editor.layers.item.show}
+            className={sortableLayerItem.iconButton}
+            onClick={toggleVisibility}
+            title={visibilityLabel}
+            aria-label={visibilityLabel}
           >
-            <PublicMaskIcon
-              src={layer.visible ? PUBLIC_ICONS.eye : PUBLIC_ICONS.eyeOff}
-              className={layerIconImgClass}
-            />
+            <PublicMaskIcon src={visibilityIcon} className={sortableLayerItem.icon} />
           </button>
           <button
             type="button"
-            className={layerIconButtonClass}
-            onClick={(event) => {
-              event.stopPropagation();
-              onCopyLayer(layer.id);
-            }}
+            className={sortableLayerItem.iconButton}
+            onClick={copy}
             title={editor.layers.item.duplicate}
             aria-label={editor.layers.item.duplicate}
           >
@@ -120,16 +96,13 @@ export function SortableLayerItem({
               alt=""
               width={20}
               height={20}
-              className={layerIconImgClass}
+              className={sortableLayerItem.icon}
             />
           </button>
           <button
             type="button"
-            className={layerIconButtonClass}
-            onClick={(event) => {
-              event.stopPropagation();
-              onRenameClick(layer.id);
-            }}
+            className={sortableLayerItem.iconButton}
+            onClick={rename}
             title={editor.layers.item.rename}
             aria-label={editor.layers.item.rename}
           >
@@ -138,7 +111,7 @@ export function SortableLayerItem({
               alt=""
               width={20}
               height={20}
-              className={layerIconImgClass}
+              className={sortableLayerItem.icon}
             />
           </button>
         </div>

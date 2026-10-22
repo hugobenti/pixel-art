@@ -1,33 +1,79 @@
 /**
  * Purpose:
- * Enter/exit motion, Escape-to-close, and backdrop close wiring for the editor settings SideDrawer.
+ * EditorSettingsDrawer view model: enter/exit motion and backdrop close (useLayersDrawerPanel), drill-in
+ * navigation (useCanvasSizePanel), export actions, the menu rows' hints and handlers, and Escape that
+ * returns from a drill-in view to the menu before it closes the drawer.
  */
 "use client";
 
 import { useEffect } from "react";
 
+import { editor } from "@/content/editor";
+import { useCanvasSizePanel } from "@/features/editor/components/EditorSettingsDrawer/hooks/useCanvasSizePanel";
+import { useImportExportPanel } from "@/features/editor/components/EditorSettingsDrawer/hooks/useImportExportPanel";
 import { useLayersDrawerPanel } from "@/features/editor/components/LayersDrawer/useLayersDrawerPanel";
-import type { IUseEditorSettingsDrawerParams } from "./useEditorSettingsDrawer.type";
+import type { IEditorSettingsDrawerProps } from "../EditorSettingsDrawer.type";
 
 export function useEditorSettingsDrawer({
+  artwork,
+  onApplyCanvasSize,
+  showPixelGrid,
+  onToggleGrid,
+  showReferenceImage,
+  hasReferenceImage,
+  onToggleReferenceImage,
+  onLoadReferenceImage,
   onClose,
-  interceptEscape,
-}: IUseEditorSettingsDrawerParams) {
+}: IEditorSettingsDrawerProps) {
+  const canvasSize = useCanvasSizePanel({ artwork, onApplyResized: onApplyCanvasSize });
+  const { settingsView, backToMenu } = canvasSize;
+  const { exportJson, exportPng } = useImportExportPanel({ artwork });
   const { panelEntered, handleClose } = useLayersDrawerPanel({ onClose });
+
+  const inDrillIn = settingsView !== "menu";
 
   useEffect(() => {
     const onKeyDown = (event: globalThis.KeyboardEvent) => {
       if (event.key !== "Escape") {
         return;
       }
-      if (interceptEscape?.()) {
+      if (inDrillIn) {
+        backToMenu();
         return;
       }
       handleClose();
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [handleClose, interceptEscape]);
+  }, [handleClose, inDrillIn, backToMenu]);
 
-  return { panelEntered, handleClose };
+  const { menu } = editor.settings;
+  const referenceHint = showReferenceImage ? menu.referenceImage.hide : menu.referenceImage.show;
+
+  return {
+    ...canvasSize,
+    panelEntered,
+    handleClose,
+    title: editor.settings.titles[settingsView],
+    showBackButton: inDrillIn,
+    gridHint: showPixelGrid ? menu.grid.hide : menu.grid.show,
+    referenceHint: hasReferenceImage ? referenceHint : menu.referenceImage.unavailable,
+    sizeHint: menu.canvasSize.hint(artwork.width, artwork.height),
+    toggleGrid: () => {
+      onToggleGrid();
+    },
+    toggleReferenceImage: () => {
+      if (!hasReferenceImage) {
+        return;
+      }
+      onToggleReferenceImage();
+    },
+    loadReferenceImage: () => {
+      onLoadReferenceImage();
+    },
+    exportJson,
+    exportPng: () => {
+      void exportPng();
+    },
+  };
 }

@@ -4,92 +4,40 @@
  */
 "use client";
 
-import { editor } from "@/content/editor";
+import { cx } from "@/features/shared/utils/cx";
+
 import { useImageDetailPanel } from "@/features/editor/components/EditorSettingsDrawer/hooks/useImageDetailPanel";
+import { editorSettingsImageDetailPanel } from "./EditorSettingsImageDetailPanel.style";
 import type { IEditorSettingsImageDetailPanelProps } from "./EditorSettingsImageDetailPanel.type";
 
-const rootClass = "flex min-h-0 flex-1 flex-col gap-4 px-4 pb-4 pt-0 sm:px-4";
-
-const hintClass = "text-xs font-normal leading-relaxed text-subtle";
-
-const listClass =
-  "max-h-[min(55vh,28rem)] min-h-0 divide-y divide-line overflow-y-auto rounded-lg border border-line bg-surface-subtle";
-
-const rowClass = "flex items-center gap-3 px-3 py-2.5 text-sm text-fg";
-
-const rowMetaClass = "flex min-w-0 flex-1 flex-col gap-0.5";
-
-const rowTitleClass = "truncate font-medium tabular-nums";
-
-const rowSubClass = "truncate text-xs font-normal text-subtle";
-
-const swatchBaseClass =
-  "h-9 w-9 shrink-0 rounded border border-line-strong shadow-inner";
-
-const swatchTransparentClass = `${swatchBaseClass} bg-surface-strong`;
-
-const countClass = "shrink-0 tabular-nums text-fg-secondary";
-
-const pctClass = "w-12 shrink-0 text-right text-xs tabular-nums text-subtle";
-
-const emptyClass =
-  "rounded-lg border border-dashed border-line-strong bg-surface px-3 py-6 text-center text-sm text-muted";
-
-export function EditorSettingsImageDetailPanel({
-  artwork,
-  viewport,
-  viewportCssWidth,
-  viewportCssHeight,
-  paintRevision,
-}: IEditorSettingsImageDetailPanelProps) {
-  const { rows, totalCompositeOpaque, totalViewportCells } = useImageDetailPanel({
-    artwork,
-    viewport,
-    viewportCssWidth,
-    viewportCssHeight,
-    paintRevision,
-  });
-
-  const copy = editor.settings.imageDetail;
-  const summaryPrefix =
-    totalViewportCells === 0
-      ? copy.noIntersection
-      : copy.summary(totalCompositeOpaque, totalViewportCells);
+export function EditorSettingsImageDetailPanel(props: IEditorSettingsImageDetailPanelProps) {
+  const { rows, summary, emptyMessage } = useImageDetailPanel(props);
 
   return (
-    <div className={rootClass}>
-      <p className={hintClass}>{summaryPrefix}</p>
-      {totalViewportCells === 0 ? (
-        <div className={emptyClass}>{copy.emptyViewport}</div>
-      ) : totalCompositeOpaque === 0 ? (
-        <div className={emptyClass}>
-          {copy.allTransparent}
-        </div>
+    <div className={editorSettingsImageDetailPanel.root}>
+      <p className={editorSettingsImageDetailPanel.hint}>{summary}</p>
+      {emptyMessage !== null ? (
+        <div className={editorSettingsImageDetailPanel.empty}>{emptyMessage}</div>
       ) : (
-        <ul className={listClass}>
-          {rows.map((row) => {
-            const pct =
-              totalCompositeOpaque > 0
-                ? Math.round((row.count / totalCompositeOpaque) * 1000) / 10
-                : 0;
-            const opaqueSwatch = row.color !== "transparent";
-
-            return (
-              <li key={row.paletteIndex} className={rowClass}>
-                <span
-                  className={opaqueSwatch ? swatchBaseClass : swatchTransparentClass}
-                  style={opaqueSwatch ? { backgroundColor: row.color } : undefined}
-                  aria-hidden
-                />
-                <div className={rowMetaClass}>
-                  <span className={rowTitleClass}>{copy.paletteEntry(row.paletteIndex)}</span>
-                  <span className={rowSubClass}>{row.color}</span>
-                </div>
-                <span className={countClass}>{row.count}</span>
-                <span className={pctClass}>{copy.percent(pct)}</span>
-              </li>
-            );
-          })}
+        <ul className={editorSettingsImageDetailPanel.list}>
+          {rows.map((row) => (
+            <li key={row.paletteIndex} className={editorSettingsImageDetailPanel.row}>
+              <span
+                className={cx(
+                  editorSettingsImageDetailPanel.swatch,
+                  row.transparent && editorSettingsImageDetailPanel.swatchTransparent,
+                )}
+                style={row.swatchStyle}
+                aria-hidden
+              />
+              <div className={editorSettingsImageDetailPanel.meta}>
+                <span className={editorSettingsImageDetailPanel.entry}>{row.entryLabel}</span>
+                <span className={editorSettingsImageDetailPanel.sub}>{row.color}</span>
+              </div>
+              <span className={editorSettingsImageDetailPanel.count}>{row.count}</span>
+              <span className={editorSettingsImageDetailPanel.percent}>{row.percentLabel}</span>
+            </li>
+          ))}
         </ul>
       )}
     </div>

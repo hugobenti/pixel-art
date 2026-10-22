@@ -6,30 +6,39 @@
 
 import { editor } from "@/content/editor";
 import { Button } from "@/features/shared/components/Button";
+import { editorSettingsImportExportPanel } from "./EditorSettingsImportExportPanel.style";
 import type { IEditorSettingsImportExportPanelProps } from "./EditorSettingsImportExportPanel.type";
-
-const rootClass = "flex min-h-0 flex-1 flex-col gap-4 px-4 pb-4 pt-0 sm:px-4";
-const hintClass = "text-xs font-normal leading-relaxed text-subtle";
-const sectionClass = "rounded-lg border border-line bg-surface-subtle p-3";
-const sectionTitleClass = "text-sm font-semibold text-fg";
-const actionsClass = "mt-3 flex flex-wrap gap-2";
-const buttonClass = "min-h-10 touch-manipulation px-4 sm:min-h-9";
 
 export function EditorSettingsImportExportPanel({
   onExportPng,
   onExportJson,
 }: IEditorSettingsImportExportPanelProps) {
   return (
-    <div className={rootClass}>
-      <p className={hintClass}>{editor.settings.export.hint}</p>
+    <div className={editorSettingsImportExportPanel.root}>
+      <p className={editorSettingsImportExportPanel.hint}>{editor.settings.export.hint}</p>
 
-      <section className={sectionClass} aria-label={editor.settings.export.sectionLabel}>
-        <h3 className={sectionTitleClass}>{editor.settings.export.title}</h3>
-        <div className={actionsClass}>
-          <Button type="button" variant="outline" className={buttonClass} onClick={onExportPng}>
+      <section
+        className={editorSettingsImportExportPanel.section}
+        aria-label={editor.settings.export.sectionLabel}
+      >
+        <h3 className={editorSettingsImportExportPanel.sectionTitle}>
+          {editor.settings.export.title}
+        </h3>
+        <div className={editorSettingsImportExportPanel.actions}>
+          <Button
+            type="button"
+            variant="outline"
+            className={editorSettingsImportExportPanel.button}
+            onClick={onExportPng}
+          >
             {editor.settings.export.png}
           </Button>
-          <Button type="button" variant="outline" className={buttonClass} onClick={onExportJson}>
+          <Button
+            type="button"
+            variant="outline"
+            className={editorSettingsImportExportPanel.button}
+            onClick={onExportJson}
+          >
             {editor.settings.export.json}
           </Button>
         </div>

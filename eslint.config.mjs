@@ -291,6 +291,8 @@ const eslintConfig = defineConfig([
       "src/features/editor/components/PaletteEditModal.tsx",
       "src/features/editor/components/ShiftDirectionOverlay.tsx",
       "src/features/editor/components/EditorScreen.tsx",
+      "src/features/editor/components/EditorSettingsDrawer/**/*.tsx",
+      "src/features/editor/components/LayersDrawer/**/*.tsx",
     ],
     ignores: ["**/*.test.tsx"],
     rules: { "presentation/no-restricted-syntax": "error" },
