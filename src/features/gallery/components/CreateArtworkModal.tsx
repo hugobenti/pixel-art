@@ -9,6 +9,7 @@ import { gallery } from "@/content/gallery";
 import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
 import { ButtonGroup } from "@/features/shared/components/ButtonGroup";
+import { ColorField } from "@/features/shared/components/ColorField";
 import { FormField } from "@/features/shared/components/FormField";
 import { Input } from "@/features/shared/components/Input";
 import { Modal } from "@/features/shared/components/Modal";
@@ -19,6 +20,7 @@ import type { ICreateArtworkModalProps } from "./CreateArtworkModal.type";
 
 export function CreateArtworkModal({ open, onClose, onCreate }: ICreateArtworkModalProps) {
   const {
+    titleId,
     title,
     setTitle,
     width,
@@ -55,9 +57,9 @@ export function CreateArtworkModal({ open, onClose, onCreate }: ICreateArtworkMo
         </>
       }
     >
-      <FormField label={gallery.create.titleLabel} htmlFor="create-artwork-title">
+      <FormField label={gallery.create.titleLabel} htmlFor={titleId}>
         <Input
-          id="create-artwork-title"
+          id={titleId}
           data-autofocus
           value={title}
           onChange={(ev) => setTitle(ev.target.value)}
@@ -106,18 +108,11 @@ export function CreateArtworkModal({ open, onClose, onCreate }: ICreateArtworkMo
           />
         </div>
       </fieldset>
-      <FormField label={gallery.create.backgroundLabel} htmlFor="create-artwork-bg">
-        <div className={createArtworkModal.colorRow}>
-          <input
-            type="color"
-            id="create-artwork-bg"
-            value={backgroundColor}
-            onChange={(ev) => setBackgroundColor(ev.target.value)}
-            className={createArtworkModal.colorPicker}
-            aria-label={gallery.create.backgroundAriaLabel}
-          />
-        </div>
-      </FormField>
+      <ColorField
+        label={gallery.create.backgroundLabel}
+        value={backgroundColor}
+        onValueChange={setBackgroundColor}
+      />
       <p className={createArtworkModal.hint}>{hint}</p>
       {errors.form ? (
         <p role="alert" className={createArtworkModal.formError}>

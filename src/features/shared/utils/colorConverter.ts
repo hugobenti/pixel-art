@@ -1,6 +1,7 @@
 /**
  * Purpose:
- * Normalize palette color strings for canvas fill operations (hex shorthand expansion).
+ * Normalize palette color strings for canvas fill operations (hex shorthand expansion), and parse
+ * typed or pasted hex values.
  */
 
 const HEX6 = /^#?([0-9a-f]{6})$/i;
@@ -21,4 +22,14 @@ export function normalizeHexColor(input: string): string {
     return `#${r}${r}${g}${g}${b}${b}`.toUpperCase();
   }
   return trimmed;
+}
+
+const HEX_COLOR = /^#[0-9A-F]{6}$/;
+
+/**
+ * `#RRGGBB` (upper case) for a typed or pasted hex value (`#` optional, `#RGB` expanded), or null.
+ */
+export function parseHexColor(input: string): string | null {
+  const normalized = normalizeHexColor(input);
+  return HEX_COLOR.test(normalized) ? normalized : null;
 }

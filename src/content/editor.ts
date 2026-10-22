@@ -45,6 +45,7 @@ export const editor: IEditorContent = {
     selectedColorLabel: "Color value for selected swatch",
     addColor: "Add new color",
     newColorLabel: "Pick new color to append",
+    addButton: "Add color",
     paletteFull: "Palette full (256 colors maximum).",
   },
   shiftOverlay: {

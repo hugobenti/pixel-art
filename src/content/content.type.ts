@@ -51,6 +51,12 @@ export interface ISharedContent {
     /** Inline error on a NumberField whose value is not a whole number from min to max. */
     range: (min: number, max: number) => string;
   };
+  colorField: {
+    /** Accessible name of the swatch that opens the native picker, from the field label. */
+    pickerLabel: (label: string) => string;
+    /** Inline error on a hex value that is not #RGB or #RRGGBB. */
+    invalid: string;
+  };
   theme: {
     /** Name of the theme switch (visible in settings rows, screen-reader only in headers). */
     label: string;
@@ -127,7 +133,6 @@ export interface IGalleryContent {
     title: string;
     titleLabel: string;
     backgroundLabel: string;
-    backgroundAriaLabel: string;
     /** Legend of the size group (presets plus width and height). */
     sizeLabel: string;
     /** Accessible name of the preset group. */
@@ -205,6 +210,8 @@ export interface IEditorContent {
     selectedColorLabel: string;
     addColor: string;
     newColorLabel: string;
+    /** Outline button that appends the new color. */
+    addButton: string;
     paletteFull: string;
   };
   shiftOverlay: {

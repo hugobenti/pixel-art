@@ -1,11 +1,11 @@
 /**
  * Purpose:
  * PaletteEditModal behavior: the swatch being edited (kept inside the palette) and its color, and the
- * add-color picker, which starts from a neutral gray each time the modal opens.
+ * add-color field, which starts from a neutral gray each time the modal opens.
  */
 "use client";
 
-import { useState, type ChangeEvent } from "react";
+import { useState } from "react";
 
 import { clampPaletteIndex } from "@/features/editor/logic/paletteMutations";
 import type { IPaletteEditModalProps } from "./PaletteEditModal.type";
@@ -37,16 +37,14 @@ export function usePaletteEditModal({
   return {
     focusedIndex,
     editHex: palette[focusedIndex] ?? EMPTY_PALETTE_COLOR,
-    applyEditHex: (event: ChangeEvent<HTMLInputElement>) => {
-      onApplyHex(focusedIndex, event.target.value);
+    applyEditHex: (hex: string) => {
+      onApplyHex(focusedIndex, hex);
     },
     removeFocused: () => {
       onRemoveSwatch(focusedIndex);
     },
     newHex,
-    changeNewHex: (event: ChangeEvent<HTMLInputElement>) => {
-      setNewHex(event.target.value);
-    },
+    setNewHex,
     addNewColor: () => {
       onAddColor(newHex);
     },
