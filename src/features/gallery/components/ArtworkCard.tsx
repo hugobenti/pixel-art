@@ -39,7 +39,7 @@ export function ArtworkCard(props: IArtworkCardProps) {
             alt=""
             fill
             className={artworkCard.thumbnail}
-            sizes="200px"
+            sizes="(min-width: 1280px) 270px, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
             unoptimized={thumbnail.unoptimized}
           />
         </Link>

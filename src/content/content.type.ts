@@ -150,6 +150,9 @@ export interface IEditorContent {
   };
   screen: {
     notFound: string;
+    loadFailed: string;
+    /** Browser tab title for an open artwork. */
+    documentTitle: (artworkTitle: string) => string;
     backToGallery: string;
     loading: string;
   };

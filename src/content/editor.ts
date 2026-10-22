@@ -1,4 +1,5 @@
 import type { IEditorContent } from "./content.type";
+import { site } from "./site";
 
 export const editor: IEditorContent = {
   route: {
@@ -6,6 +7,8 @@ export const editor: IEditorContent = {
   },
   screen: {
     notFound: "Artwork not found.",
+    loadFailed: "This artwork couldn’t be opened. Your browser’s storage may be blocked or full.",
+    documentTitle: (artworkTitle) => `${artworkTitle} · ${site.name}`,
     backToGallery: "Back to gallery",
     loading: "Loading artwork…",
   },
@@ -92,7 +95,7 @@ export const editor: IEditorContent = {
         `${compositePixels} composited pixel${compositePixels === 1 ? "" : "s"} across ${visibleCells} visible cell${visibleCells === 1 ? "" : "s"} (layers stacked; no double counting).`,
       emptyViewport: "Pan or zoom so the canvas viewport overlaps your artwork.",
       allTransparent: "Every visible cell is fully transparent in the composite stack.",
-      paletteEntry: (index) => `Palette #${index}`,
+      paletteEntry: (index) => `Color ${index + 1}`,
       percent: (value) => `${value}%`,
     },
     export: {
