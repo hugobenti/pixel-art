@@ -50,25 +50,17 @@ function readSystemDark(): boolean {
   return window.matchMedia(DARK_SCHEME_QUERY).matches;
 }
 
-/** The user's pick ("system" until they choose) and a setter that persists it. */
-export function useThemePreference() {
-  const preference = useSyncExternalStore(subscribe, readPreference, () => "system" as const);
-
-  const setPreference = useCallback((next: TThemePreference) => {
+/** Persists an explicit Light or Dark pick; from then on the OS setting is ignored. */
+export function useSetTheme() {
+  return useCallback((next: TResolvedTheme) => {
     unsavedPreference = next;
     try {
-      if (next === "system") {
-        window.localStorage.removeItem(THEME_STORAGE_KEY);
-      } else {
-        window.localStorage.setItem(THEME_STORAGE_KEY, next);
-      }
+      window.localStorage.setItem(THEME_STORAGE_KEY, next);
     } catch {
       // Storage blocked: readPreference falls back to unsavedPreference for this page view.
     }
     window.dispatchEvent(new Event(THEME_CHANGE_EVENT));
   }, []);
-
-  return { preference, setPreference };
 }
 
 /** The theme on screen; re-renders when it changes (canvas renderers re-read token colors). */

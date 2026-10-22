@@ -36,7 +36,7 @@ export const shared: ISharedContent = {
   },
   theme: {
     label: "Theme",
-    options: { system: "System", light: "Light", dark: "Dark" },
+    options: { light: "Light", dark: "Dark" },
   },
   colorSwatch: {
     compactTitle: (position) => `Color ${position}`,

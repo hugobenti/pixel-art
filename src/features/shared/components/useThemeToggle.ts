@@ -1,17 +1,19 @@
 /**
  * Purpose:
- * ThemeToggle view model: one radio per preference with its label and checked state.
+ * ThemeToggle view model: a Light and a Dark radio; the one matching the theme on screen is checked
+ * (on a first visit that is the OS theme, until the user picks).
  */
 "use client";
 
 import { useId, type ChangeEvent } from "react";
 
 import { shared } from "@/content/shared";
-import { THEME_PREFERENCES, parseThemePreference } from "@/features/shared/theme/themePreference";
-import { useThemePreference } from "@/features/shared/theme/useThemePreference";
+import { THEME_OPTIONS } from "@/features/shared/theme/themePreference";
+import { useResolvedTheme, useSetTheme } from "@/features/shared/theme/useThemePreference";
 
 export function useThemeToggle() {
-  const { preference, setPreference } = useThemePreference();
+  const theme = useResolvedTheme();
+  const setTheme = useSetTheme();
   const labelId = useId();
   const name = useId();
 
@@ -19,12 +21,12 @@ export function useThemeToggle() {
     labelId,
     name,
     label: shared.theme.label,
-    options: THEME_PREFERENCES.map((value) => ({
+    options: THEME_OPTIONS.map((value) => ({
       value,
       label: shared.theme.options[value],
-      checked: value === preference,
+      checked: value === theme,
     })),
     onChange: (event: ChangeEvent<HTMLInputElement>) =>
-      setPreference(parseThemePreference(event.target.value)),
+      setTheme(event.target.value === "dark" ? "dark" : "light"),
   };
 }

@@ -59,8 +59,8 @@ export interface ISharedContent {
   theme: {
     /** Name of the theme switch (visible in settings rows, screen-reader only in headers). */
     label: string;
-    /** One label per theme preference (TThemePreference). */
-    options: { system: string; light: string; dark: string };
+    /** One label per theme the control offers (THEME_OPTIONS). */
+    options: { light: string; dark: string };
   };
   colorSwatch: {
     compactTitle: (position: number) => string;
