@@ -81,8 +81,7 @@ export const editor: IEditorContent = {
       imageDetail: { label: "Image detail", hint: "Visible area" },
     },
     canvasSize: {
-      hint: "Pixels stay anchored to the top-left. New cells use white from the palette when present, otherwise the first swatch. Undo history for this artwork is cleared after the size changes.",
-
+      hint: "Pixels stay anchored to the top-left. New cells use the lightest palette color. Undo history for this artwork is cleared after the size changes.",
     },
     imageDetail: {
       noIntersection: "No artwork pixels intersect the visible viewport.",

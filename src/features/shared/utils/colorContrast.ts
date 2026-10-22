@@ -8,8 +8,8 @@ const OPAQUE_HEX = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
 const THEME_BLOCK = /@theme\b[^{]*\{([^}]*)\}/g;
 const COLOR_DECLARATION = /--color-([a-z0-9-]+)\s*:\s*([^;]+);/gi;
 
-/** WCAG 2.x relative luminance of an opaque #rgb / #rrggbb color. */
-function luminance(hex: string): number {
+/** WCAG 2.x relative luminance of an opaque #rgb / #rrggbb color, from 0 (black) to 1 (white). */
+export function relativeLuminance(hex: string): number {
   const match = OPAQUE_HEX.exec(hex);
   if (!match) {
     // eslint-disable-next-line no-restricted-syntax -- developer error from the token contrast test, never shown to users
@@ -30,7 +30,7 @@ function luminance(hex: string): number {
 
 /** WCAG contrast ratio between two opaque colors, from 1 (none) to 21 (black on white). */
 export function contrastRatio(foreground: string, background: string): number {
-  const [lighter, darker] = [luminance(foreground), luminance(background)].sort(
+  const [lighter, darker] = [relativeLuminance(foreground), relativeLuminance(background)].sort(
     (a, b) => b - a
   );
   return (lighter + 0.05) / (darker + 0.05);

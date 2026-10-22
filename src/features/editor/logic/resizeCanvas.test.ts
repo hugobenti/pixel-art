@@ -38,13 +38,14 @@ describe("resizeLayerPixelData", () => {
 });
 
 describe("fillPaletteIndexForExpansion", () => {
-  it("prefers normalized white when present", () => {
+  it("uses white when the palette has it", () => {
     expect(fillPaletteIndexForExpansion(["#000000", "#FFFFFF"])).toBe(1);
     expect(fillPaletteIndexForExpansion(["#fff"])).toBe(0);
   });
 
-  it("falls back to zero without white", () => {
-    expect(fillPaletteIndexForExpansion(["#FF0000", "#00FF00"])).toBe(0);
+  it("uses the lightest color when the palette has no white (e.g. Sweetie 16)", () => {
+    expect(fillPaletteIndexForExpansion(["#1A1C2C", "#5D275D", "#F4F4F4", "#94B0C2"])).toBe(2);
+    expect(fillPaletteIndexForExpansion(["#FF0000", "#00FF00"])).toBe(1);
   });
 });
 
