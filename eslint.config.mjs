@@ -182,10 +182,11 @@ const styleComposeRules = [
 ].map((selector) => ({ selector, message: STYLE_COMPOSE_MESSAGE }));
 
 // The architecture selectors run through a second registration of the core `no-restricted-syntax`
-// rule, `presentation/no-restricted-syntax`. A rule has one severity and one option list per file, and
-// a later `no-restricted-syntax` block replaces an earlier one, so merging these selectors into the
-// copy/type arrays above would force one severity on all of them. Under its own name the rule keeps
-// its own severity and never displaces (or is displaced by) the copy and type rules.
+// rule, `presentation/no-restricted-syntax`. A rule has one option list per file, and a later
+// `no-restricted-syntax` block replaces an earlier one, so these selectors can't share the copy/type
+// arrays above without every file that needs both repeating all of them. Under its own name the rule
+// keeps its own selector lists (components here, style files below) and never displaces (or is
+// displaced by) the copy and type rules.
 const presentationPlugin = {
   rules: { "no-restricted-syntax": builtinRules.get("no-restricted-syntax") },
 };
@@ -264,38 +265,20 @@ const eslintConfig = defineConfig([
       "no-restricted-syntax": ["error", ...typeFileRules],
     },
   },
-  // Presentation-only components, rolled out folder by folder: every component warns until its folder
-  // is converted, then the folder joins the "error" block below. Re-stating only the severity keeps
-  // the selector list from this block.
+  // Presentation-only components: every component file, tests excepted.
   {
     files: ["**/*.tsx"],
     ignores: ["**/*.test.tsx"],
     plugins: { presentation: presentationPlugin },
     rules: {
       "presentation/no-restricted-syntax": [
-        "warn",
+        "error",
         ...classStringRules,
         ...presentationRules,
         ...logicRules,
         ...dataRules,
       ],
     },
-  },
-  {
-    files: [
-      "src/features/shared/**/*.tsx",
-      "src/features/gallery/**/*.tsx",
-      "src/app/**/*.tsx",
-      "src/features/editor/components/EditorActionsBar.tsx",
-      "src/features/editor/components/ColorSelectionRow.tsx",
-      "src/features/editor/components/PaletteEditModal.tsx",
-      "src/features/editor/components/ShiftDirectionOverlay.tsx",
-      "src/features/editor/components/EditorScreen.tsx",
-      "src/features/editor/components/EditorSettingsDrawer/**/*.tsx",
-      "src/features/editor/components/LayersDrawer/**/*.tsx",
-    ],
-    ignores: ["**/*.test.tsx"],
-    rules: { "presentation/no-restricted-syntax": "error" },
   },
   // Style files hold class strings composed with cx() (AGENTS.md "Styling architecture").
   {
