@@ -1,16 +1,18 @@
 /**
  * Purpose:
- * ArtworkCard behavior and view model: editor link, thumbnail, inline rename and confirmed delete.
+ * ArtworkCard behavior and view model: editor link, thumbnail, inline rename and action menu.
  */
 "use client";
 
 import { useState, type FormEvent } from "react";
 
 import { gallery } from "@/content/gallery";
+import { shared } from "@/content/shared";
 import { artworkThumbnail, editorPath } from "@/features/gallery/logic/artworkLinks";
+import type { IMenuItem } from "@/features/shared/components/Menu.type";
 import type { IArtworkCardProps } from "./ArtworkCard.type";
 
-export function useArtworkCard({ artwork, onRename, onDelete }: IArtworkCardProps) {
+export function useArtworkCard({ artwork, onRename, onClone, onDelete }: IArtworkCardProps) {
   const [renaming, setRenaming] = useState(false);
   const [title, setTitle] = useState(artwork.title);
 
@@ -25,11 +27,11 @@ export function useArtworkCard({ artwork, onRename, onDelete }: IArtworkCardProp
     setRenaming(false);
   };
 
-  const confirmDelete = () => {
-    if (typeof window !== "undefined" && window.confirm(gallery.card.confirmDelete)) {
-      void onDelete(artwork.id);
-    }
-  };
+  const menuItems: IMenuItem[] = [
+    { key: "rename", label: shared.actions.rename, onSelect: () => setRenaming(true) },
+    { key: "clone", label: gallery.card.clone, onSelect: () => void onClone(artwork.id) },
+    { key: "delete", label: gallery.card.delete, onSelect: () => void onDelete(artwork.id) },
+  ];
 
   return {
     href: editorPath(artwork.id),
@@ -40,6 +42,6 @@ export function useArtworkCard({ artwork, onRename, onDelete }: IArtworkCardProp
     setTitle,
     cancelRename,
     submitRename,
-    confirmDelete,
+    menuItems,
   };
 }

@@ -128,6 +128,8 @@ export interface IGalleryContent {
     confirmDelete: string;
     /** Accessible name of the inline rename field. */
     titleLabel: string;
+    /** Accessible name of the artwork actions menu. */
+    actionsLabel: (title: string) => string;
   };
   create: {
     title: string;

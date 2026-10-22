@@ -15,6 +15,7 @@ export const gallery: IGalleryContent = {
     delete: "Delete",
     confirmDelete: "Delete this artwork permanently?",
     titleLabel: "Artwork title",
+    actionsLabel: (title) => `Actions for ${title}`,
   },
   create: {
     title: "New artwork",

@@ -32,4 +32,5 @@ export const PUBLIC_ICONS = {
   download: "/icons/download.svg",
   dashboard: "/icons/dashboard.svg",
   layers: "/icons/layers.svg",
+  moreHorizontal: "/icons/more-horizontal.svg",
 } as const;

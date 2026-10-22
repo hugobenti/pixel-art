@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * Gallery card showing artwork thumbnail and actions (open, rename, clone, delete).
+ * Gallery card showing artwork thumbnail and a compact actions menu.
  */
 "use client";
 
@@ -12,22 +12,22 @@ import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
 import { Card } from "@/features/shared/components/Card";
 import { Input } from "@/features/shared/components/Input";
+import { Menu } from "@/features/shared/components/Menu";
 import { artworkCard } from "./ArtworkCard.style";
 import type { IArtworkCardProps } from "./ArtworkCard.type";
 import { useArtworkCard } from "./useArtworkCard";
 
 export function ArtworkCard(props: IArtworkCardProps) {
-  const { artwork, onClone } = props;
+  const { artwork } = props;
   const {
     href,
     thumbnail,
     renaming,
-    setRenaming,
-    title,
     setTitle,
+    title,
     cancelRename,
     submitRename,
-    confirmDelete,
+    menuItems,
   } = useArtworkCard(props);
 
   return (
@@ -47,7 +47,7 @@ export function ArtworkCard(props: IArtworkCardProps) {
         {renaming ? (
           <form onSubmit={submitRename} className={artworkCard.renameForm}>
             <Input
-              // eslint-disable-next-line jsx-a11y/no-autofocus -- moves focus to the field that replaces the Rename button the user just pressed
+              // eslint-disable-next-line jsx-a11y/no-autofocus -- moves focus to the field that replaces the Rename action
               autoFocus
               aria-label={gallery.card.titleLabel}
               value={title}
@@ -69,15 +69,7 @@ export function ArtworkCard(props: IArtworkCardProps) {
         )}
 
         <div className={artworkCard.actions}>
-          <Button variant="ghost" type="button" onClick={() => setRenaming(true)}>
-            {shared.actions.rename}
-          </Button>
-          <Button variant="ghost" type="button" onClick={() => onClone(artwork.id)}>
-            {gallery.card.clone}
-          </Button>
-          <Button variant="danger" type="button" onClick={confirmDelete}>
-            {gallery.card.delete}
-          </Button>
+          <Menu label={gallery.card.actionsLabel(artwork.title)} items={menuItems} />
         </div>
       </Card>
     </article>
