@@ -4,46 +4,52 @@
  */
 "use client";
 
-import { useCallback, useState, type FormEvent } from "react";
+import { useCallback, useRef, useState, type FormEvent } from "react";
 
 import { gallery } from "@/content/gallery";
 import { shared } from "@/content/shared";
-import {
-  DEFAULT_PALETTE,
-  MAX_CANVAS_DIMENSION,
-} from "@/features/shared/artwork/artworkService";
-import type { TUseCreateArtworkFormOptions } from "./useCreateArtworkForm.type";
+import { DEFAULT_PALETTE, MAX_CANVAS_DIMENSION } from "@/features/shared/artwork/artworkService";
+import { parseCanvasSizeFields } from "@/features/gallery/logic/createArtworkFields";
+import type {
+  TCreateArtworkFormErrors,
+  TUseCreateArtworkFormOptions,
+} from "./useCreateArtworkForm.type";
 
 export function useCreateArtworkForm({ onCreate }: TUseCreateArtworkFormOptions) {
   const [title, setTitle] = useState(shared.artwork.untitled);
   const [width, setWidth] = useState("64");
   const [height, setHeight] = useState("64");
-  const [backgroundColor, setBackgroundColor] = useState(
-    DEFAULT_PALETTE[1] ?? "#FFFFFF"
-  );
+  const [backgroundColor, setBackgroundColor] = useState(DEFAULT_PALETTE[1] ?? "#FFFFFF");
   const [busy, setBusy] = useState(false);
+  const [errors, setErrors] = useState<TCreateArtworkFormErrors>({});
+  const widthRef = useRef<HTMLInputElement>(null);
+  const heightRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = useCallback(
     async (e: FormEvent) => {
       e.preventDefault();
-      const w = Number.parseInt(width, 10);
-      const h = Number.parseInt(height, 10);
-      if (!Number.isFinite(w) || !Number.isFinite(h)) {
+      const { size, errors: fieldErrors } = parseCanvasSizeFields(
+        width,
+        height,
+        MAX_CANVAS_DIMENSION,
+        gallery.create.sizeRange(MAX_CANVAS_DIMENSION),
+      );
+      setErrors(fieldErrors);
+      if (!size) {
+        (fieldErrors.width ? widthRef : heightRef).current?.focus();
         return;
       }
       setBusy(true);
       try {
-        await onCreate({
-          title,
-          width: w,
-          height: h,
-          backgroundColor,
-        });
+        const createError = await onCreate({ title, backgroundColor, ...size });
+        if (createError) {
+          setErrors({ form: createError });
+        }
       } finally {
         setBusy(false);
       }
     },
-    [title, width, height, backgroundColor, onCreate]
+    [title, width, height, backgroundColor, onCreate],
   );
 
   return {
@@ -56,6 +62,9 @@ export function useCreateArtworkForm({ onCreate }: TUseCreateArtworkFormOptions)
     backgroundColor,
     setBackgroundColor,
     busy,
+    errors,
+    widthRef,
+    heightRef,
     maxSizeHint: gallery.create.maxSize(MAX_CANVAS_DIMENSION),
     handleSubmit,
   };

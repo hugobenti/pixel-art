@@ -4,11 +4,11 @@
  */
 "use client";
 
-import type { InputHTMLAttributes } from "react";
+import type { ComponentProps } from "react";
 
 import { cx } from "@/features/shared/utils/cx";
 import { input } from "./Input.style";
 
-export function Input({ className, ...rest }: InputHTMLAttributes<HTMLInputElement>) {
+export function Input({ className, ...rest }: ComponentProps<"input">) {
   return <input className={cx(input.base, className)} {...rest} />;
 }
