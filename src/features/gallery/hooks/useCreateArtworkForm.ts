@@ -19,13 +19,20 @@ import type {
 /** Square sizes offered as one-tap presets (the most common pixel-art canvases). */
 const SIZE_PRESETS = [16, 32, 64, 128];
 
-export function useCreateArtworkForm({ onCreate }: TUseCreateArtworkFormOptions) {
+export function useCreateArtworkForm({ open, onCreate }: TUseCreateArtworkFormOptions) {
   const titleId = useId();
   const [title, setTitle] = useState(shared.artwork.untitled);
   const [width, setWidth] = useState("64");
   const [height, setHeight] = useState("64");
   const [backgroundColor, setBackgroundColor] = useState(DEFAULT_PALETTE[1] ?? "#FFFFFF");
   const [backgroundColorValid, setBackgroundColorValid] = useState(true);
+  const [wasOpen, setWasOpen] = useState(open);
+  if (open !== wasOpen) {
+    setWasOpen(open);
+    if (open) {
+      setBackgroundColorValid(true);
+    }
+  }
   const [busy, setBusy] = useState(false);
   const [errors, setErrors] = useState<TCreateArtworkFormErrors>({});
   const widthRef = useRef<HTMLInputElement>(null);

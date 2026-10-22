@@ -38,7 +38,7 @@ export function CreateArtworkModal({ open, onClose, onCreate }: ICreateArtworkMo
     maxDimension,
     hint,
     handleSubmit,
-  } = useCreateArtworkForm({ onCreate });
+  } = useCreateArtworkForm({ open, onCreate });
 
   return (
     <Modal
