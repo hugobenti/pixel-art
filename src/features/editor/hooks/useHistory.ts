@@ -15,14 +15,19 @@ import {
   isEmptyHistoryCommand,
 } from "@/features/editor/logic/historyCommands";
 import { discardRedoStack } from "@/features/editor/logic/historyStacks";
-import type { IHistoryCommand } from "@/features/editor/types/editor.type";
+import type { IHistoryCommand, THistoryDirection } from "@/features/editor/types/editor.type";
 import type { IUseHistoryParams } from "./useHistory.type";
 
-export function useHistory({ documentKey, getLayers }: IUseHistoryParams) {
-  const getLayersRef = useRef(getLayers);
+export function useHistory({ documentKey, getDocument }: IUseHistoryParams) {
+  const getDocumentRef = useRef(getDocument);
   useEffect(() => {
-    getLayersRef.current = getLayers;
-  }, [getLayers]);
+    getDocumentRef.current = getDocument;
+  }, [getDocument]);
+
+  const applyToDocument = useCallback((cmd: IHistoryCommand, direction: THistoryDirection) => {
+    const { layers, palette } = getDocumentRef.current();
+    applyHistoryCommand(cmd, direction, layers, palette.length);
+  }, []);
 
   const undoStack = useRef<IHistoryCommand[]>([]);
   const redoStack = useRef<IHistoryCommand[]>([]);
@@ -68,11 +73,11 @@ export function useHistory({ documentKey, getLayers }: IUseHistoryParams) {
     if (!cmd) {
       return;
     }
-    applyHistoryCommand(cmd, "undo", getLayersRef.current());
+    applyToDocument(cmd, "undo");
     cmd.onApplied?.("undo");
     redoStack.current.push(cmd);
     syncFlags();
-  }, [syncFlags]);
+  }, [applyToDocument, syncFlags]);
 
   /** Undoes `cmd` only while it is still the latest change (e.g. an Undo toast after later edits). */
   const undoCommand = useCallback(
@@ -89,11 +94,11 @@ export function useHistory({ documentKey, getLayers }: IUseHistoryParams) {
     if (!cmd) {
       return;
     }
-    applyHistoryCommand(cmd, "redo", getLayersRef.current());
+    applyToDocument(cmd, "redo");
     cmd.onApplied?.("redo");
     undoStack.current.push(cmd);
     syncFlags();
-  }, [syncFlags]);
+  }, [applyToDocument, syncFlags]);
 
   return {
     pushCommand,

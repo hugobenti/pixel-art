@@ -27,16 +27,16 @@ describe("applyHistoryCommand", () => {
     };
     buf.set([0, 2, 1]);
 
-    applyHistoryCommand(cmd, "undo", layers);
+    applyHistoryCommand(cmd, "undo", layers, PALETTE.length);
     expect(Array.from(buf)).toEqual([0, 0, 0]);
     expect(paletteAfterHistory(PALETTE, cmd, "undo")).toBe(PALETTE);
 
-    applyHistoryCommand(cmd, "redo", layers);
+    applyHistoryCommand(cmd, "redo", layers, PALETTE.length);
     expect(Array.from(buf)).toEqual([0, 2, 1]);
   });
 
   it("undo of a palette removal restores the color and its pixels; redo removes them again", () => {
-    const layer = { id: "a", pixelData: Uint8Array.from([0, 1, 2, 1]) };
+    const layer = { id: "a", pixelData: Uint8Array.from([0, 1, 2, 1, 255]) };
     const layers = [layer];
     const result = removePaletteColor([layer], PALETTE, 1, { primaryIndex: 1, secondaryIndex: 2 });
     if (!result) {
@@ -44,14 +44,14 @@ describe("applyHistoryCommand", () => {
     }
     const cmd: IHistoryCommand = { deltas: [], paletteRemoval: result.removal };
 
-    applyHistoryCommand(cmd, "undo", layers);
+    applyHistoryCommand(cmd, "undo", layers, result.palette.length);
     const restored = paletteAfterHistory(result.palette, cmd, "undo");
     expect(restored).toEqual(PALETTE);
-    expect(Array.from(layer.pixelData)).toEqual([0, 1, 2, 1]);
+    expect(Array.from(layer.pixelData)).toEqual([0, 1, 2, 1, 255]);
 
-    applyHistoryCommand(cmd, "redo", layers);
+    applyHistoryCommand(cmd, "redo", layers, restored.length);
     expect(paletteAfterHistory(restored, cmd, "redo")).toEqual(["#000000", "#00ff00"]);
-    expect(Array.from(layer.pixelData)).toEqual([0, 0, 1, 0]);
+    expect(Array.from(layer.pixelData)).toEqual([0, 0, 1, 0, 255]);
   });
 });
 

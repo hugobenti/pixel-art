@@ -67,7 +67,7 @@ describe("revertPaletteRemoval", () => {
       throw new Error("expected a removal");
     }
 
-    revertPaletteRemoval(result.removal, ls);
+    revertPaletteRemoval(result.removal, ls, result.palette.length);
 
     expect(ls.map((l) => Array.from(l.pixelData))).toEqual(before);
   });
@@ -81,9 +81,24 @@ describe("revertPaletteRemoval", () => {
     ls[0].pixelData[0] = 3;
     const added = { id: "c", pixelData: Uint8Array.from([0, 1, 2, 3]) };
 
-    revertPaletteRemoval(result.removal, [...ls, added]);
+    revertPaletteRemoval(result.removal, [...ls, added], result.palette.length + 1);
 
     expect(ls[0].pixelData[0]).toBe(4);
     expect(Array.from(added.pixelData)).toEqual([0, 2, 3, 4]);
+  });
+
+  it("keeps transparent pixels (outside the palette) transparent through removal and undo", () => {
+    const existing = { id: "a", pixelData: Uint8Array.from([255, 1, 3]) };
+    const result = removePaletteColor([existing], PALETTE, 1, { primaryIndex: 0, secondaryIndex: 1 });
+    if (!result) {
+      throw new Error("expected a removal");
+    }
+    expect(Array.from(existing.pixelData)).toEqual([255, 0, 2]);
+    const addedLater = { id: "b", pixelData: new Uint8Array(3).fill(255) };
+
+    revertPaletteRemoval(result.removal, [existing, addedLater], result.palette.length);
+
+    expect(Array.from(existing.pixelData)).toEqual([255, 1, 3]);
+    expect(Array.from(addedLater.pixelData)).toEqual([255, 255, 255]);
   });
 });

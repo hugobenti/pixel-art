@@ -46,13 +46,16 @@ function slotAfterRemoval(index: number, removeIndex: number, nextLength: number
   return clampPaletteIndex(shifted, nextLength);
 }
 
-/** Forward remap of one buffer: the removed index becomes 0, higher indices move down by one. */
-function remapForRemoval(pixelData: Uint8Array, removeIndex: number): void {
+/**
+ * Forward remap of one buffer: the removed index becomes 0, higher palette indices move down by
+ * one. Values outside the palette (`>= paletteLength`, e.g. the 255 transparent fill) are left alone.
+ */
+function remapForRemoval(pixelData: Uint8Array, removeIndex: number, paletteLength: number): void {
   for (let i = 0; i < pixelData.length; i++) {
     const v = pixelData[i];
     if (v === removeIndex) {
       pixelData[i] = 0;
-    } else if (v > removeIndex) {
+    } else if (v > removeIndex && v < paletteLength) {
       pixelData[i] = v - 1;
     }
   }
@@ -85,7 +88,7 @@ export function removePaletteColor(
         indices[next++] = i;
       }
     }
-    remapForRemoval(pixelData, removeIndex);
+    remapForRemoval(pixelData, removeIndex, palette.length);
     return { layerId: id, indices };
   });
   const nextPalette = palette.filter((_, i) => i !== removeIndex);
@@ -99,28 +102,36 @@ export function removePaletteColor(
   };
 }
 
-/** Redo of a palette removal: remaps every current layer again. */
+/**
+ * Redo of a palette removal: remaps every current layer again. `paletteLength` is the current
+ * palette length, which still includes the color being removed.
+ */
 export function reapplyPaletteRemoval(
   removal: IPaletteRemoval,
   layers: readonly IPaletteLayerBuffer[],
+  paletteLength: number,
 ): void {
   for (const layer of layers) {
-    remapForRemoval(layer.pixelData, removal.index);
+    remapForRemoval(layer.pixelData, removal.index, paletteLength);
   }
 }
 
 /**
- * Undo of a palette removal: indices at or above the removed slot move back up by one on every
- * current layer, then the recorded pixels get the restored color again.
+ * Undo of a palette removal: palette indices at or above the removed slot move back up by one on
+ * every current layer, then the recorded pixels get the restored color again. `paletteLength` is the
+ * current palette length (without the removed color); values at or above it are transparent and
+ * stay unchanged, so they can't wrap past 255 into a real color.
  */
 export function revertPaletteRemoval(
   removal: IPaletteRemoval,
   layers: readonly IPaletteLayerBuffer[],
+  paletteLength: number,
 ): void {
   for (const { pixelData } of layers) {
     for (let i = 0; i < pixelData.length; i++) {
-      if (pixelData[i] >= removal.index) {
-        pixelData[i] += 1;
+      const v = pixelData[i];
+      if (v >= removal.index && v < paletteLength) {
+        pixelData[i] = v + 1;
       }
     }
   }

@@ -15,11 +15,15 @@ export function isEmptyHistoryCommand(cmd: IHistoryCommand): boolean {
   return cmd.deltas.length === 0 && !cmd.paletteRemoval;
 }
 
-/** Mutates the layer buffers so they match the state before (undo) or after (redo) the command. */
+/**
+ * Mutates the layer buffers so they match the state before (undo) or after (redo) the command.
+ * `paletteLength` is the current palette length; indices at or above it are transparent.
+ */
 export function applyHistoryCommand(
   cmd: IHistoryCommand,
   direction: THistoryDirection,
   layers: readonly IPaletteLayerBuffer[],
+  paletteLength: number,
 ): void {
   const buffers = new Map(layers.map((layer) => [layer.id, layer.pixelData]));
   if (direction === "undo") {
@@ -31,12 +35,12 @@ export function applyHistoryCommand(
       }
     }
     if (cmd.paletteRemoval) {
-      revertPaletteRemoval(cmd.paletteRemoval, layers);
+      revertPaletteRemoval(cmd.paletteRemoval, layers, paletteLength);
     }
     return;
   }
   if (cmd.paletteRemoval) {
-    reapplyPaletteRemoval(cmd.paletteRemoval, layers);
+    reapplyPaletteRemoval(cmd.paletteRemoval, layers, paletteLength);
   }
   for (const d of cmd.deltas) {
     const buf = buffers.get(d.layerId);

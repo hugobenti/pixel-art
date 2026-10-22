@@ -71,7 +71,7 @@ export function useEditorWorkspace({ initialArtwork }: IEditorWorkspaceProps) {
     });
   }, []);
 
-  const getLayers = useCallback(() => artworkRef.current.layers, []);
+  const getDocument = useCallback(() => artworkRef.current, []);
 
   const {
     pushCommand,
@@ -84,7 +84,7 @@ export function useEditorWorkspace({ initialArtwork }: IEditorWorkspaceProps) {
     historyRevision,
   } = useHistory({
     documentKey: `${artwork.id}:${artwork.width}x${artwork.height}`,
-    getLayers,
+    getDocument,
   });
 
   const paletteUi = useEditorPalette({
