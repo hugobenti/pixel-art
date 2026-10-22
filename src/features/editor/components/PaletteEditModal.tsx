@@ -26,6 +26,7 @@ export function PaletteEditModal(props: IPaletteEditModalProps) {
     setNewHex,
     newColorValid,
     setNewColorValid,
+    newColorFieldKey,
     addNewColor,
   } = usePaletteEditModal(props);
 
@@ -71,6 +72,7 @@ export function PaletteEditModal(props: IPaletteEditModalProps) {
         <legend className={paletteEditModal.legend}>{editor.paletteModal.addColor}</legend>
         <div className={paletteEditModal.row}>
           <ColorField
+            key={newColorFieldKey}
             label={editor.paletteModal.newColorLabel}
             hideLabel
             value={newHex}

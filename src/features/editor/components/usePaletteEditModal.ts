@@ -27,11 +27,14 @@ export function usePaletteEditModal({
   const [newHex, setNewHex] = useState(NEW_COLOR_DEFAULT);
   const [newColorValid, setNewColorValid] = useState(true);
   const [wasOpen, setWasOpen] = useState(open);
+  /** Bumped on every open; keys the add-color field so it remounts even if reopened mid exit-fade. */
+  const [openCount, setOpenCount] = useState(0);
   if (open !== wasOpen) {
     setWasOpen(open);
     if (open) {
       setNewHex(NEW_COLOR_DEFAULT);
       setNewColorValid(true);
+      setOpenCount((count) => count + 1);
     }
   }
 
@@ -48,6 +51,7 @@ export function usePaletteEditModal({
     setNewHex,
     newColorValid,
     setNewColorValid,
+    newColorFieldKey: openCount,
     addNewColor: () => {
       if (newColorValid) onAddColor(newHex);
     },

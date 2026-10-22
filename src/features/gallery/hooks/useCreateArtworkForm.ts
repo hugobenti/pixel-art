@@ -27,10 +27,13 @@ export function useCreateArtworkForm({ open, onCreate }: TUseCreateArtworkFormOp
   const [backgroundColor, setBackgroundColor] = useState(DEFAULT_PALETTE[1] ?? "#FFFFFF");
   const [backgroundColorValid, setBackgroundColorValid] = useState(true);
   const [wasOpen, setWasOpen] = useState(open);
+  /** Bumped on every open; keys the ColorField so it remounts even if reopened mid exit-fade. */
+  const [openCount, setOpenCount] = useState(0);
   if (open !== wasOpen) {
     setWasOpen(open);
     if (open) {
       setBackgroundColorValid(true);
+      setOpenCount((count) => count + 1);
     }
   }
   const [busy, setBusy] = useState(false);
@@ -95,6 +98,7 @@ export function useCreateArtworkForm({ open, onCreate }: TUseCreateArtworkFormOp
     backgroundColor,
     setBackgroundColor,
     setBackgroundColorValid,
+    colorFieldKey: openCount,
     busy,
     errors,
     widthRef,

@@ -31,6 +31,7 @@ export function CreateArtworkModal({ open, onClose, onCreate }: ICreateArtworkMo
     backgroundColor,
     setBackgroundColor,
     setBackgroundColorValid,
+    colorFieldKey,
     busy,
     errors,
     widthRef,
@@ -110,6 +111,7 @@ export function CreateArtworkModal({ open, onClose, onCreate }: ICreateArtworkMo
         </div>
       </fieldset>
       <ColorField
+        key={colorFieldKey}
         label={gallery.create.backgroundLabel}
         value={backgroundColor}
         onValueChange={setBackgroundColor}
