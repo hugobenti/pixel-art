@@ -13,18 +13,18 @@ export const gallery: IGalleryContent = {
   card: {
     clone: "Clone",
     delete: "Delete",
-    confirmDelete: "Delete this artwork permanently?",
     titleLabel: "Artwork title",
+    actionsLabel: (title) => `Actions for ${title}`,
   },
   create: {
     title: "New artwork",
     titleLabel: "Title",
     backgroundLabel: "Background color",
-    backgroundHint:
-      "If this color is not in the default palette, it is added when the artwork is created.",
-    backgroundAriaLabel: "Canvas background color",
-    maxSize: (max) => `Maximum ${max} × ${max} pixels.`,
-    sizeRange: (max) => `Enter a whole number from 1 to ${max}.`,
+    sizeLabel: "Canvas size",
+    sizePresetsLabel: "Size presets",
+    sizePresetLabel: (size) => `${size} × ${size} pixels`,
+    hint: (max) =>
+      `Up to ${max} × ${max} px. A background color not in the palette is added to it.`,
     submit: "Create",
     submitting: "Creating…",
   },
@@ -39,5 +39,11 @@ export const gallery: IGalleryContent = {
     rename: "Rename failed.",
     clone: "Clone failed.",
     delete: "Delete failed.",
+  },
+  deleteDialog: {
+    title: (title) => `Delete “${title}”?`,
+    description:
+      "The artwork and all its layers are removed from this browser. This can’t be undone.",
+    confirm: "Delete artwork",
   },
 };

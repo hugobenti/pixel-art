@@ -1,45 +1,38 @@
 /**
  * Purpose:
- * LayerRenameModal form behavior: the name draft, whether it can be saved (non-blank once trimmed),
- * and Enter-to-save / Escape-to-cancel in the name field.
+ * LayerRenameModal form behavior: the name draft, the field ids, and submit, which saves the trimmed
+ * name or shows an inline error when it is blank.
  */
 "use client";
 
-import { useState, type ChangeEvent, type KeyboardEvent } from "react";
+import { useId, useState, type ChangeEvent, type FormEvent } from "react";
 
+import { editor } from "@/content/editor";
 import type { ILayerRenameModalFormProps } from "./LayerRenameModal.type";
 
-export function useLayerRenameModalForm({
-  session,
-  onDismiss,
-  onConfirm,
-}: ILayerRenameModalFormProps) {
+export function useLayerRenameModalForm({ session, onConfirm }: ILayerRenameModalFormProps) {
+  const nameId = useId();
+  const errorId = useId();
   const [draft, setDraft] = useState(session.initialName);
-
-  const trimmed = draft.trim();
-  const canSave = trimmed.length > 0;
-
-  const submit = () => {
-    if (!canSave) {
-      return;
-    }
-    onConfirm(trimmed);
-  };
+  const [error, setError] = useState<string | undefined>(undefined);
 
   return {
+    nameId,
+    errorId,
     draft,
-    canSave,
-    submit,
-    changeDraft: (event: ChangeEvent<HTMLInputElement>) => setDraft(event.target.value),
-    handleKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        submit();
+    error,
+    changeDraft: (event: ChangeEvent<HTMLInputElement>) => {
+      setDraft(event.target.value);
+      setError(undefined);
+    },
+    submit: (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      const trimmed = draft.trim();
+      if (trimmed.length === 0) {
+        setError(editor.layers.renameModal.emptyError);
+        return;
       }
-      if (event.key === "Escape") {
-        event.preventDefault();
-        onDismiss();
-      }
+      onConfirm(trimmed);
     },
   };
 }

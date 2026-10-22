@@ -1,23 +1,25 @@
 /**
  * Purpose:
- * Right-side drawer with icon-led rows for grid, reference image, canvas size, image detail stats, and file transfer.
+ * Right-side drawer with icon-led rows: grid and reference-image switches, canvas size, image detail stats, and file transfer.
  *
  * Notes:
- * Canvas size, image detail, and import/export use in-drawer drill-in screens (no stacked modal).
+ * Canvas size, image detail, and import/export use in-drawer drill-in screens; only the crop
+ * confirmation opens a dialog (portaled to the body, above the drawer).
  * Reuses SideDrawer motion timing.
  */
 "use client";
 
 import { editor } from "@/content/editor";
+import { ConfirmDialog } from "@/features/shared/components/ConfirmDialog";
 import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
 import {
   SideDrawer,
   SideDrawerBackButton,
   SideDrawerCloseButton,
 } from "@/features/shared/components/SideDrawer";
+import { Switch } from "@/features/shared/components/Switch";
 import { ThemeToggle } from "@/features/shared/components/ThemeToggle";
 import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
-import { cx } from "@/features/shared/utils/cx";
 
 import { EditorSettingsCanvasSizePanel } from "@/features/editor/components/EditorSettingsDrawer/EditorSettingsCanvasSizePanel";
 import { EditorSettingsImageDetailPanel } from "@/features/editor/components/EditorSettingsDrawer/EditorSettingsImageDetailPanel";
@@ -45,7 +47,6 @@ export function EditorSettingsDrawer(props: IEditorSettingsDrawerProps) {
     panelEntered,
     handleClose,
     backToMenu,
-    gridHint,
     referenceHint,
     sizeHint,
     toggleGrid,
@@ -59,6 +60,7 @@ export function EditorSettingsDrawer(props: IEditorSettingsDrawerProps) {
     setWidthStr,
     setHeightStr,
     applyCanvasSize,
+    shrinkDialog,
     exportJson,
     exportPng,
   } = useEditorSettingsDrawer(props);
@@ -93,40 +95,32 @@ export function EditorSettingsDrawer(props: IEditorSettingsDrawerProps) {
               role="group"
               aria-label={editor.settings.navLabel}
             >
-              <button
-                type="button"
-                className={editorSettingsDrawer.menuRow}
-                aria-pressed={showPixelGrid}
-                onClick={toggleGrid}
-              >
-                <span className={editorSettingsDrawer.rowLead}>
+              <Switch
+                checked={showPixelGrid}
+                onCheckedChange={toggleGrid}
+                label={menu.grid.label}
+                icon={
                   <PublicMaskIcon
                     src={PUBLIC_ICONS.grid}
                     className={editorSettingsDrawer.menuIcon}
                   />
-                  <span>{menu.grid.label}</span>
-                </span>
-                <span className={editorSettingsDrawer.menuHint}>{gridHint}</span>
-              </button>
-              <button
-                type="button"
-                className={cx(
-                  editorSettingsDrawer.menuRow,
-                  !hasReferenceImage && editorSettingsDrawer.menuRowMuted,
-                )}
+                }
+                className={editorSettingsDrawer.switchRow}
+              />
+              <Switch
+                checked={showReferenceImage}
+                onCheckedChange={toggleReferenceImage}
+                label={menu.referenceImage.label}
+                hint={referenceHint}
                 disabled={!hasReferenceImage}
-                aria-pressed={showReferenceImage}
-                onClick={toggleReferenceImage}
-              >
-                <span className={editorSettingsDrawer.rowLead}>
+                icon={
                   <PublicMaskIcon
                     src={PUBLIC_ICONS.eye}
                     className={editorSettingsDrawer.menuIcon}
                   />
-                  <span>{menu.referenceImage.label}</span>
-                </span>
-                <span className={editorSettingsDrawer.menuHint}>{referenceHint}</span>
-              </button>
+                }
+                className={editorSettingsDrawer.switchRow}
+              />
               <button
                 type="button"
                 className={editorSettingsDrawer.menuRow}
@@ -209,6 +203,7 @@ export function EditorSettingsDrawer(props: IEditorSettingsDrawerProps) {
         {settingsView === "importExport" ? (
           <EditorSettingsImportExportPanel onExportPng={exportPng} onExportJson={exportJson} />
         ) : null}
+        <ConfirmDialog {...shrinkDialog} />
       </div>
     </SideDrawer>
   );

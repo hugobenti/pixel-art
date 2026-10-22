@@ -1,18 +1,22 @@
 /**
  * Purpose:
- * ArtworkCard behavior and view model: editor link, thumbnail, inline rename and confirmed delete.
+ * ArtworkCard behavior and view model: editor link, thumbnail, inline rename, action menu and confirmed delete.
  */
 "use client";
 
 import { useState, type FormEvent } from "react";
 
 import { gallery } from "@/content/gallery";
+import { shared } from "@/content/shared";
 import { artworkThumbnail, editorPath } from "@/features/gallery/logic/artworkLinks";
+import type { IMenuItem } from "@/features/shared/components/Menu.type";
+import { useConfirm } from "@/features/shared/components/useConfirm";
 import type { IArtworkCardProps } from "./ArtworkCard.type";
 
-export function useArtworkCard({ artwork, onRename, onDelete }: IArtworkCardProps) {
+export function useArtworkCard({ artwork, onRename, onClone, onDelete }: IArtworkCardProps) {
   const [renaming, setRenaming] = useState(false);
   const [title, setTitle] = useState(artwork.title);
+  const { confirm, dialog: deleteDialog } = useConfirm();
 
   const cancelRename = () => {
     setTitle(artwork.title);
@@ -25,11 +29,20 @@ export function useArtworkCard({ artwork, onRename, onDelete }: IArtworkCardProp
     setRenaming(false);
   };
 
-  const confirmDelete = () => {
-    if (typeof window !== "undefined" && window.confirm(gallery.card.confirmDelete)) {
-      void onDelete(artwork.id);
-    }
+  const confirmDelete = async () => {
+    const confirmed = await confirm({
+      title: gallery.deleteDialog.title(artwork.title),
+      description: gallery.deleteDialog.description,
+      confirmLabel: gallery.deleteDialog.confirm,
+    });
+    if (confirmed) await onDelete(artwork.id);
   };
+
+  const menuItems: IMenuItem[] = [
+    { key: "rename", label: shared.actions.rename, onSelect: () => setRenaming(true) },
+    { key: "clone", label: gallery.card.clone, onSelect: () => void onClone(artwork.id) },
+    { key: "delete", label: gallery.card.delete, onSelect: () => void confirmDelete() },
+  ];
 
   return {
     href: editorPath(artwork.id),
@@ -40,6 +53,7 @@ export function useArtworkCard({ artwork, onRename, onDelete }: IArtworkCardProp
     setTitle,
     cancelRename,
     submitRename,
-    confirmDelete,
+    menuItems,
+    deleteDialog,
   };
 }

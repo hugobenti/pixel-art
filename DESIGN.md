@@ -286,7 +286,7 @@ Every color token, as declared in `src/app/globals.css`. Light values are the `@
 
 - **Gallery.** Centered column, `max-w-6xl` (1152px), `px-4 py-10`, `gap-8` between header and grid. The header stacks on phones and becomes a row (title left, actions right) from `sm`; it ends in a `line` divider. The card grid is one column on phones, two from `sm` (640px), three from `lg` (1024px), four from `xl` (1280px), with `gap-6`.
 - **Cards.** `p-4` with `gap-3` between a square thumbnail, the title row and the action row.
-- **Modals.** Centered; the create flow uses a bottom-sheet placement on phones that recenters from `sm`. Widths `max-w-sm` / `max-w-md` / `max-w-lg` with `p-4` / `p-6` / `p-5`; the large size caps at 85vh and scrolls.
+- **Modals.** An edge-to-edge bottom sheet on phones (top corners rounded, bottom safe-area inset), a centered card from `sm`. Widths `max-w-sm` / `max-w-md` / `max-w-lg`, all with `p-5` and `gap-4`; every size caps at 85dvh and scrolls without chaining to the page.
 - **Side drawers.** Slide in from the right edge: 90% width on phones, half the viewport from `sm`, capped at 720px; full height with the bottom safe-area inset respected.
 - **Hit targets.** Buttons are at least 40px tall (`min-h-10`), icon buttons 40 × 40, both 44px on coarse pointers (`pointer-coarse:`); step buttons 36 × 36. Swatches are 40px (comfortable) or 36px (compact).
 - **Spacing.** The system uses Tailwind's 4px spacing scale directly; there are no named spacing tokens.
@@ -303,8 +303,8 @@ Depth is quiet and differs by theme, while the classes stay the same (The Tokens
 Tailwind's default shadows, unchanged per theme:
 
 - **Resting** (`shadow-sm`): cards, outline buttons, inputs, button groups.
-- **Floating** (`shadow-lg`): the small modal, toasts, the editor's shift-direction pad.
-- **Dialog** (`shadow-xl`): medium and large modals.
+- **Floating** (`shadow-lg`): toasts, the editor's shift-direction pad.
+- **Dialog** (`shadow-xl`): modals.
 - **Drawer** (`shadow-2xl`): side drawers.
 
 ### Named Rules
@@ -344,13 +344,14 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 - **Corner Style:** `rounded-xl` (12px).
 - **Background:** `surface` with a `line` border.
 - **Shadow Strategy:** `shadow-sm` (see Elevation & Depth).
-- **Artwork card:** `p-4`; a square thumbnail link on a `surface-muted` well (`rounded-lg`, image `object-cover`), a title link in `font-medium fg`, then a wrapping action row: Rename (ghost), Clone (ghost), Delete (danger, today).
+- **Artwork card:** `p-4`; a square thumbnail link on a `surface-muted` well (`rounded-lg`, image `object-cover`), a title link in `font-medium fg`, and a `Menu` overflow trigger for Rename, Clone and Delete. Delete opens `ConfirmDialog`; danger styling appears only on the confirmation button.
 
 ### Modal
 
-- Panel: `surface`, `line` border, `rounded-xl`, sized sm / md / lg (see Layout), `shadow-lg` / `shadow-xl`.
-- Overlay: `scrim` at 40% with a small backdrop blur; clicking the backdrop dismisses, Escape covers the keyboard.
-- The create-artwork modal heading is `text-lg font-semibold` (18px / 28px), outside the type scale; it moves to the section-heading style with the type migration.
+- `src/features/shared/components/Modal.tsx`: one skeleton for every dialog. Header: the title as a section heading (`text-base font-semibold fg`, wired to `aria-labelledby`) and a ghost X icon button; then the content; then an optional footer of right-aligned actions (Cancel ghost, primary last). Form dialogs pass `onSubmit`, so Enter in a field submits.
+- Panel: `surface`, `line` border, `rounded-xl` (`rounded-t-xl` as a phone sheet), sized sm / md / lg (see Layout), `shadow-xl`.
+- Overlay: `scrim` at 40% with a small backdrop blur by default (`dim="scrim"` drops the blur, `dim="none"` the scrim); clicking the backdrop dismisses, Escape covers the keyboard.
+- Motion: overlay and panel fade in and out (the panel also rises 8px); opacity only under `prefers-reduced-motion`.
 
 ### Side Drawer
 
@@ -363,6 +364,10 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 - **Style:** `surface` fill, `control-border` border, `rounded-lg`, `px-3 py-2 text-sm fg`, `shadow-sm`; placeholder in `subtle`.
 - **Focus:** border turns `focus` with a 2px `focus` ring; no outline.
 - **Field label:** `text-sm fg-secondary` stacked over the control with `gap-1`; hint in `text-xs subtle`.
+- **Field error:** `text-xs danger-fg` under the control, linked with `aria-describedby`; the control gets a `danger` border via `aria-invalid`. Forms show errors inline and focus the first invalid field; toasts are for outcomes, not validation.
+- **NumberField:** a whole-number text field (`inputMode="numeric"`, no spinner) in `font-mono tabular-nums`; it checks its range on blur and the form checks again on submit.
+- **Size presets** (new artwork): a button group of mono chips (16 / 32 / 64 / 128) that fill width and height; the matching chip is pressed: `surface-strong` with an inset `control-border` ring (the IconButton pressed state), never the accent.
+- **ColorField:** a 40px swatch (`rounded-md`, 1px `control-border` ring, no browser frame inside it) that opens the native picker, next to a mono upper-case hex input; picker and hex stay in sync, a pasted `#RRGGBB` applies at once, invalid hex shows inline. Used for the new-artwork background and in the palette editor.
 - **Button group:** a `surface` shell with a `line-strong` border, `rounded-lg`, `p-0.5`, `shadow-sm`, holding adjacent buttons.
 
 ### Color Swatch
@@ -375,10 +380,18 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 
 - `src/features/shared/components/ThemeToggle.tsx`: a segmented native radio group, **System / Light / Dark**. It sits in the gallery header and as a "Theme" row in the editor settings drawer. System clears the stored preference.
 
+### Switch
+
+- `src/features/shared/components/Switch.tsx`: a full-width `role="switch"` row: optional icon, label and hint (`text-xs subtle`) on the left, a 40 × 24 `rounded-md` track on the right (`surface-strong` with a `control-border` edge; `fg` when on) holding a 18px `rounded-sm` `surface` thumb that slides 16px (`transition-transform`, none under reduced motion). Rows are 40px, 44px on coarse pointers, `surface-subtle` on hover. Disabled dims only the track, so the hint explaining why stays at full contrast. Used for Pixel grid and Reference image in the settings drawer.
+
+### Confirm Dialog
+
+- `src/features/shared/components/ConfirmDialog.tsx` on the small Modal, opened with `await confirm(…)` from `useConfirm()`: a `text-base` heading that names the target (Delete “Slime”?), a `text-sm muted` description, an optional warning note for the irreversible part (`danger-surface` fill, `danger-line` border, `danger-fg` text), then ghost Cancel (focused first) and the `danger` confirm button. Escape and the backdrop cancel. Used for deleting an artwork and cropping the canvas.
+
 ### Feedback
 
 - **Error line** (gallery): `danger-surface` fill, `danger-fg` text, `rounded-lg`, `px-4 py-3 text-sm`.
-- **Toasts:** a top-centered stack, each toast `rounded-lg`, 1px border, `px-4 py-3`, `shadow-lg`, message in `text-sm font-medium`. Tones: neutral (`surface`, `line`, `fg`), success (`success-surface`, `success-line`, `success-fg`), error (`danger-surface`, `danger-line`, `danger-fg-strong`).
+- **Toasts:** a stack at the bottom on phones and top-centered from `sm`, each toast `rounded-lg`, 1px border, `py-2 pr-2 pl-4`, `shadow-lg`, message in `text-sm font-medium`, an optional text action (Undo) and an `x-mark` icon dismiss, both 32px targets. Tones: neutral (`surface`, `line`, `fg`), success (`success-surface`, `success-line`, `success-fg`), error (`danger-surface`, `danger-line`, `danger-fg-strong`). Errors are announced as alerts, the rest politely; errors and toasts with an action stay 8 s, others 4.5 s, and every timer pauses while the stack is hovered or focused.
 - **Empty state** (gallery): dashed `line-strong` border, `rounded-xl`, `p-12`, centered `muted` text.
 
 ### Layers Drawer Rows
@@ -390,8 +403,7 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 
 Agreed follow-ups, not yet in the code:
 
-- **Ghost Delete on cards.** Delete on artwork cards becomes a ghost action; the red `danger` fill appears only on the confirm button inside the delete dialog.
-- **Mono numeric readouts.** Canvas size, zoom percentage and hex values move to JetBrains Mono (The Measured in Mono Rule).
+- **Mono numeric readouts.** The settings size hint, zoom percentage and image-detail values move to JetBrains Mono (The Measured in Mono Rule); size fields and hex inputs already use it.
 - **Clean thumbnails.** Gallery thumbnails render without grid lines.
 - **Type migration.** Labels and buttons move from `text-sm` (14/20) to the 13/16 label style; off-scale headings (`text-lg`) move onto the scale.
 
@@ -416,4 +428,4 @@ Agreed follow-ups, not yet in the code:
 - **Don't** put texture, pattern or color behind the artwork; the checkerboard is the only thing under the canvas.
 - **Don't** use `pick-secondary` as a button or text color, or use the accent as body text.
 - **Don't** change font size, weight or spacing between themes.
-- **Don't** fill a destructive button red outside a confirmation step once the ghost Delete lands.
+- **Don't** fill a destructive action red outside its confirmation dialog.

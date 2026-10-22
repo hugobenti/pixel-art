@@ -17,9 +17,7 @@ import type { IEditorSettingsDrawerProps } from "../EditorSettingsDrawer.type";
 export function useEditorSettingsDrawer({
   artwork,
   onApplyCanvasSize,
-  showPixelGrid,
   onToggleGrid,
-  showReferenceImage,
   hasReferenceImage,
   onToggleReferenceImage,
   onLoadReferenceImage,
@@ -48,7 +46,6 @@ export function useEditorSettingsDrawer({
   }, [handleClose, inDrillIn, backToMenu]);
 
   const { menu } = editor.settings;
-  const referenceHint = showReferenceImage ? menu.referenceImage.hide : menu.referenceImage.show;
 
   return {
     ...canvasSize,
@@ -56,8 +53,7 @@ export function useEditorSettingsDrawer({
     handleClose,
     title: editor.settings.titles[settingsView],
     showBackButton: inDrillIn,
-    gridHint: showPixelGrid ? menu.grid.hide : menu.grid.show,
-    referenceHint: hasReferenceImage ? referenceHint : menu.referenceImage.unavailable,
+    referenceHint: hasReferenceImage ? undefined : menu.referenceImage.unavailable,
     sizeHint: menu.canvasSize.hint(artwork.width, artwork.height),
     toggleGrid: () => {
       onToggleGrid();

@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import {
   DEFAULT_TOAST_DURATION_MS,
+  LONG_TOAST_DURATION_MS,
   hasActiveDuplicate,
   normalizeToastInput,
+  remainingAfterPause,
   toastElementId,
   withoutToast,
 } from "@/features/shared/logic/toastQueue";
@@ -36,6 +38,33 @@ describe("normalizeToastInput", () => {
 
   it("defaults the duration to 4.5 seconds", () => {
     expect(DEFAULT_TOAST_DURATION_MS).toBe(4500);
+  });
+
+  it("gives errors and toasts with an action at least 8 seconds", () => {
+    const onAction = () => {};
+    expect(LONG_TOAST_DURATION_MS).toBeGreaterThanOrEqual(8000);
+    expect(normalizeToastInput({ message: "Failed", tone: "error" }).durationMs).toBe(
+      LONG_TOAST_DURATION_MS,
+    );
+    expect(
+      normalizeToastInput({ message: "Removed", action: { label: "Undo", onAction } }),
+    ).toEqual({
+      message: "Removed",
+      tone: "neutral",
+      durationMs: LONG_TOAST_DURATION_MS,
+      skipDuplicateActiveToast: false,
+      action: { label: "Undo", onAction },
+    });
+  });
+});
+
+describe("remainingAfterPause", () => {
+  it("subtracts the time the timer already ran", () => {
+    expect(remainingAfterPause(4500, 1000, 2500)).toBe(3000);
+  });
+
+  it("never goes below zero", () => {
+    expect(remainingAfterPause(1000, 0, 5000)).toBe(0);
   });
 });
 

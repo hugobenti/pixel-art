@@ -1,11 +1,11 @@
 /**
  * Purpose:
  * PaletteEditModal behavior: the swatch being edited (kept inside the palette) and its color, and the
- * add-color picker, which starts from a neutral gray each time the modal opens.
+ * add-color field, which starts from a neutral gray each time the modal opens.
  */
 "use client";
 
-import { useId, useState, type ChangeEvent } from "react";
+import { useState } from "react";
 
 import { clampPaletteIndex } from "@/features/editor/logic/paletteMutations";
 import type { IPaletteEditModalProps } from "./PaletteEditModal.type";
@@ -23,34 +23,37 @@ export function usePaletteEditModal({
   onAddColor,
   onRemoveSwatch,
 }: IPaletteEditModalProps) {
-  const titleId = useId();
   const focusedIndex = clampPaletteIndex(focusedSwatchIndex, palette.length);
-
   const [newHex, setNewHex] = useState(NEW_COLOR_DEFAULT);
+  const [newColorValid, setNewColorValid] = useState(true);
   const [wasOpen, setWasOpen] = useState(open);
+  /** Bumped on every open; keys the add-color field so it remounts even if reopened mid exit-fade. */
+  const [openCount, setOpenCount] = useState(0);
   if (open !== wasOpen) {
     setWasOpen(open);
     if (open) {
       setNewHex(NEW_COLOR_DEFAULT);
+      setNewColorValid(true);
+      setOpenCount((count) => count + 1);
     }
   }
 
   return {
-    titleId,
     focusedIndex,
     editHex: palette[focusedIndex] ?? EMPTY_PALETTE_COLOR,
-    applyEditHex: (event: ChangeEvent<HTMLInputElement>) => {
-      onApplyHex(focusedIndex, event.target.value);
+    applyEditHex: (hex: string) => {
+      onApplyHex(focusedIndex, hex);
     },
     removeFocused: () => {
       onRemoveSwatch(focusedIndex);
     },
     newHex,
-    changeNewHex: (event: ChangeEvent<HTMLInputElement>) => {
-      setNewHex(event.target.value);
-    },
+    setNewHex,
+    newColorValid,
+    setNewColorValid,
+    newColorFieldKey: openCount,
     addNewColor: () => {
-      onAddColor(newHex);
+      if (newColorValid) onAddColor(newHex);
     },
   };
 }

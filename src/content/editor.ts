@@ -45,6 +45,7 @@ export const editor: IEditorContent = {
     selectedColorLabel: "Color value for selected swatch",
     addColor: "Add new color",
     newColorLabel: "Pick new color to append",
+    addButton: "Add color",
     paletteFull: "Palette full (256 colors maximum).",
   },
   shiftOverlay: {
@@ -69,11 +70,9 @@ export const editor: IEditorContent = {
     closeLabel: "Close settings",
     navLabel: "Editor settings",
     menu: {
-      grid: { label: "Show / hide grid", show: "Show grid", hide: "Hide grid" },
+      grid: { label: "Pixel grid" },
       referenceImage: {
-        label: "Show / hide image",
-        show: "Show reference image",
-        hide: "Hide reference image",
+        label: "Reference image",
         unavailable: "Load an image first",
       },
       loadImage: { label: "Load image", hint: "Pick file" },
@@ -83,10 +82,7 @@ export const editor: IEditorContent = {
     },
     canvasSize: {
       hint: "Pixels stay anchored to the top-left. New cells use white from the palette when present, otherwise the first swatch. Undo history for this artwork is cleared after the size changes.",
-      invalidSize: "Enter valid width and height.",
-      outOfRange: "Dimensions are out of range.",
-      confirmShrink:
-        "A smaller canvas permanently removes pixels outside the top-left region. Continue?",
+
     },
     imageDetail: {
       noIntersection: "No artwork pixels intersect the visible viewport.",
@@ -126,6 +122,7 @@ export const editor: IEditorContent = {
     renameModal: {
       title: "Rename layer",
       nameLabel: "Layer name",
+      emptyError: "Name can't be empty.",
     },
   },
   toasts: {
@@ -137,5 +134,16 @@ export const editor: IEditorContent = {
       decode: "Could not decode reference image.",
       canvas: "Could not prepare reference image canvas.",
     },
+  },
+  canvasShrinkDialog: {
+    title: (width, height) => `Crop canvas to ${width} × ${height}?`,
+    description: (width, height) =>
+      `Pixels outside the top-left ${width} × ${height} area are deleted from every layer.`,
+    warning: "Undo history for this artwork is cleared too, so the crop can’t be undone.",
+    confirm: "Crop canvas",
+  },
+  paletteRemoval: {
+    /** Undo toast after a palette color is removed. */
+    removed: (color) => `Removed color ${color}.`,
   },
 };

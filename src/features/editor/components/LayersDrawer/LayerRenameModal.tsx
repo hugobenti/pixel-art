@@ -7,9 +7,9 @@
 import { editor } from "@/content/editor";
 import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
+import { FormField } from "@/features/shared/components/FormField";
 import { Input } from "@/features/shared/components/Input";
 import { Modal } from "@/features/shared/components/Modal";
-import { layerRenameModal } from "./LayerRenameModal.style";
 import type { ILayerRenameModalProps, ILayerRenameModalFormProps } from "./LayerRenameModal.type";
 import { useLayerRenameModalForm } from "./useLayerRenameModalForm";
 
@@ -23,37 +23,46 @@ export function LayerRenameModal(props: ILayerRenameModalProps) {
 
 function LayerRenameModalForm(props: ILayerRenameModalFormProps) {
   const { onDismiss } = props;
-  const { draft, canSave, submit, changeDraft, handleKeyDown } = useLayerRenameModalForm(props);
+  const { nameId, errorId, draft, error, changeDraft, submit } = useLayerRenameModalForm(props);
 
   return (
     <Modal
       open
       onClose={onDismiss}
-      placement="center"
+      title={editor.layers.renameModal.title}
       size="sm"
       layer="elevated"
-      backdropBlur={false}
-      overlayProps={{ "aria-labelledby": "layer-rename-title" }}
+      dim="scrim"
+      onSubmit={submit}
+      footer={
+        <>
+          <Button type="button" variant="ghost" onClick={onDismiss}>
+            {shared.actions.cancel}
+          </Button>
+          <Button type="submit" variant="primary">
+            {shared.actions.save}
+          </Button>
+        </>
+      }
     >
-      <h2 id="layer-rename-title" className={layerRenameModal.heading}>
-        {editor.layers.renameModal.title}
-      </h2>
-      <div className={layerRenameModal.field}>
+      <FormField
+        label={editor.layers.renameModal.nameLabel}
+        htmlFor={nameId}
+        error={error}
+        errorId={errorId}
+      >
         <Input
+          id={nameId}
+          name="layerName"
+          autoComplete="off"
+          spellCheck={false}
+          data-autofocus
           value={draft}
           onChange={changeDraft}
-          onKeyDown={handleKeyDown}
-          aria-label={editor.layers.renameModal.nameLabel}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={error ? errorId : undefined}
         />
-      </div>
-      <div className={layerRenameModal.actions}>
-        <Button type="button" variant="ghost" onClick={onDismiss}>
-          {shared.actions.cancel}
-        </Button>
-        <Button type="button" variant="primary" disabled={!canSave} onClick={submit}>
-          {shared.actions.save}
-        </Button>
-      </div>
+      </FormField>
     </Modal>
   );
 }

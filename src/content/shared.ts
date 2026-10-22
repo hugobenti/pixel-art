@@ -17,7 +17,6 @@ export const shared: ISharedContent = {
   },
   toast: {
     dismissLabel: "Dismiss notification",
-    dismissGlyph: "×",
   },
   sideDrawer: {
     closeLabel: "Close panel",
@@ -27,6 +26,13 @@ export const shared: ISharedContent = {
   },
   modal: {
     backdropLabel: "Close dialog",
+  },
+  numberField: {
+    range: (min, max) => `Enter a whole number from ${min} to ${max}.`,
+  },
+  colorField: {
+    pickerLabel: (label) => `${label}: color picker`,
+    invalid: "Enter a hex color as #RRGGBB.",
   },
   theme: {
     label: "Theme",

@@ -1,12 +1,14 @@
 /**
  * Purpose:
- * Modal for editing palette entries: pick swatch, change hex, add or remove colors.
+ * Modal for editing palette entries: pick a swatch, change its color (picker or hex), remove it, or
+ * add a new color.
  */
 "use client";
 
 import { editor } from "@/content/editor";
 import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
+import { ColorField } from "@/features/shared/components/ColorField";
 import { ColorSwatch } from "@/features/shared/components/ColorSwatch";
 import { Modal } from "@/features/shared/components/Modal";
 import { paletteEditModal } from "./PaletteEditModal.style";
@@ -16,35 +18,22 @@ import { usePaletteEditModal } from "./usePaletteEditModal";
 export function PaletteEditModal(props: IPaletteEditModalProps) {
   const { open, onClose, palette, onSelectSwatch, canRemoveSwatch, maxPaletteReached } = props;
   const {
-    titleId,
     focusedIndex,
     editHex,
     applyEditHex,
     removeFocused,
     newHex,
-    changeNewHex,
+    setNewHex,
+    newColorValid,
+    setNewColorValid,
+    newColorFieldKey,
     addNewColor,
   } = usePaletteEditModal(props);
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      placement="bottomSheet"
-      size="lg"
-      overlayProps={{ "aria-labelledby": titleId }}
-    >
-      <div className={paletteEditModal.header}>
-        <h2 id={titleId} className={paletteEditModal.heading}>
-          {editor.paletteModal.title}
-        </h2>
-        <Button type="button" variant="ghost" onClick={onClose}>
-          {shared.actions.close}
-        </Button>
-      </div>
-
-      <div>
-        <p className={paletteEditModal.legend}>{editor.paletteModal.swatches}</p>
+    <Modal open={open} onClose={onClose} title={editor.paletteModal.title} size="lg">
+      <fieldset className={paletteEditModal.section}>
+        <legend className={paletteEditModal.legend}>{editor.paletteModal.swatches}</legend>
         <div className={paletteEditModal.swatchGrid}>
           {palette.map((color, index) => (
             <ColorSwatch
@@ -57,43 +46,53 @@ export function PaletteEditModal(props: IPaletteEditModalProps) {
             />
           ))}
         </div>
-      </div>
+      </fieldset>
 
-      <div className={paletteEditModal.selectedRow}>
-        <span className={paletteEditModal.legend}>{editor.paletteModal.selectedColor}</span>
-        <label className={paletteEditModal.colorLabel}>
-          <input
-            type="color"
+      <fieldset className={paletteEditModal.section}>
+        <legend className={paletteEditModal.legend}>{editor.paletteModal.selectedColor}</legend>
+        <div className={paletteEditModal.row}>
+          <ColorField
+            label={editor.paletteModal.selectedColorLabel}
+            hideLabel
             value={editHex}
-            onChange={applyEditHex}
-            className={paletteEditModal.colorInput}
-            aria-label={editor.paletteModal.selectedColorLabel}
+            onValueChange={applyEditHex}
           />
-        </label>
-        <Button type="button" variant="danger" disabled={!canRemoveSwatch} onClick={removeFocused}>
-          {shared.actions.remove}
-        </Button>
-      </div>
+          <Button
+            type="button"
+            variant="danger"
+            disabled={!canRemoveSwatch}
+            onClick={removeFocused}
+          >
+            {shared.actions.remove}
+          </Button>
+        </div>
+      </fieldset>
 
-      <div className={paletteEditModal.addSection}>
-        <span className={paletteEditModal.legend}>{editor.paletteModal.addColor}</span>
-        <div className={paletteEditModal.addRow}>
-          <input
-            type="color"
+      <fieldset className={paletteEditModal.section}>
+        <legend className={paletteEditModal.legend}>{editor.paletteModal.addColor}</legend>
+        <div className={paletteEditModal.row}>
+          <ColorField
+            key={newColorFieldKey}
+            label={editor.paletteModal.newColorLabel}
+            hideLabel
             value={newHex}
             disabled={maxPaletteReached}
-            onChange={changeNewHex}
-            className={paletteEditModal.newColorInput}
-            aria-label={editor.paletteModal.newColorLabel}
+            onValueChange={setNewHex}
+            onValidityChange={setNewColorValid}
           />
-          <Button type="button" variant="ghost" disabled={maxPaletteReached} onClick={addNewColor}>
-            {shared.actions.add}
+          <Button
+            type="button"
+            variant="outline"
+            disabled={maxPaletteReached || !newColorValid}
+            onClick={addNewColor}
+          >
+            {editor.paletteModal.addButton}
           </Button>
         </div>
         {maxPaletteReached ? (
           <p className={paletteEditModal.fullNote}>{editor.paletteModal.paletteFull}</p>
         ) : null}
-      </div>
+      </fieldset>
     </Modal>
   );
 }

@@ -33,7 +33,6 @@ export interface ISharedContent {
   };
   toast: {
     dismissLabel: string;
-    dismissGlyph: string;
   };
   sideDrawer: {
     /** Backdrop button name when the caller doesn't pass its own. */
@@ -46,6 +45,16 @@ export interface ISharedContent {
   modal: {
     /** Name of the click-outside button behind a dialog panel. */
     backdropLabel: string;
+  };
+  numberField: {
+    /** Inline error on a NumberField whose value is not a whole number from min to max. */
+    range: (min: number, max: number) => string;
+  };
+  colorField: {
+    /** Accessible name of the swatch that opens the native picker, from the field label. */
+    pickerLabel: (label: string) => string;
+    /** Inline error on a hex value that is not #RGB or #RRGGBB. */
+    invalid: string;
   };
   theme: {
     /** Name of the theme switch (visible in settings rows, screen-reader only in headers). */
@@ -115,19 +124,23 @@ export interface IGalleryContent {
   card: {
     clone: string;
     delete: string;
-    confirmDelete: string;
     /** Accessible name of the inline rename field. */
     titleLabel: string;
+    /** Accessible name of the artwork actions menu. */
+    actionsLabel: (title: string) => string;
   };
   create: {
     title: string;
     titleLabel: string;
     backgroundLabel: string;
-    backgroundHint: string;
-    backgroundAriaLabel: string;
-    maxSize: (max: number) => string;
-    /** Inline error on a width or height field outside 1…max or not a whole number. */
-    sizeRange: (max: number) => string;
+    /** Legend of the size group (presets plus width and height). */
+    sizeLabel: string;
+    /** Accessible name of the preset group. */
+    sizePresetsLabel: string;
+    /** Accessible name of one square preset. */
+    sizePresetLabel: (size: number) => string;
+    /** The form's one hint: size limit and what happens to a new background color. */
+    hint: (max: number) => string;
     submit: string;
     submitting: string;
   };
@@ -142,6 +155,12 @@ export interface IGalleryContent {
     rename: string;
     clone: string;
     delete: string;
+  };
+  deleteDialog: {
+    /** Names the artwork being deleted. */
+    title: (title: string) => string;
+    description: string;
+    confirm: string;
   };
 }
 
@@ -197,6 +216,8 @@ export interface IEditorContent {
     selectedColorLabel: string;
     addColor: string;
     newColorLabel: string;
+    /** Outline button that appends the new color. */
+    addButton: string;
     paletteFull: string;
   };
   shiftOverlay: {
@@ -216,8 +237,8 @@ export interface IEditorContent {
     closeLabel: string;
     navLabel: string;
     menu: {
-      grid: { label: string; show: string; hide: string };
-      referenceImage: { label: string; show: string; hide: string; unavailable: string };
+      grid: { label: string };
+      referenceImage: { label: string; unavailable: string };
       loadImage: ISettingsMenuRow;
       canvasSize: { label: string; hint: (width: number, height: number) => string };
       export: ISettingsMenuRow;
@@ -225,9 +246,7 @@ export interface IEditorContent {
     };
     canvasSize: {
       hint: string;
-      invalidSize: string;
-      outOfRange: string;
-      confirmShrink: string;
+
     };
     imageDetail: {
       noIntersection: string;
@@ -267,6 +286,8 @@ export interface IEditorContent {
     renameModal: {
       title: string;
       nameLabel: string;
+      /** Inline error when the name is blank. */
+      emptyError: string;
     };
   };
   toasts: {
@@ -279,5 +300,15 @@ export interface IEditorContent {
       decode: string;
       canvas: string;
     };
+  };
+  canvasShrinkDialog: {
+    title: (width: number, height: number) => string;
+    description: (width: number, height: number) => string;
+    /** Shown as a highlighted note: the consequence that makes the crop irreversible. */
+    warning: string;
+    confirm: string;
+  };
+  paletteRemoval: {
+    removed: (color: string) => string;
   };
 }

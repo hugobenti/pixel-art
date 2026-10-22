@@ -1,54 +1,80 @@
 /**
  * Purpose:
- * Global toast stack: top-centered alerts with responsive width, auto-dismiss, and manual dismiss.
+ * Global toast stack: errors as alerts, other tones in a polite live region; optional action button
+ * (e.g. Undo), icon dismiss, and auto-dismiss that pauses while the stack is hovered or focused.
  *
  * Notes:
- * Mobile: toast spans the viewport width (with horizontal padding). Desktop: centered with min width cap.
+ * Phones: bottom of the viewport, full width minus padding. From `sm`: top-centered with a min width.
  * Consumers must wrap the app with this provider; use `useToast` from `./hooks/useToast`.
  */
 "use client";
 
 import { shared } from "@/content/shared";
+import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
+import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
 import { cx } from "@/features/shared/utils/cx";
 
 import { ToastContext } from "./ToastContext";
 import { toast as toastStyle } from "./ToastProvider.style";
-import type { IToastProviderProps, IToastStackProps } from "./ToastProvider.type";
+import type { IToastItemProps, IToastProviderProps, IToastStackProps } from "./ToastProvider.type";
 import { useToastProvider } from "./useToastProvider";
 
-function ToastStack({ toasts, onDismiss }: IToastStackProps) {
+function ToastItem({ toast }: IToastItemProps) {
   return (
-    <div className={toastStyle.region} aria-live="polite" aria-relevant="additions">
-      {toasts.map((toast) => (
-        <div
-          key={toast.id}
-          id={toast.elementId}
-          className={cx(toastStyle.surface, toastStyle.tone[toast.tone])}
-        >
-          <p className={toastStyle.text}>{toast.message}</p>
-          <button
-            type="button"
-            className={toastStyle.dismiss}
-            aria-label={shared.toast.dismissLabel}
-            onClick={() => {
-              onDismiss(toast.id);
-            }}
-          >
-            {shared.toast.dismissGlyph}
-          </button>
-        </div>
-      ))}
+    <div
+      id={toast.elementId}
+      role="group"
+      aria-labelledby={toast.messageId}
+      className={cx(toastStyle.surface, toastStyle.tone[toast.tone])}
+    >
+      <p
+        id={toast.messageId}
+        role={toast.tone === "error" ? "alert" : undefined}
+        className={toastStyle.text}
+      >
+        {toast.message}
+      </p>
+      {toast.actionLabel ? (
+        <button type="button" className={toastStyle.action} onClick={toast.onAction}>
+          {toast.actionLabel}
+        </button>
+      ) : null}
+      <button
+        type="button"
+        className={toastStyle.dismiss}
+        aria-label={shared.toast.dismissLabel}
+        onClick={toast.onDismiss}
+      >
+        <PublicMaskIcon src={PUBLIC_ICONS.xMark} className={toastStyle.dismissIcon} />
+      </button>
+    </div>
+  );
+}
+
+function ToastStack({ alerts, statuses, regionRef }: IToastStackProps) {
+  return (
+    <div ref={regionRef} className={toastStyle.region}>
+      <div className={toastStyle.alertList}>
+        {alerts.map((toast) => (
+          <ToastItem key={toast.id} toast={toast} />
+        ))}
+      </div>
+      <div className={toastStyle.statusList} aria-live="polite" aria-relevant="additions">
+        {statuses.map((toast) => (
+          <ToastItem key={toast.id} toast={toast} />
+        ))}
+      </div>
     </div>
   );
 }
 
 export function ToastProvider({ children }: IToastProviderProps) {
-  const { value, items, dismissToast } = useToastProvider();
+  const { value, regionRef, alerts, statuses } = useToastProvider();
 
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <ToastStack toasts={items} onDismiss={dismissToast} />
+      <ToastStack alerts={alerts} statuses={statuses} regionRef={regionRef} />
     </ToastContext.Provider>
   );
 }
