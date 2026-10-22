@@ -7,49 +7,31 @@
 import { editor } from "@/content/editor";
 import { Button } from "@/features/shared/components/Button";
 import { ColorSwatch } from "@/features/shared/components/ColorSwatch";
+import { colorSelectionRow } from "./ColorSelectionRow.style";
 import type { IColorSelectionRowProps } from "./ColorSelectionRow.type";
+import { useColorSelectionRow } from "./useColorSelectionRow";
 
-const rowClass =
-  "flex w-full min-w-0 items-center gap-2 border-b border-line py-2";
-
-const scrollerClass =
-  "flex min-w-0 flex-1 items-center gap-2 overflow-x-auto py-1 [scrollbar-width:thin]";
-
-const swatchListClass = "flex items-center gap-1.5";
-
-const editPaletteButtonClass =
-  "shrink-0 touch-manipulation whitespace-nowrap px-3 py-2 text-sm";
-
-export function ColorSelectionRow({
-  palette,
-  primaryIndex,
-  secondaryIndex,
-  focusedSwatchIndex,
-  onSwatchPick,
-  onOpenPaletteModal,
-}: IColorSelectionRowProps) {
-  const safeFocus = Math.min(
-    Math.max(0, focusedSwatchIndex),
-    Math.max(0, palette.length - 1)
-  );
+export function ColorSelectionRow(props: IColorSelectionRowProps) {
+  const { palette, primaryIndex, secondaryIndex, onSwatchPick, onOpenPaletteModal } = props;
+  const { focusedIndex } = useColorSelectionRow(props);
 
   return (
-    <div className={rowClass}>
+    <div className={colorSelectionRow.row}>
       <div
-        className={scrollerClass}
+        className={colorSelectionRow.scroller}
         role="group"
         aria-label={editor.paletteRow.groupLabel}
       >
-        <ul className={swatchListClass}>
+        <ul className={colorSelectionRow.swatchList}>
           {palette.map((color, index) => (
-            <li key={`swatch-${index}`}>
+            <li key={index}>
               <ColorSwatch
                 density="comfortable"
                 color={color}
                 index={index}
                 isPrimary={index === primaryIndex}
                 isSecondary={index === secondaryIndex}
-                isFocused={index === safeFocus}
+                isFocused={index === focusedIndex}
                 onClick={() => onSwatchPick(index)}
               />
             </li>
@@ -58,7 +40,7 @@ export function ColorSelectionRow({
         <Button
           type="button"
           variant="outline"
-          className={editPaletteButtonClass}
+          className={colorSelectionRow.editButton}
           onClick={onOpenPaletteModal}
         >
           {editor.paletteRow.edit}

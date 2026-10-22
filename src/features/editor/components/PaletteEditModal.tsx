@@ -4,40 +4,27 @@
  */
 "use client";
 
-import { useId, useState } from "react";
-
 import { editor } from "@/content/editor";
 import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
 import { ColorSwatch } from "@/features/shared/components/ColorSwatch";
 import { Modal } from "@/features/shared/components/Modal";
+import { paletteEditModal } from "./PaletteEditModal.style";
 import type { IPaletteEditModalProps } from "./PaletteEditModal.type";
+import { usePaletteEditModal } from "./usePaletteEditModal";
 
-const titleClass = "text-lg font-semibold text-fg";
-
-const swatchGridClass =
-  "grid grid-cols-8 gap-2 sm:grid-cols-10";
-
-const legendClass = "text-xs font-medium text-muted";
-
-export function PaletteEditModal({
-  open,
-  onClose,
-  palette,
-  focusedSwatchIndex,
-  onSelectSwatch,
-  onApplyHex,
-  onAddColor,
-  onRemoveSwatch,
-  canRemoveSwatch,
-  maxPaletteReached,
-}: IPaletteEditModalProps) {
-  const titleId = useId();
-  const safeFocus = Math.min(
-    Math.max(0, focusedSwatchIndex),
-    Math.max(0, palette.length - 1)
-  );
-  const editHex = palette[safeFocus] ?? "#000000";
+export function PaletteEditModal(props: IPaletteEditModalProps) {
+  const { open, onClose, palette, onSelectSwatch, canRemoveSwatch, maxPaletteReached } = props;
+  const {
+    titleId,
+    focusedIndex,
+    editHex,
+    applyEditHex,
+    removeFocused,
+    newHex,
+    changeNewHex,
+    addNewColor,
+  } = usePaletteEditModal(props);
 
   return (
     <Modal
@@ -47,8 +34,8 @@ export function PaletteEditModal({
       size="lg"
       overlayProps={{ "aria-labelledby": titleId }}
     >
-      <div className="flex items-start justify-between gap-3">
-        <h2 id={titleId} className={titleClass}>
+      <div className={paletteEditModal.header}>
+        <h2 id={titleId} className={paletteEditModal.heading}>
           {editor.paletteModal.title}
         </h2>
         <Button type="button" variant="ghost" onClick={onClose}>
@@ -57,87 +44,56 @@ export function PaletteEditModal({
       </div>
 
       <div>
-        <p className={legendClass}>{editor.paletteModal.swatches}</p>
-        <div className={`${swatchGridClass} mt-2`}>
+        <p className={paletteEditModal.legend}>{editor.paletteModal.swatches}</p>
+        <div className={paletteEditModal.swatchGrid}>
           {palette.map((color, index) => (
             <ColorSwatch
-              key={`modal-swatch-${index}`}
+              key={index}
               density="compact"
               color={color}
               index={index}
-              selected={index === safeFocus}
+              selected={index === focusedIndex}
               onClick={() => onSelectSwatch(index)}
             />
           ))}
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center gap-3 border-t border-line pt-4">
-        <span className={legendClass}>{editor.paletteModal.selectedColor}</span>
-        <label className="flex items-center gap-2 text-sm text-fg-secondary">
+      <div className={paletteEditModal.selectedRow}>
+        <span className={paletteEditModal.legend}>{editor.paletteModal.selectedColor}</span>
+        <label className={paletteEditModal.colorLabel}>
           <input
             type="color"
             value={editHex}
-            onChange={(e) => onApplyHex(safeFocus, e.target.value)}
-            className="h-10 w-12 cursor-pointer rounded border border-line-strong bg-surface p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+            onChange={applyEditHex}
+            className={paletteEditModal.colorInput}
             aria-label={editor.paletteModal.selectedColorLabel}
           />
         </label>
-        <Button
-          type="button"
-          variant="danger"
-          disabled={!canRemoveSwatch}
-          onClick={() => onRemoveSwatch(safeFocus)}
-        >
+        <Button type="button" variant="danger" disabled={!canRemoveSwatch} onClick={removeFocused}>
           {shared.actions.remove}
         </Button>
       </div>
 
-      <PaletteAddSection
-        maxPaletteReached={maxPaletteReached}
-        onAddColor={onAddColor}
-      />
-    </Modal>
-  );
-}
-
-const addRowClass = "flex flex-wrap items-center gap-2";
-
-function PaletteAddSection({
-  maxPaletteReached,
-  onAddColor,
-}: {
-  maxPaletteReached: boolean;
-  onAddColor: (hex: string) => void;
-}) {
-  const [newHex, setNewHex] = useState("#808080");
-
-  return (
-    <div className="flex flex-col gap-2 border-t border-line pt-4">
-      <span className={legendClass}>{editor.paletteModal.addColor}</span>
-      <div className={addRowClass}>
-        <input
-          type="color"
-          value={newHex}
-          disabled={maxPaletteReached}
-          onChange={(e) => setNewHex(e.target.value)}
-          className="h-10 w-12 cursor-pointer rounded border border-line-strong bg-surface p-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50"
-          aria-label={editor.paletteModal.newColorLabel}
-        />
-        <Button
-          type="button"
-          variant="ghost"
-          disabled={maxPaletteReached}
-          onClick={() => onAddColor(newHex)}
-        >
-          {shared.actions.add}
-        </Button>
+      <div className={paletteEditModal.addSection}>
+        <span className={paletteEditModal.legend}>{editor.paletteModal.addColor}</span>
+        <div className={paletteEditModal.addRow}>
+          <input
+            type="color"
+            value={newHex}
+            disabled={maxPaletteReached}
+            onChange={changeNewHex}
+            className={paletteEditModal.newColorInput}
+            aria-label={editor.paletteModal.newColorLabel}
+          />
+          <Button type="button" variant="ghost" disabled={maxPaletteReached} onClick={addNewColor}>
+            {shared.actions.add}
+          </Button>
+        </div>
+        {maxPaletteReached ? (
+          <p className={paletteEditModal.fullNote}>{editor.paletteModal.paletteFull}</p>
+        ) : null}
       </div>
-      {maxPaletteReached ? (
-        <p className="text-xs text-subtle">
-          {editor.paletteModal.paletteFull}
-        </p>
-      ) : null}
-    </div>
+    </Modal>
   );
 }
