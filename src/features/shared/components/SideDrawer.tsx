@@ -8,8 +8,7 @@
 "use client";
 
 import { shared } from "@/content/shared";
-import { Button } from "@/features/shared/components/Button";
-import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
+import { IconButton } from "@/features/shared/components/IconButton";
 import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
 import { cx } from "@/features/shared/utils/cx";
 
@@ -77,33 +76,13 @@ export function SideDrawer({
 /**
  * Ghost icon button for the leading header slot (drill-in back).
  */
-export function SideDrawerBackButton({ className, ...rest }: THeaderIconButtonProps) {
-  return (
-    <Button
-      type="button"
-      variant="ghost"
-      size="icon"
-      className={cx(sideDrawer.headerButton, className)}
-      {...rest}
-    >
-      <PublicMaskIcon src={PUBLIC_ICONS.chevronLeft} className={sideDrawer.headerIcon} />
-    </Button>
-  );
+export function SideDrawerBackButton({ "aria-label": label, ...rest }: THeaderIconButtonProps) {
+  return <IconButton icon={PUBLIC_ICONS.chevronLeft} label={label} {...rest} />;
 }
 
 /**
  * Ghost icon button for dismissing the drawer (header trailing slot).
  */
-export function SideDrawerCloseButton({ className, ...rest }: THeaderIconButtonProps) {
-  return (
-    <Button
-      type="button"
-      variant="ghost"
-      size="icon"
-      className={cx(sideDrawer.headerButton, className)}
-      {...rest}
-    >
-      <PublicMaskIcon src={PUBLIC_ICONS.xMark} className={sideDrawer.headerIcon} />
-    </Button>
-  );
+export function SideDrawerCloseButton({ "aria-label": label, ...rest }: THeaderIconButtonProps) {
+  return <IconButton icon={PUBLIC_ICONS.xMark} label={label} {...rest} />;
 }

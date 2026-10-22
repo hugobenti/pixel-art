@@ -10,6 +10,12 @@ export interface ILabeledControl {
   title: string;
 }
 
+/** An icon button: its accessible name and, when it has one, its keyboard shortcut for the tooltip. */
+export interface IIconControl {
+  label: string;
+  shortcut?: string;
+}
+
 export interface ISharedContent {
   loading: string;
   actions: {
@@ -32,6 +38,10 @@ export interface ISharedContent {
   sideDrawer: {
     /** Backdrop button name when the caller doesn't pass its own. */
     closeLabel: string;
+  };
+  iconButton: {
+    /** Tooltip of an icon button that has a keyboard shortcut. */
+    titleWithShortcut: (label: string, shortcut: string) => string;
   };
   modal: {
     /** Name of the click-outside button behind a dialog panel. */
@@ -137,10 +147,6 @@ export interface IGalleryContent {
 
 export type TShiftDirectionKey = "up" | "down" | "left" | "right";
 
-export interface IShiftDirectionContent extends ILabeledControl {
-  glyph: string;
-}
-
 export interface ISettingsMenuRow {
   label: string;
   hint: string;
@@ -163,18 +169,16 @@ export interface IEditorContent {
   };
   toolbar: {
     back: string;
-    /** Decorative arrow before the back link, hidden from screen readers. */
-    backArrow: string;
     groupLabel: string;
-    undo: ILabeledControl;
-    redo: ILabeledControl;
-    pan: ILabeledControl;
-    bucket: ILabeledControl;
-    zoomOut: ILabeledControl;
-    zoomIn: ILabeledControl;
-    shift: ILabeledControl;
-    layers: ILabeledControl;
-    settings: ILabeledControl;
+    undo: IIconControl;
+    redo: IIconControl;
+    pan: IIconControl;
+    bucket: IIconControl;
+    zoomOut: IIconControl;
+    zoomIn: IIconControl;
+    shift: IIconControl;
+    layers: IIconControl;
+    settings: IIconControl;
     slot: {
       primary: string;
       secondary: string;
@@ -199,7 +203,7 @@ export interface IEditorContent {
     closeLabel: string;
     dialogLabel: string;
     groupLabel: string;
-    directions: Record<TShiftDirectionKey, IShiftDirectionContent>;
+    directions: Record<TShiftDirectionKey, ILabeledControl>;
   };
   settings: {
     titles: {

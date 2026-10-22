@@ -5,6 +5,7 @@
 "use client";
 
 import { editor } from "@/content/editor";
+import { IconButton } from "@/features/shared/components/IconButton";
 import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
 import { cx } from "@/features/shared/utils/cx";
 
@@ -45,7 +46,7 @@ export function SortableLayerItem(props: ISortableLayerItemProps) {
           title={editor.layers.item.dragTitle}
         >
           <span className={sortableLayerItem.srOnly}>{editor.layers.item.reorder}</span>
-          <PublicMaskIcon src={LAYER_ICON_SRC.grip} className={sortableLayerItem.icon} />
+          <PublicMaskIcon src={LAYER_ICON_SRC.grip} />
         </span>
         <button
           type="button"
@@ -67,33 +68,17 @@ export function SortableLayerItem(props: ISortableLayerItemProps) {
           </span>
         </button>
         <div className={sortableLayerItem.actions}>
-          <button
-            type="button"
-            className={sortableLayerItem.iconButton}
-            onClick={toggleVisibility}
-            title={visibilityLabel}
-            aria-label={visibilityLabel}
-          >
-            <PublicMaskIcon src={visibilityIcon} className={sortableLayerItem.icon} />
-          </button>
-          <button
-            type="button"
-            className={sortableLayerItem.iconButton}
+          <IconButton icon={visibilityIcon} label={visibilityLabel} onClick={toggleVisibility} />
+          <IconButton
+            icon={LAYER_ICON_SRC.copy}
+            label={editor.layers.item.duplicate}
             onClick={copy}
-            title={editor.layers.item.duplicate}
-            aria-label={editor.layers.item.duplicate}
-          >
-            <PublicMaskIcon src={LAYER_ICON_SRC.copy} className={sortableLayerItem.icon} />
-          </button>
-          <button
-            type="button"
-            className={sortableLayerItem.iconButton}
+          />
+          <IconButton
+            icon={LAYER_ICON_SRC.pencil}
+            label={editor.layers.item.rename}
             onClick={rename}
-            title={editor.layers.item.rename}
-            aria-label={editor.layers.item.rename}
-          >
-            <PublicMaskIcon src={LAYER_ICON_SRC.pencil} className={sortableLayerItem.icon} />
-          </button>
+          />
         </div>
       </div>
     </li>

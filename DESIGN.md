@@ -288,7 +288,7 @@ Every color token, as declared in `src/app/globals.css`. Light values are the `@
 - **Cards.** `p-4` with `gap-3` between a square thumbnail, the title row and the action row.
 - **Modals.** Centered; the create flow uses a bottom-sheet placement on phones that recenters from `sm`. Widths `max-w-sm` / `max-w-md` / `max-w-lg` with `p-4` / `p-6` / `p-5`; the large size caps at 85vh and scrolls.
 - **Side drawers.** Slide in from the right edge: 90% width on phones, half the viewport from `sm`, capped at 720px; full height with the bottom safe-area inset respected.
-- **Hit targets.** Buttons are at least 40px tall (`min-h-10`), icon buttons 40 × 40, step buttons 36 × 36. Swatches are 40px (comfortable) or 36px (compact).
+- **Hit targets.** Buttons are at least 40px tall (`min-h-10`), icon buttons 40 × 40, both 44px on coarse pointers (`pointer-coarse:`); step buttons 36 × 36. Swatches are 40px (comfortable) or 36px (compact).
 - **Spacing.** The system uses Tailwind's 4px spacing scale directly; there are no named spacing tokens.
 
 ## Elevation & Depth
@@ -333,7 +333,9 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 - **Ghost:** transparent, `fg-soft` text, `surface-muted` fill on hover. The default for secondary actions (Rename, Clone, Cancel).
 - **Outline:** `surface` fill, `control-border` border, `fg-soft` text, `shadow-sm`; `surface-subtle` on hover, `surface-muted` when pressed (Import JSON).
 - **Danger:** `danger` fill, `on-danger` text, `danger-hover` on hover.
-- **Icon / step sizes:** icon 40 × 40 (`rounded-lg`, `text-base font-semibold`); step 36 × 36 (`rounded-md`, `text-lg`), with ghost steps dimming to 40% when disabled.
+- **Step size:** 36 × 36 (`rounded-md`, `text-lg`), with ghost steps dimming to 40% when disabled.
+- **Icon button** (`IconButton`): ghost, 40 × 40 (44 × 44 on coarse pointers), `rounded-lg`, 20px icon in `fg-soft`; its label is the accessible name and the tooltip, plus the shortcut when there is one ("Undo (Ctrl+Z)"). Toggles (pan, bucket, panels) set `pressed`: `surface-strong` fill, `fg` icon and an inset 1px `control-border` ring, with `aria-pressed`. A pressed state never uses the accent (The One Accent Rule).
+- **Icons:** one family in `public/icons`: 24-grid, 1.5 stroke, `currentColor` outlines (tested), rendered through `PublicMaskIcon` at 20px in toolbars, drawer headers and menus. One meaning per glyph: Export downloads, Load image is a photo, Shift pixels is the four-way move arrow, Canvas size the outward corners. No text glyphs (`←`, `↑`) as icons.
 - **Focus:** 2px outline, offset 2px, on `:focus-visible` only (`focus.style.ts`). Every variant uses the `focus` color; the outline never falls back to the browser's default ring.
 - **Disabled:** 50% opacity, no pointer events.
 
@@ -381,6 +383,7 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 
 ### Layers Drawer Rows
 
+- Borderless drag handle (grip, `muted`), then the preview (the only bordered box), the name, and ghost `IconButton` actions (visibility, duplicate, rename).
 - Idle row: `surface` with a `line` border, `surface-subtle` on hover. Active row: `surface-muted` with an `accent` border, the one place the accent marks a selection outside the swatch rings.
 
 ### Planned

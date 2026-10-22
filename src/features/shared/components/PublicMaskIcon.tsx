@@ -3,7 +3,7 @@
  * Renders a /public SVG using CSS mask so the glyph follows the current text color (inherit/cascade).
  *
  * Notes:
- * SVG files should use opaque strokes/fills (e.g. black) so masking picks up shape reliably.
+ * Icons are 24-grid, 1.5-stroke `currentColor` outlines; as a mask image the stroke resolves to opaque black.
  * Without a className the icon is 20px square; a className replaces that size.
  */
 "use client";

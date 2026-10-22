@@ -18,6 +18,6 @@ export const editorSettingsDrawer = {
   /** The reference-image row while no image is loaded. */
   menuRowMuted: "cursor-not-allowed opacity-50 active:bg-transparent",
   rowLead: "flex min-w-0 flex-1 items-center gap-3",
-  menuIcon: "h-6 w-6 text-muted",
+  menuIcon: "h-5 w-5 text-fg-soft",
   menuHint: "shrink-0 text-xs font-normal text-subtle",
 };

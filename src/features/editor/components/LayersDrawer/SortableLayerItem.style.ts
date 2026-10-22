@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * Classes for a SortableLayerItem row: drag handle, select button with preview and name, icon actions.
+ * Classes for a SortableLayerItem row: drag handle, select button with preview and name, icon actions (IconButton).
  */
 
 import { focusRing } from "@/features/shared/components/focus.style";
@@ -14,7 +14,7 @@ export const sortableLayerItem = {
     idle: "border-line bg-surface hover:bg-surface-subtle",
   },
   dragHandle: cx(
-    "flex h-10 w-10 shrink-0 cursor-grab touch-none items-center justify-center rounded-md border border-line-strong text-muted active:cursor-grabbing sm:h-9 sm:w-9",
+    "flex h-10 w-6 shrink-0 cursor-grab touch-none items-center justify-center rounded-md text-muted active:cursor-grabbing pointer-coarse:h-11",
     focusRing,
   ),
   srOnly: "sr-only",
@@ -27,9 +27,4 @@ export const sortableLayerItem = {
   metadata: "min-w-0 flex-1",
   layerName: "truncate text-sm font-semibold text-fg",
   actions: "ml-auto flex shrink-0 items-center gap-1 sm:gap-2",
-  iconButton: cx(
-    "inline-flex h-10 w-10 shrink-0 touch-manipulation items-center justify-center rounded-md border border-line-strong text-fg-secondary transition-colors hover:bg-surface-muted active:bg-surface-muted sm:h-9 sm:w-9",
-    focusRing,
-  ),
-  icon: "pointer-events-none h-5 w-5 object-contain",
 };

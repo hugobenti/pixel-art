@@ -134,7 +134,7 @@ export function EditorSettingsDrawer(props: IEditorSettingsDrawerProps) {
               >
                 <span className={editorSettingsDrawer.rowLead}>
                   <PublicMaskIcon
-                    src={PUBLIC_ICONS.upload}
+                    src={PUBLIC_ICONS.photo}
                     className={editorSettingsDrawer.menuIcon}
                   />
                   <span>{menu.loadImage.label}</span>
@@ -148,7 +148,7 @@ export function EditorSettingsDrawer(props: IEditorSettingsDrawerProps) {
               >
                 <span className={editorSettingsDrawer.rowLead}>
                   <PublicMaskIcon
-                    src={PUBLIC_ICONS.panArrows}
+                    src={PUBLIC_ICONS.resize}
                     className={editorSettingsDrawer.menuIcon}
                   />
                   <span>{menu.canvasSize.label}</span>
@@ -162,7 +162,7 @@ export function EditorSettingsDrawer(props: IEditorSettingsDrawerProps) {
               >
                 <span className={editorSettingsDrawer.rowLead}>
                   <PublicMaskIcon
-                    src={PUBLIC_ICONS.upload}
+                    src={PUBLIC_ICONS.download}
                     className={editorSettingsDrawer.menuIcon}
                   />
                   <span>{menu.export.label}</span>

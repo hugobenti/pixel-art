@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * Accessible button primitive with variants and compact sizes for toolbars (outline/icon/step).
+ * Accessible button primitive with variants and a compact step size; icon-only controls use IconButton.
  */
 "use client";
 import { cx } from "@/features/shared/utils/cx";

@@ -22,6 +22,9 @@ export const shared: ISharedContent = {
   sideDrawer: {
     closeLabel: "Close panel",
   },
+  iconButton: {
+    titleWithShortcut: (label, shortcut) => `${label} (${shortcut})`,
+  },
   modal: {
     backdropLabel: "Close dialog",
   },
