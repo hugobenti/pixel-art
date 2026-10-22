@@ -282,7 +282,16 @@ const eslintConfig = defineConfig([
     },
   },
   {
-    files: ["src/features/shared/**/*.tsx", "src/features/gallery/**/*.tsx", "src/app/**/*.tsx"],
+    files: [
+      "src/features/shared/**/*.tsx",
+      "src/features/gallery/**/*.tsx",
+      "src/app/**/*.tsx",
+      "src/features/editor/components/EditorActionsBar.tsx",
+      "src/features/editor/components/ColorSelectionRow.tsx",
+      "src/features/editor/components/PaletteEditModal.tsx",
+      "src/features/editor/components/ShiftDirectionOverlay.tsx",
+      "src/features/editor/components/EditorScreen.tsx",
+    ],
     ignores: ["**/*.test.tsx"],
     rules: { "presentation/no-restricted-syntax": "error" },
   },

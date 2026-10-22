@@ -4,56 +4,23 @@
  */
 "use client";
 
-import { useEffect, useState } from "react";
-
 import { editor } from "@/content/editor";
 import { EditorWorkspace } from "@/features/editor/components/EditorWorkspace";
-
-import type { IArtwork } from "@/features/shared/artwork/artwork.type";
-
-import * as artworkService from "@/features/shared/artwork/artworkService";
-import { clonePixelBuffer } from "@/features/shared/utils/binaryHelpers";
+import { cx } from "@/features/shared/utils/cx";
+import { editorScreen } from "./EditorScreen.style";
 import type { IEditorScreenProps } from "./EditorScreen.type";
+import { useEditorScreen } from "./useEditorScreen";
 
 export function EditorScreen({ artworkId }: IEditorScreenProps) {
-  const [artwork, setArtwork] = useState<IArtwork | null>(null);
-  const [loadError, setLoadError] = useState<string | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    void (async () => {
-      const row = await artworkService.getArtwork(artworkId);
-      if (cancelled) {
-        return;
-      }
-      setLoadError(null);
-      if (!row) {
-        setLoadError(editor.screen.notFound);
-        setArtwork(null);
-        return;
-      }
-      setArtwork({
-        ...row,
-        layers: row.layers.map((layer) => ({
-          ...layer,
-          pixelData: clonePixelBuffer(layer.pixelData),
-        })),
-        palette: [...row.palette],
-      });
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [artworkId]);
+  const { artwork, loadError } = useEditorScreen(artworkId);
 
   if (loadError) {
     return (
-      <main className="mx-auto max-w-lg px-4 py-16 text-center">
-        <p role="alert" className="text-danger-fg">{loadError}</p>
-        <a
-          href="/gallery"
-          className="mt-4 inline-block text-fg-secondary underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-        >
+      <main className={editorScreen.frame}>
+        <p role="alert" className={editorScreen.error}>
+          {loadError}
+        </p>
+        <a href="/gallery" className={editorScreen.backLink}>
           {editor.screen.backToGallery}
         </a>
       </main>
@@ -62,10 +29,7 @@ export function EditorScreen({ artworkId }: IEditorScreenProps) {
 
   if (!artwork) {
     return (
-      <main
-        role="status"
-        className="mx-auto max-w-lg px-4 py-16 text-center text-muted"
-      >
+      <main role="status" className={cx(editorScreen.frame, editorScreen.loading)}>
         {editor.screen.loading}
       </main>
     );

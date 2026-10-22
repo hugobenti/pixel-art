@@ -10,59 +10,45 @@ import { editor } from "@/content/editor";
 import { Button } from "@/features/shared/components/Button";
 import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
 import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
+import { editorActionsBar } from "./EditorActionsBar.style";
 import type { IEditorActionsBarProps } from "./EditorActionsBar.type";
+import { useEditorActionsBar } from "./useEditorActionsBar";
 
-const barClass =
-  "flex flex-wrap items-center gap-2 border-b border-line py-2";
-
-const leftClusterClass = "flex min-w-0 flex-1 items-center gap-3";
-
-const actionClusterClass = "flex flex-wrap items-center justify-end gap-2";
-
-const backLinkClass =
-  "shrink-0 rounded-sm text-sm font-medium text-muted underline-offset-4 hover:text-fg hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2";
-
-const titleClass =
-  "min-w-0 truncate text-base font-semibold text-fg";
-
-export function EditorActionsBar({
-  title,
-  canUndo,
-  canRedo,
-  onUndo,
-  onRedo,
-  activeSlot,
-  onToggleActiveSlot,
-  panMode,
-  onTogglePanMode,
-  bucketMode,
-  onToggleBucketMode,
-  canZoomOut,
-  canZoomIn,
-  onZoomOut,
-  onZoomIn,
-  shiftOverlayOpen,
-  onToggleShiftOverlay,
-  layersDrawerOpen,
-  onToggleLayersDrawer,
-  settingsDrawerOpen,
-  onToggleSettingsDrawer,
-}: IEditorActionsBarProps) {
-  const slotLabel =
-    activeSlot === "primary" ? editor.toolbar.slot.primary : editor.toolbar.slot.secondary;
-
-  const slotToggleButtonClass =
-    "min-h-10 min-w-[12ch] shrink-0 touch-manipulation px-3";
+export function EditorActionsBar(props: IEditorActionsBarProps) {
+  const {
+    title,
+    canUndo,
+    canRedo,
+    onUndo,
+    onRedo,
+    activeSlot,
+    onToggleActiveSlot,
+    panMode,
+    onTogglePanMode,
+    bucketMode,
+    onToggleBucketMode,
+    canZoomOut,
+    canZoomIn,
+    onZoomOut,
+    onZoomIn,
+    shiftOverlayOpen,
+    onToggleShiftOverlay,
+    layersDrawerOpen,
+    onToggleLayersDrawer,
+    settingsDrawerOpen,
+    onToggleSettingsDrawer,
+  } = props;
+  const { slotLabel, slotAriaLabel } = useEditorActionsBar(props);
 
   return (
-    <div className={barClass}>
-      <div className={leftClusterClass}>
-        <Link href="/gallery" className={backLinkClass}>
+    <div className={editorActionsBar.bar}>
+      <div className={editorActionsBar.leftCluster}>
+        <Link href="/gallery" className={editorActionsBar.backLink}>
           <span aria-hidden>{editor.toolbar.backArrow}</span> {editor.toolbar.back}
         </Link>
-        <h1 className={titleClass}>{title}</h1>
+        <h1 className={editorActionsBar.heading}>{title}</h1>
       </div>
-      <div className={actionClusterClass} role="group" aria-label={editor.toolbar.groupLabel}>
+      <div className={editorActionsBar.actions} role="group" aria-label={editor.toolbar.groupLabel}>
         <Button
           type="button"
           variant="ghost"
@@ -154,9 +140,9 @@ export function EditorActionsBar({
         <Button
           type="button"
           variant={activeSlot === "primary" ? "primary" : "outline"}
-          className={slotToggleButtonClass}
+          className={editorActionsBar.slotToggle}
           onClick={onToggleActiveSlot}
-          aria-label={editor.toolbar.slot.label(slotLabel)}
+          aria-label={slotAriaLabel}
           title={editor.toolbar.slot.title}
         >
           {slotLabel}
