@@ -113,7 +113,6 @@ export interface ISharedContent {
 
 export interface IGalleryContent {
   screen: {
-    title: string;
     intro: string;
     importJson: string;
     newArtwork: string;
