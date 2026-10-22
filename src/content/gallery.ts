@@ -24,6 +24,7 @@ export const gallery: IGalleryContent = {
       "If this color is not in the default palette, it is added when the artwork is created.",
     backgroundAriaLabel: "Canvas background color",
     maxSize: (max) => `Maximum ${max} × ${max} pixels.`,
+    sizeRange: (max) => `Enter a whole number from 1 to ${max}.`,
     submit: "Create",
     submitting: "Creating…",
   },

@@ -116,6 +116,8 @@ export interface IGalleryContent {
     backgroundHint: string;
     backgroundAriaLabel: string;
     maxSize: (max: number) => string;
+    /** Inline error on a width or height field outside 1…max or not a whole number. */
+    sizeRange: (max: number) => string;
     submit: string;
     submitting: string;
   };

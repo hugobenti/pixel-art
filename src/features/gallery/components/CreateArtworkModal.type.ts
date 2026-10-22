@@ -3,5 +3,6 @@ import type { ICreateArtworkInput } from "@/features/shared/artwork/artworkServi
 export interface ICreateArtworkModalProps {
   open: boolean;
   onClose: () => void;
-  onCreate: (input: ICreateArtworkInput) => Promise<unknown>;
+  /** Resolves to an error message to show in the dialog, or null on success. */
+  onCreate: (input: ICreateArtworkInput) => Promise<string | null>;
 }

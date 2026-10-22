@@ -25,15 +25,12 @@ export const useGalleryStore = create<IGalleryState>((set, get) => ({
   },
 
   createArtwork: async (input) => {
-    set({ error: null });
     try {
-      const created = await artworkService.createArtwork(input);
+      const artwork = await artworkService.createArtwork(input);
       await get().loadArtworks();
-      return created;
+      return { artwork, error: null };
     } catch (e) {
-      const message = e instanceof Error ? e.message : gallery.errors.create;
-      set({ error: message });
-      return null;
+      return { artwork: null, error: e instanceof Error ? e.message : gallery.errors.create };
     }
   },
 

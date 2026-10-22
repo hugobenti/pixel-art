@@ -11,7 +11,6 @@ import { FormField } from "@/features/shared/components/FormField";
 import { Input } from "@/features/shared/components/Input";
 import { Modal } from "@/features/shared/components/Modal";
 import { useCreateArtworkForm } from "@/features/gallery/hooks/useCreateArtworkForm";
-import { MAX_CANVAS_DIMENSION } from "@/features/shared/artwork/artworkService";
 import { createArtworkModal } from "./CreateArtworkModal.style";
 import type { ICreateArtworkModalProps } from "./CreateArtworkModal.type";
 
@@ -26,6 +25,9 @@ export function CreateArtworkModal({ open, onClose, onCreate }: ICreateArtworkMo
     backgroundColor,
     setBackgroundColor,
     busy,
+    errors,
+    widthRef,
+    heightRef,
     maxSizeHint,
     handleSubmit,
   } = useCreateArtworkForm({ onCreate });
@@ -51,23 +53,35 @@ export function CreateArtworkModal({ open, onClose, onCreate }: ICreateArtworkMo
           />
         </FormField>
         <div className={createArtworkModal.sizeFields}>
-          <FormField label={shared.fields.width} htmlFor="create-artwork-width">
+          <FormField
+            label={shared.fields.width}
+            htmlFor="create-artwork-width"
+            error={errors.width}
+            errorId="create-artwork-width-error"
+          >
             <Input
+              ref={widthRef}
               id="create-artwork-width"
               inputMode="numeric"
-              min={1}
-              max={MAX_CANVAS_DIMENSION}
+              aria-invalid={errors.width ? true : undefined}
+              aria-describedby={errors.width ? "create-artwork-width-error" : undefined}
               value={width}
               onChange={(ev) => setWidth(ev.target.value)}
               required
             />
           </FormField>
-          <FormField label={shared.fields.height} htmlFor="create-artwork-height">
+          <FormField
+            label={shared.fields.height}
+            htmlFor="create-artwork-height"
+            error={errors.height}
+            errorId="create-artwork-height-error"
+          >
             <Input
+              ref={heightRef}
               id="create-artwork-height"
               inputMode="numeric"
-              min={1}
-              max={MAX_CANVAS_DIMENSION}
+              aria-invalid={errors.height ? true : undefined}
+              aria-describedby={errors.height ? "create-artwork-height-error" : undefined}
               value={height}
               onChange={(ev) => setHeight(ev.target.value)}
               required
@@ -91,6 +105,11 @@ export function CreateArtworkModal({ open, onClose, onCreate }: ICreateArtworkMo
           </div>
         </FormField>
         <p className={createArtworkModal.maxSize}>{maxSizeHint}</p>
+        {errors.form ? (
+          <p role="alert" className={createArtworkModal.formError}>
+            {errors.form}
+          </p>
+        ) : null}
         <div className={createArtworkModal.actions}>
           <Button type="button" variant="ghost" onClick={onClose}>
             {shared.actions.cancel}
