@@ -8,8 +8,6 @@
  */
 "use client";
 
-import { useCallback } from "react";
-
 import { editor } from "@/content/editor";
 import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
 import {
@@ -19,206 +17,177 @@ import {
 } from "@/features/shared/components/SideDrawer";
 import { ThemeToggle } from "@/features/shared/components/ThemeToggle";
 import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
+import { cx } from "@/features/shared/utils/cx";
 
 import { EditorSettingsCanvasSizePanel } from "@/features/editor/components/EditorSettingsDrawer/EditorSettingsCanvasSizePanel";
 import { EditorSettingsImageDetailPanel } from "@/features/editor/components/EditorSettingsDrawer/EditorSettingsImageDetailPanel";
 import { EditorSettingsImportExportPanel } from "@/features/editor/components/EditorSettingsDrawer/EditorSettingsImportExportPanel";
 import { ANIMATION_MS } from "@/features/editor/components/LayersDrawer/layersDrawer.constants";
-import { useCanvasSizePanel } from "@/features/editor/components/EditorSettingsDrawer/hooks/useCanvasSizePanel";
 import { useEditorSettingsDrawer } from "@/features/editor/components/EditorSettingsDrawer/hooks/useEditorSettingsDrawer";
-import { useImportExportPanel } from "@/features/editor/components/EditorSettingsDrawer/hooks/useImportExportPanel";
+import { editorSettingsDrawer } from "./EditorSettingsDrawer.style";
 import type { IEditorSettingsDrawerProps } from "./EditorSettingsDrawer.type";
 
-const menuRootClass = "min-h-0 flex-1 overflow-y-auto px-0 pb-3 pt-0 sm:pb-4";
-
-const menuListClass = "flex flex-col divide-y divide-line bg-surface";
-
-const menuRowClass = `
-  flex min-h-12 w-full items-center justify-between gap-3 px-4 py-3
-  text-left text-sm font-medium text-fg transition-colors
-  active:bg-surface-muted touch-manipulation
-  focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2
-`;
-
-const menuRowMutedClass = "cursor-not-allowed opacity-50 active:bg-transparent";
-
-const menuHintClass = "shrink-0 text-xs font-normal text-subtle";
-
-const rowLeadClass = "flex min-w-0 flex-1 items-center gap-3";
-
-const menuIconClass = "h-6 w-6 text-muted";
-
-const shellBodyClass = "flex min-h-0 flex-1 flex-col overflow-hidden";
-
-export function EditorSettingsDrawer({
-  artwork,
-  onApplyCanvasSize,
-  viewport,
-  viewportCssWidth,
-  viewportCssHeight,
-  paintRevision,
-  showPixelGrid,
-  onToggleGrid,
-  showReferenceImage,
-  hasReferenceImage,
-  onToggleReferenceImage,
-  onLoadReferenceImage,
-  onClose,
-}: IEditorSettingsDrawerProps) {
+export function EditorSettingsDrawer(props: IEditorSettingsDrawerProps) {
+  const {
+    artwork,
+    viewport,
+    viewportCssWidth,
+    viewportCssHeight,
+    paintRevision,
+    showPixelGrid,
+    showReferenceImage,
+    hasReferenceImage,
+  } = props;
   const {
     settingsView,
+    title,
+    showBackButton,
+    panelEntered,
+    handleClose,
+    backToMenu,
+    gridHint,
+    referenceHint,
+    sizeHint,
+    toggleGrid,
+    toggleReferenceImage,
+    loadReferenceImage,
+    openCanvasSize,
+    openImageDetail,
+    openImportExport,
     widthStr,
     heightStr,
     setWidthStr,
     setHeightStr,
-    openCanvasSize,
-    openImageDetail,
-    openImportExport,
-    backToMenu,
     applyCanvasSize,
-  } = useCanvasSizePanel({ artwork, onApplyResized: onApplyCanvasSize });
-
-  const { exportJson, exportPng } = useImportExportPanel({ artwork });
-
-  const interceptEscape = useCallback(() => {
-    if (
-      settingsView === "canvasSize" ||
-      settingsView === "imageDetail" ||
-      settingsView === "importExport"
-    ) {
-      backToMenu();
-      return true;
-    }
-    return false;
-  }, [settingsView, backToMenu]);
-
-  const { panelEntered, handleClose } = useEditorSettingsDrawer({
-    onClose,
-    interceptEscape,
-  });
-
+    exportJson,
+    exportPng,
+  } = useEditorSettingsDrawer(props);
   const { menu } = editor.settings;
-  const gridLabel = showPixelGrid ? menu.grid.hide : menu.grid.show;
-  const imageLabel = showReferenceImage ? menu.referenceImage.hide : menu.referenceImage.show;
-
-  const drawerTitle = editor.settings.titles[settingsView];
-
-  const sizeHint = menu.canvasSize.hint(artwork.width, artwork.height);
-
-  const headerLeft =
-    settingsView === "canvasSize" ||
-    settingsView === "imageDetail" ||
-    settingsView === "importExport" ? (
-      // eslint-disable-next-line jsx-a11y/no-autofocus -- drill-in replaces the focused menu row; focus moves to the view's back control
-      <SideDrawerBackButton autoFocus onClick={backToMenu} aria-label={editor.settings.backLabel} />
-    ) : undefined;
 
   return (
     <SideDrawer
       entered={panelEntered}
       onBackdropClick={handleClose}
-      title={drawerTitle}
-      headerLeft={headerLeft}
+      title={title}
+      headerLeft={
+        showBackButton ? (
+          <SideDrawerBackButton
+            // eslint-disable-next-line jsx-a11y/no-autofocus -- drill-in replaces the focused menu row; focus moves to the view's back control
+            autoFocus
+            onClick={backToMenu}
+            aria-label={editor.settings.backLabel}
+          />
+        ) : undefined
+      }
       motionDurationMs={ANIMATION_MS}
       backdropAriaLabel={editor.settings.closeLabel}
       headerRight={
         <SideDrawerCloseButton onClick={handleClose} aria-label={editor.settings.closeLabel} />
       }
     >
-      <div className={shellBodyClass}>
+      <div className={editorSettingsDrawer.body}>
         {settingsView === "menu" ? (
-          <div className={menuRootClass}>
-            <div className={menuListClass} role="group" aria-label={editor.settings.navLabel}>
+          <div className={editorSettingsDrawer.menuRoot}>
+            <div
+              className={editorSettingsDrawer.menuList}
+              role="group"
+              aria-label={editor.settings.navLabel}
+            >
               <button
                 type="button"
-                className={menuRowClass}
+                className={editorSettingsDrawer.menuRow}
                 aria-pressed={showPixelGrid}
-                onClick={() => {
-                  onToggleGrid();
-                }}
+                onClick={toggleGrid}
               >
-                <span className={rowLeadClass}>
-                  <PublicMaskIcon src={PUBLIC_ICONS.grid} className={menuIconClass} />
+                <span className={editorSettingsDrawer.rowLead}>
+                  <PublicMaskIcon
+                    src={PUBLIC_ICONS.grid}
+                    className={editorSettingsDrawer.menuIcon}
+                  />
                   <span>{menu.grid.label}</span>
                 </span>
-                <span className={menuHintClass}>{gridLabel}</span>
+                <span className={editorSettingsDrawer.menuHint}>{gridHint}</span>
               </button>
               <button
                 type="button"
-                className={`${menuRowClass} ${!hasReferenceImage ? menuRowMutedClass : ""}`}
+                className={cx(
+                  editorSettingsDrawer.menuRow,
+                  !hasReferenceImage && editorSettingsDrawer.menuRowMuted,
+                )}
                 disabled={!hasReferenceImage}
                 aria-pressed={showReferenceImage}
-                onClick={() => {
-                  if (!hasReferenceImage) {
-                    return;
-                  }
-                  onToggleReferenceImage();
-                }}
+                onClick={toggleReferenceImage}
               >
-                <span className={rowLeadClass}>
-                  <PublicMaskIcon src={PUBLIC_ICONS.eye} className={menuIconClass} />
+                <span className={editorSettingsDrawer.rowLead}>
+                  <PublicMaskIcon
+                    src={PUBLIC_ICONS.eye}
+                    className={editorSettingsDrawer.menuIcon}
+                  />
                   <span>{menu.referenceImage.label}</span>
                 </span>
-                <span className={menuHintClass}>
-                  {!hasReferenceImage ? menu.referenceImage.unavailable : imageLabel}
-                </span>
+                <span className={editorSettingsDrawer.menuHint}>{referenceHint}</span>
               </button>
               <button
                 type="button"
-                className={menuRowClass}
-                onClick={() => {
-                  onLoadReferenceImage();
-                }}
+                className={editorSettingsDrawer.menuRow}
+                onClick={loadReferenceImage}
               >
-                <span className={rowLeadClass}>
-                  <PublicMaskIcon src={PUBLIC_ICONS.upload} className={menuIconClass} />
+                <span className={editorSettingsDrawer.rowLead}>
+                  <PublicMaskIcon
+                    src={PUBLIC_ICONS.upload}
+                    className={editorSettingsDrawer.menuIcon}
+                  />
                   <span>{menu.loadImage.label}</span>
                 </span>
-                <span className={menuHintClass}>{menu.loadImage.hint}</span>
+                <span className={editorSettingsDrawer.menuHint}>{menu.loadImage.hint}</span>
               </button>
               <button
                 type="button"
-                className={menuRowClass}
-                onClick={() => {
-                  openCanvasSize();
-                }}
+                className={editorSettingsDrawer.menuRow}
+                onClick={openCanvasSize}
               >
-                <span className={rowLeadClass}>
-                  <PublicMaskIcon src={PUBLIC_ICONS.panArrows} className={menuIconClass} />
+                <span className={editorSettingsDrawer.rowLead}>
+                  <PublicMaskIcon
+                    src={PUBLIC_ICONS.panArrows}
+                    className={editorSettingsDrawer.menuIcon}
+                  />
                   <span>{menu.canvasSize.label}</span>
                 </span>
-                <span className={menuHintClass}>{sizeHint}</span>
+                <span className={editorSettingsDrawer.menuHint}>{sizeHint}</span>
               </button>
               <button
                 type="button"
-                className={menuRowClass}
-                onClick={() => {
-                  openImportExport();
-                }}
+                className={editorSettingsDrawer.menuRow}
+                onClick={openImportExport}
               >
-                <span className={rowLeadClass}>
-                  <PublicMaskIcon src={PUBLIC_ICONS.upload} className={menuIconClass} />
+                <span className={editorSettingsDrawer.rowLead}>
+                  <PublicMaskIcon
+                    src={PUBLIC_ICONS.upload}
+                    className={editorSettingsDrawer.menuIcon}
+                  />
                   <span>{menu.export.label}</span>
                 </span>
-                <span className={menuHintClass}>{menu.export.hint}</span>
+                <span className={editorSettingsDrawer.menuHint}>{menu.export.hint}</span>
               </button>
               <button
                 type="button"
-                className={menuRowClass}
-                onClick={() => {
-                  openImageDetail();
-                }}
+                className={editorSettingsDrawer.menuRow}
+                onClick={openImageDetail}
               >
-                <span className={rowLeadClass}>
-                  <PublicMaskIcon src={PUBLIC_ICONS.dashboard} className={menuIconClass} />
+                <span className={editorSettingsDrawer.rowLead}>
+                  <PublicMaskIcon
+                    src={PUBLIC_ICONS.dashboard}
+                    className={editorSettingsDrawer.menuIcon}
+                  />
                   <span>{menu.imageDetail.label}</span>
                 </span>
-                <span className={menuHintClass}>{menu.imageDetail.hint}</span>
+                <span className={editorSettingsDrawer.menuHint}>{menu.imageDetail.hint}</span>
               </button>
               <ThemeToggle variant="row" />
             </div>
           </div>
-        ) : settingsView === "canvasSize" ? (
+        ) : null}
+        {settingsView === "canvasSize" ? (
           <EditorSettingsCanvasSizePanel
             widthStr={widthStr}
             heightStr={heightStr}
@@ -227,7 +196,8 @@ export function EditorSettingsDrawer({
             onCancel={backToMenu}
             onApply={applyCanvasSize}
           />
-        ) : settingsView === "imageDetail" ? (
+        ) : null}
+        {settingsView === "imageDetail" ? (
           <EditorSettingsImageDetailPanel
             artwork={artwork}
             viewport={viewport}
@@ -235,14 +205,10 @@ export function EditorSettingsDrawer({
             viewportCssHeight={viewportCssHeight}
             paintRevision={paintRevision}
           />
-        ) : (
-          <EditorSettingsImportExportPanel
-            onExportPng={() => {
-              void exportPng();
-            }}
-            onExportJson={exportJson}
-          />
-        )}
+        ) : null}
+        {settingsView === "importExport" ? (
+          <EditorSettingsImportExportPanel onExportPng={exportPng} onExportJson={exportJson} />
+        ) : null}
       </div>
     </SideDrawer>
   );

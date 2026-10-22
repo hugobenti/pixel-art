@@ -11,21 +11,8 @@ import { FormField } from "@/features/shared/components/FormField";
 import { Input } from "@/features/shared/components/Input";
 
 import { MAX_CANVAS_DIMENSION } from "@/features/shared/artwork/artworkService";
+import { editorSettingsCanvasSizePanel } from "./EditorSettingsCanvasSizePanel.style";
 import type { IEditorSettingsCanvasSizePanelProps } from "./EditorSettingsCanvasSizePanel.type";
-
-const rootClass = "flex min-h-0 flex-1 flex-col gap-4 px-4 pb-4 pt-0 sm:px-4";
-
-const gridClass = "grid grid-cols-2 gap-3";
-
-const hintClass = "text-xs font-normal leading-relaxed text-subtle";
-
-const actionsClass = "flex flex-wrap items-center justify-end gap-2 pt-1";
-
-const cancelButtonClass =
-  "min-h-10 touch-manipulation px-4 sm:min-h-9";
-
-const applyButtonClass =
-  "min-h-10 touch-manipulation px-4 sm:min-h-9";
 
 export function EditorSettingsCanvasSizePanel({
   widthStr,
@@ -36,9 +23,9 @@ export function EditorSettingsCanvasSizePanel({
   onApply,
 }: IEditorSettingsCanvasSizePanelProps) {
   return (
-    <div className={rootClass}>
-      <p className={hintClass}>{editor.settings.canvasSize.hint}</p>
-      <div className={gridClass}>
+    <div className={editorSettingsCanvasSizePanel.root}>
+      <p className={editorSettingsCanvasSizePanel.hint}>{editor.settings.canvasSize.hint}</p>
+      <div className={editorSettingsCanvasSizePanel.grid}>
         <FormField label={shared.fields.width} htmlFor="settings-canvas-width">
           <Input
             id="settings-canvas-width"
@@ -66,11 +53,11 @@ export function EditorSettingsCanvasSizePanel({
           />
         </FormField>
       </div>
-      <div className={actionsClass}>
+      <div className={editorSettingsCanvasSizePanel.actions}>
         <Button
           type="button"
           variant="outline"
-          className={cancelButtonClass}
+          className={editorSettingsCanvasSizePanel.button}
           onClick={onCancel}
         >
           {shared.actions.cancel}
@@ -78,7 +65,7 @@ export function EditorSettingsCanvasSizePanel({
         <Button
           type="button"
           variant="primary"
-          className={applyButtonClass}
+          className={editorSettingsCanvasSizePanel.button}
           onClick={onApply}
         >
           {shared.actions.apply}
