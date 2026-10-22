@@ -1,22 +1,27 @@
 /**
  * Purpose:
- * Undo/redo stacks over atomic pixel delta commands (no full-buffer snapshots).
+ * Undo/redo stacks over atomic commands: pixel deltas and palette-color removals (no full-buffer snapshots).
  *
  * Notes:
- * Deltas target layer IDs so undo/redo can mutate the correct per-layer pixel buffer.
+ * Deltas target layer IDs so undo/redo can mutate the correct per-layer pixel buffer. A command's
+ * `onApplied` callback updates React state (palette, color slots) after its buffers change.
  */
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import {
+  applyHistoryCommand,
+  isEmptyHistoryCommand,
+} from "@/features/editor/logic/historyCommands";
 import type { IHistoryCommand } from "@/features/editor/types/editor.type";
 import type { IUseHistoryParams } from "./useHistory.type";
 
-export function useHistory({ documentKey, getLayerPixelData }: IUseHistoryParams) {
-  const getLayerPixelsRef = useRef(getLayerPixelData);
+export function useHistory({ documentKey, getLayers }: IUseHistoryParams) {
+  const getLayersRef = useRef(getLayers);
   useEffect(() => {
-    getLayerPixelsRef.current = getLayerPixelData;
-  }, [getLayerPixelData]);
+    getLayersRef.current = getLayers;
+  }, [getLayers]);
 
   const undoStack = useRef<IHistoryCommand[]>([]);
   const redoStack = useRef<IHistoryCommand[]>([]);
@@ -42,14 +47,14 @@ export function useHistory({ documentKey, getLayerPixelData }: IUseHistoryParams
 
   const pushCommand = useCallback(
     (cmd: IHistoryCommand) => {
-      if (cmd.deltas.length === 0) {
+      if (isEmptyHistoryCommand(cmd)) {
         return;
       }
       undoStack.current.push(cmd);
       redoStack.current = [];
       syncFlags();
     },
-    [syncFlags]
+    [syncFlags],
   );
 
   const undo = useCallback(() => {
@@ -57,30 +62,29 @@ export function useHistory({ documentKey, getLayerPixelData }: IUseHistoryParams
     if (!cmd) {
       return;
     }
-    for (let i = cmd.deltas.length - 1; i >= 0; i--) {
-      const d = cmd.deltas[i];
-      const buf = getLayerPixelsRef.current(d.layerId);
-      if (!buf) {
-        continue;
-      }
-      buf[d.index] = d.previousPaletteIndex;
-    }
+    applyHistoryCommand(cmd, "undo", getLayersRef.current());
+    cmd.onApplied?.("undo");
     redoStack.current.push(cmd);
     syncFlags();
   }, [syncFlags]);
+
+  /** Undoes `cmd` only while it is still the latest change (e.g. an Undo toast after later edits). */
+  const undoCommand = useCallback(
+    (cmd: IHistoryCommand) => {
+      if (undoStack.current[undoStack.current.length - 1] === cmd) {
+        undo();
+      }
+    },
+    [undo],
+  );
 
   const redo = useCallback(() => {
     const cmd = redoStack.current.pop();
     if (!cmd) {
       return;
     }
-    for (const d of cmd.deltas) {
-      const buf = getLayerPixelsRef.current(d.layerId);
-      if (!buf) {
-        continue;
-      }
-      buf[d.index] = d.newPaletteIndex;
-    }
+    applyHistoryCommand(cmd, "redo", getLayersRef.current());
+    cmd.onApplied?.("redo");
     undoStack.current.push(cmd);
     syncFlags();
   }, [syncFlags]);
@@ -88,6 +92,7 @@ export function useHistory({ documentKey, getLayerPixelData }: IUseHistoryParams
   return {
     pushCommand,
     undo,
+    undoCommand,
     redo,
     canUndo,
     canRedo,

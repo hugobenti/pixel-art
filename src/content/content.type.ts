@@ -33,7 +33,6 @@ export interface ISharedContent {
   };
   toast: {
     dismissLabel: string;
-    dismissGlyph: string;
   };
   sideDrawer: {
     /** Backdrop button name when the caller doesn't pass its own. */
@@ -125,7 +124,6 @@ export interface IGalleryContent {
   card: {
     clone: string;
     delete: string;
-    confirmDelete: string;
     /** Accessible name of the inline rename field. */
     titleLabel: string;
     /** Accessible name of the artwork actions menu. */
@@ -157,6 +155,12 @@ export interface IGalleryContent {
     rename: string;
     clone: string;
     delete: string;
+  };
+  deleteDialog: {
+    /** Names the artwork being deleted. */
+    title: (title: string) => string;
+    description: string;
+    confirm: string;
   };
 }
 
@@ -233,8 +237,8 @@ export interface IEditorContent {
     closeLabel: string;
     navLabel: string;
     menu: {
-      grid: { label: string; show: string; hide: string };
-      referenceImage: { label: string; show: string; hide: string; unavailable: string };
+      grid: { label: string };
+      referenceImage: { label: string; unavailable: string };
       loadImage: ISettingsMenuRow;
       canvasSize: { label: string; hint: (width: number, height: number) => string };
       export: ISettingsMenuRow;
@@ -242,7 +246,7 @@ export interface IEditorContent {
     };
     canvasSize: {
       hint: string;
-      confirmShrink: string;
+
     };
     imageDetail: {
       noIntersection: string;
@@ -296,5 +300,15 @@ export interface IEditorContent {
       decode: string;
       canvas: string;
     };
+  };
+  canvasShrinkDialog: {
+    title: (width: number, height: number) => string;
+    description: (width: number, height: number) => string;
+    /** Shown as a highlighted note: the consequence that makes the crop irreversible. */
+    warning: string;
+    confirm: string;
+  };
+  paletteRemoval: {
+    removed: (color: string) => string;
   };
 }

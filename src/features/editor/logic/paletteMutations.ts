@@ -1,12 +1,18 @@
 /**
  * Purpose:
- * Pure helpers to add, update, or remove palette entries while keeping pixel indices consistent.
+ * Pure helpers to add, update, or remove palette entries while keeping pixel indices consistent;
+ * a removal is recorded so undo can restore the color and its pixels.
  */
 
 import { normalizeHexColor } from "@/features/shared/utils/colorConverter";
 
 import { MAX_PALETTE_ENTRIES } from "@/features/shared/artwork/artworkService";
-import type { IRemovePaletteResult } from "./paletteMutations.type";
+import type { IPaletteRemoval } from "@/features/editor/types/editor.type";
+import type {
+  IColorSlots,
+  IPaletteLayerBuffer,
+  IPaletteRemovalResult,
+} from "./paletteMutations.type";
 
 /**
  * Clamps a palette slot index to valid palette bounds (0 … length − 1).
@@ -19,11 +25,7 @@ export function clampPaletteIndex(index: number, paletteLength: number): number 
   return Math.min(Math.max(0, index), max);
 }
 
-export function setPaletteColorAt(
-  palette: string[],
-  index: number,
-  hex: string
-): string[] {
+export function setPaletteColorAt(palette: string[], index: number, hex: string): string[] {
   const next = [...palette];
   if (index < 0 || index >= next.length) {
     return next;
@@ -32,57 +34,103 @@ export function setPaletteColorAt(
   return next;
 }
 
-export function appendPaletteColor(
-  palette: string[],
-  hex: string
-): string[] | null {
+export function appendPaletteColor(palette: string[], hex: string): string[] | null {
   if (palette.length >= MAX_PALETTE_ENTRIES) {
     return null;
   }
   return [...palette, normalizeHexColor(hex)];
 }
 
+function slotAfterRemoval(index: number, removeIndex: number, nextLength: number): number {
+  const shifted = index > removeIndex ? index - 1 : index === removeIndex ? 0 : index;
+  return clampPaletteIndex(shifted, nextLength);
+}
+
+/** Forward remap of one buffer: the removed index becomes 0, higher indices move down by one. */
+function remapForRemoval(pixelData: Uint8Array, removeIndex: number): void {
+  for (let i = 0; i < pixelData.length; i++) {
+    const v = pixelData[i];
+    if (v === removeIndex) {
+      pixelData[i] = 0;
+    } else if (v > removeIndex) {
+      pixelData[i] = v - 1;
+    }
+  }
+}
+
 /**
- * Removes one palette entry; remaps pixel indices and clamps primary/secondary selection.
+ * Removes one palette entry: remaps every layer buffer in place, records the pixels that used the
+ * color (so undo can restore them) and clamps the primary/secondary selection.
  */
-export function removePaletteAt(
-  pixelData: Uint8Array,
+export function removePaletteColor(
+  layers: readonly IPaletteLayerBuffer[],
   palette: string[],
   removeIndex: number,
-  primaryIndex: number,
-  secondaryIndex: number
-): IRemovePaletteResult | null {
+  slots: IColorSlots,
+): IPaletteRemovalResult | null {
   if (palette.length <= 1 || removeIndex < 0 || removeIndex >= palette.length) {
     return null;
   }
-
-  for (let i = 0; i < pixelData.length; i++) {
-    let v = pixelData[i];
-    if (v === removeIndex) {
-      v = 0;
-    } else if (v > removeIndex) {
-      v -= 1;
+  const removedPixels = layers.map(({ id, pixelData }) => {
+    let count = 0;
+    for (let i = 0; i < pixelData.length; i++) {
+      if (pixelData[i] === removeIndex) {
+        count++;
+      }
     }
-    pixelData[i] = v;
-  }
-
+    const indices = new Uint32Array(count);
+    let next = 0;
+    for (let i = 0; i < pixelData.length; i++) {
+      if (pixelData[i] === removeIndex) {
+        indices[next++] = i;
+      }
+    }
+    remapForRemoval(pixelData, removeIndex);
+    return { layerId: id, indices };
+  });
   const nextPalette = palette.filter((_, i) => i !== removeIndex);
+  return {
+    palette: nextPalette,
+    slots: {
+      primaryIndex: slotAfterRemoval(slots.primaryIndex, removeIndex, nextPalette.length),
+      secondaryIndex: slotAfterRemoval(slots.secondaryIndex, removeIndex, nextPalette.length),
+    },
+    removal: { index: removeIndex, color: palette[removeIndex], removedPixels },
+  };
+}
 
-  let p = primaryIndex;
-  let s = secondaryIndex;
-  if (p === removeIndex) {
-    p = 0;
-  } else if (p > removeIndex) {
-    p -= 1;
+/** Redo of a palette removal: remaps every current layer again. */
+export function reapplyPaletteRemoval(
+  removal: IPaletteRemoval,
+  layers: readonly IPaletteLayerBuffer[],
+): void {
+  for (const layer of layers) {
+    remapForRemoval(layer.pixelData, removal.index);
   }
-  if (s === removeIndex) {
-    s = 0;
-  } else if (s > removeIndex) {
-    s -= 1;
+}
+
+/**
+ * Undo of a palette removal: indices at or above the removed slot move back up by one on every
+ * current layer, then the recorded pixels get the restored color again.
+ */
+export function revertPaletteRemoval(
+  removal: IPaletteRemoval,
+  layers: readonly IPaletteLayerBuffer[],
+): void {
+  for (const { pixelData } of layers) {
+    for (let i = 0; i < pixelData.length; i++) {
+      if (pixelData[i] >= removal.index) {
+        pixelData[i] += 1;
+      }
+    }
   }
-
-  p = clampPaletteIndex(p, nextPalette.length);
-  s = clampPaletteIndex(s, nextPalette.length);
-
-  return { palette: nextPalette, primaryIndex: p, secondaryIndex: s };
+  for (const { layerId, indices } of removal.removedPixels) {
+    const pixelData = layers.find((layer) => layer.id === layerId)?.pixelData;
+    if (!pixelData) {
+      continue;
+    }
+    for (const index of indices) {
+      pixelData[index] = removal.index;
+    }
+  }
 }

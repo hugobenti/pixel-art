@@ -17,7 +17,6 @@ export const shared: ISharedContent = {
   },
   toast: {
     dismissLabel: "Dismiss notification",
-    dismissGlyph: "×",
   },
   sideDrawer: {
     closeLabel: "Close panel",

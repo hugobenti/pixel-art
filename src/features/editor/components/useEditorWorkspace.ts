@@ -71,10 +71,19 @@ export function useEditorWorkspace({ initialArtwork }: IEditorWorkspaceProps) {
     });
   }, []);
 
+  const getLayers = useCallback(() => artworkRef.current.layers, []);
+
+  const { pushCommand, undo, undoCommand, redo, canUndo, canRedo, historyRevision } = useHistory({
+    documentKey: `${artwork.id}:${artwork.width}x${artwork.height}`,
+    getLayers,
+  });
+
   const paletteUi = useEditorPalette({
     artwork,
     setArtwork,
     onPaletteOrPixelsDirty: schedulePaintBump,
+    pushCommand,
+    undoCommand,
   });
 
   const primaryPaint = clampPaletteIndex(paletteUi.primaryIndex, artwork.palette.length);
@@ -84,17 +93,6 @@ export function useEditorWorkspace({ initialArtwork }: IEditorWorkspaceProps) {
     artwork,
     setArtwork,
     onLayersChanged: schedulePaintBump,
-  });
-
-  const getLayerPixelData = useCallback(
-    (layerId: string) =>
-      artworkRef.current.layers.find((layer) => layer.id === layerId)?.pixelData ?? null,
-    [],
-  );
-
-  const { pushCommand, undo, redo, canUndo, canRedo, historyRevision } = useHistory({
-    documentKey: `${artwork.id}:${artwork.width}x${artwork.height}`,
-    getLayerPixelData,
   });
 
   const minScaleRef = useRef(1);

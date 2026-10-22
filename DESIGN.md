@@ -344,7 +344,7 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 - **Corner Style:** `rounded-xl` (12px).
 - **Background:** `surface` with a `line` border.
 - **Shadow Strategy:** `shadow-sm` (see Elevation & Depth).
-- **Artwork card:** `p-4`; a square thumbnail link on a `surface-muted` well (`rounded-lg`, image `object-cover`), a title link in `font-medium fg`, then a wrapping action row: Rename (ghost), Clone (ghost), Delete (danger, today).
+- **Artwork card:** `p-4`; a square thumbnail link on a `surface-muted` well (`rounded-lg`, image `object-cover`), a title link in `font-medium fg`, and a `Menu` overflow trigger for Rename, Clone and Delete. Delete opens `ConfirmDialog`; danger styling appears only on the confirmation button.
 
 ### Modal
 
@@ -380,10 +380,18 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 
 - `src/features/shared/components/ThemeToggle.tsx`: a segmented native radio group, **System / Light / Dark**. It sits in the gallery header and as a "Theme" row in the editor settings drawer. System clears the stored preference.
 
+### Switch
+
+- `src/features/shared/components/Switch.tsx`: a full-width `role="switch"` row: optional icon, label and hint (`text-xs subtle`) on the left, a 40 × 24 `rounded-md` track on the right (`surface-strong` with a `control-border` edge; `fg` when on) holding a 18px `rounded-sm` `surface` thumb that slides 16px (`transition-transform`, none under reduced motion). Rows are 40px, 44px on coarse pointers, `surface-subtle` on hover. Disabled dims only the track, so the hint explaining why stays at full contrast. Used for Pixel grid and Reference image in the settings drawer.
+
+### Confirm Dialog
+
+- `src/features/shared/components/ConfirmDialog.tsx` on the small Modal, opened with `await confirm(…)` from `useConfirm()`: a `text-base` heading that names the target (Delete “Slime”?), a `text-sm muted` description, an optional warning note for the irreversible part (`danger-surface` fill, `danger-line` border, `danger-fg` text), then ghost Cancel (focused first) and the `danger` confirm button. Escape and the backdrop cancel. Used for deleting an artwork and cropping the canvas.
+
 ### Feedback
 
 - **Error line** (gallery): `danger-surface` fill, `danger-fg` text, `rounded-lg`, `px-4 py-3 text-sm`.
-- **Toasts:** a top-centered stack, each toast `rounded-lg`, 1px border, `px-4 py-3`, `shadow-lg`, message in `text-sm font-medium`. Tones: neutral (`surface`, `line`, `fg`), success (`success-surface`, `success-line`, `success-fg`), error (`danger-surface`, `danger-line`, `danger-fg-strong`).
+- **Toasts:** a stack at the bottom on phones and top-centered from `sm`, each toast `rounded-lg`, 1px border, `py-2 pr-2 pl-4`, `shadow-lg`, message in `text-sm font-medium`, an optional text action (Undo) and an `x-mark` icon dismiss, both 32px targets. Tones: neutral (`surface`, `line`, `fg`), success (`success-surface`, `success-line`, `success-fg`), error (`danger-surface`, `danger-line`, `danger-fg-strong`). Errors are announced as alerts, the rest politely; errors and toasts with an action stay 8 s, others 4.5 s, and every timer pauses while the stack is hovered or focused.
 - **Empty state** (gallery): dashed `line-strong` border, `rounded-xl`, `p-12`, centered `muted` text.
 
 ### Layers Drawer Rows
@@ -395,7 +403,6 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 
 Agreed follow-ups, not yet in the code:
 
-- **Ghost Delete on cards.** Delete on artwork cards becomes a ghost action; the red `danger` fill appears only on the confirm button inside the delete dialog.
 - **Mono numeric readouts.** The settings size hint, zoom percentage and image-detail values move to JetBrains Mono (The Measured in Mono Rule); size fields and hex inputs already use it.
 - **Clean thumbnails.** Gallery thumbnails render without grid lines.
 - **Type migration.** Labels and buttons move from `text-sm` (14/20) to the 13/16 label style; off-scale headings (`text-lg`) move onto the scale.
@@ -421,4 +428,4 @@ Agreed follow-ups, not yet in the code:
 - **Don't** put texture, pattern or color behind the artwork; the checkerboard is the only thing under the canvas.
 - **Don't** use `pick-secondary` as a button or text color, or use the accent as body text.
 - **Don't** change font size, weight or spacing between themes.
-- **Don't** fill a destructive button red outside a confirmation step once the ghost Delete lands.
+- **Don't** fill a destructive action red outside its confirmation dialog.

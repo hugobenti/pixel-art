@@ -11,6 +11,7 @@ import { gallery } from "@/content/gallery";
 import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
 import { Card } from "@/features/shared/components/Card";
+import { ConfirmDialog } from "@/features/shared/components/ConfirmDialog";
 import { Input } from "@/features/shared/components/Input";
 import { Menu } from "@/features/shared/components/Menu";
 import { artworkCard } from "./ArtworkCard.style";
@@ -28,6 +29,7 @@ export function ArtworkCard(props: IArtworkCardProps) {
     cancelRename,
     submitRename,
     menuItems,
+    deleteDialog,
   } = useArtworkCard(props);
 
   return (
@@ -72,6 +74,7 @@ export function ArtworkCard(props: IArtworkCardProps) {
           <Menu label={gallery.card.actionsLabel(artwork.title)} items={menuItems} />
         </div>
       </Card>
+      <ConfirmDialog {...deleteDialog} />
     </article>
   );
 }

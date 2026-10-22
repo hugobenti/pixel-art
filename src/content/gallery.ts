@@ -13,7 +13,6 @@ export const gallery: IGalleryContent = {
   card: {
     clone: "Clone",
     delete: "Delete",
-    confirmDelete: "Delete this artwork permanently?",
     titleLabel: "Artwork title",
     actionsLabel: (title) => `Actions for ${title}`,
   },
@@ -40,5 +39,11 @@ export const gallery: IGalleryContent = {
     rename: "Rename failed.",
     clone: "Clone failed.",
     delete: "Delete failed.",
+  },
+  deleteDialog: {
+    title: (title) => `Delete “${title}”?`,
+    description:
+      "The artwork and all its layers are removed from this browser. This can’t be undone.",
+    confirm: "Delete artwork",
   },
 };

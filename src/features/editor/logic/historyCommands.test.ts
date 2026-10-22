@@ -1,0 +1,68 @@
+/**
+ * Purpose:
+ * Unit tests for applying undo/redo history commands to layer buffers (pixel deltas and palette removals).
+ */
+
+import { describe, expect, it } from "vitest";
+
+import {
+  applyHistoryCommand,
+  isEmptyHistoryCommand,
+  paletteAfterHistory,
+} from "@/features/editor/logic/historyCommands";
+import { removePaletteColor } from "@/features/editor/logic/paletteMutations";
+import type { IHistoryCommand } from "@/features/editor/types/editor.type";
+
+const PALETTE = ["#000000", "#ff0000", "#00ff00"];
+
+describe("applyHistoryCommand", () => {
+  it("reverts pixel deltas on undo and reapplies them on redo", () => {
+    const buf = Uint8Array.from([0, 0, 0]);
+    const layers = [{ id: "a", pixelData: buf }];
+    const cmd: IHistoryCommand = {
+      deltas: [
+        { layerId: "a", index: 1, previousPaletteIndex: 0, newPaletteIndex: 2 },
+        { layerId: "a", index: 2, previousPaletteIndex: 0, newPaletteIndex: 1 },
+      ],
+    };
+    buf.set([0, 2, 1]);
+
+    applyHistoryCommand(cmd, "undo", layers);
+    expect(Array.from(buf)).toEqual([0, 0, 0]);
+    expect(paletteAfterHistory(PALETTE, cmd, "undo")).toBe(PALETTE);
+
+    applyHistoryCommand(cmd, "redo", layers);
+    expect(Array.from(buf)).toEqual([0, 2, 1]);
+  });
+
+  it("undo of a palette removal restores the color and its pixels; redo removes them again", () => {
+    const layer = { id: "a", pixelData: Uint8Array.from([0, 1, 2, 1]) };
+    const layers = [layer];
+    const result = removePaletteColor([layer], PALETTE, 1, { primaryIndex: 1, secondaryIndex: 2 });
+    if (!result) {
+      throw new Error("expected a removal");
+    }
+    const cmd: IHistoryCommand = { deltas: [], paletteRemoval: result.removal };
+
+    applyHistoryCommand(cmd, "undo", layers);
+    const restored = paletteAfterHistory(result.palette, cmd, "undo");
+    expect(restored).toEqual(PALETTE);
+    expect(Array.from(layer.pixelData)).toEqual([0, 1, 2, 1]);
+
+    applyHistoryCommand(cmd, "redo", layers);
+    expect(paletteAfterHistory(restored, cmd, "redo")).toEqual(["#000000", "#00ff00"]);
+    expect(Array.from(layer.pixelData)).toEqual([0, 0, 1, 0]);
+  });
+});
+
+describe("isEmptyHistoryCommand", () => {
+  it("is empty only without deltas and without a palette change", () => {
+    expect(isEmptyHistoryCommand({ deltas: [] })).toBe(true);
+    expect(
+      isEmptyHistoryCommand({
+        deltas: [],
+        paletteRemoval: { index: 0, color: "#000000", removedPixels: [] },
+      }),
+    ).toBe(false);
+  });
+});

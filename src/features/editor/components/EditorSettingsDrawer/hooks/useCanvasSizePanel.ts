@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * Drill-in navigation and state for editor settings subpanels (canvas resize, image detail, etc.).
+ * Drill-in navigation and state for editor settings subpanels. Cropping confirms the lost pixels and history.
  */
 "use client";
 
@@ -8,9 +8,11 @@ import { useCallback, useState } from "react";
 
 import { editor } from "@/content/editor";
 import { resizeArtworkDimensions } from "@/features/editor/logic/resizeCanvas";
+import { useConfirm } from "@/features/shared/components/useConfirm";
 import type { TEditorSettingsView, IUseCanvasSizePanelParams } from "./useCanvasSizePanel.type";
 
 export function useCanvasSizePanel({ artwork, onApplyResized }: IUseCanvasSizePanelParams) {
+  const { confirm, dialog: shrinkDialog } = useConfirm();
   const [settingsView, setSettingsView] = useState<TEditorSettingsView>("menu");
   const [widthStr, setWidthStr] = useState(String(artwork.width));
   const [heightStr, setHeightStr] = useState(String(artwork.height));
@@ -21,36 +23,32 @@ export function useCanvasSizePanel({ artwork, onApplyResized }: IUseCanvasSizePa
     setSettingsView("canvasSize");
   }, [artwork.width, artwork.height]);
 
-  const openImageDetail = useCallback(() => {
-    setSettingsView("imageDetail");
-  }, []);
-
-  const openImportExport = useCallback(() => {
-    setSettingsView("importExport");
-  }, []);
-
-  const backToMenu = useCallback(() => {
-    setSettingsView("menu");
-  }, []);
+  const openImageDetail = useCallback(() => setSettingsView("imageDetail"), []);
+  const openImportExport = useCallback(() => setSettingsView("importExport"), []);
+  const backToMenu = useCallback(() => setSettingsView("menu"), []);
 
   const applyCanvasSize = useCallback(
-    ({ width: w, height: h }: { width: number; height: number }) => {
-      const losesPixels = w < artwork.width || h < artwork.height;
-      if (losesPixels) {
-        const ok = window.confirm(editor.settings.canvasSize.confirmShrink);
-        if (!ok) {
-          return;
-        }
-      }
-      const next = resizeArtworkDimensions(artwork, w, h);
-      if (next === artwork) {
+    (size: { width: number; height: number }) => {
+      const commit = () => {
+        const next = resizeArtworkDimensions(artwork, size.width, size.height);
+        if (next !== artwork) onApplyResized(next);
         setSettingsView("menu");
+      };
+      if (size.width >= artwork.width && size.height >= artwork.height) {
+        commit();
         return;
       }
-      onApplyResized(next);
-      setSettingsView("menu");
+      const copy = editor.canvasShrinkDialog;
+      void confirm({
+        title: copy.title(size.width, size.height),
+        description: copy.description(size.width, size.height),
+        warning: copy.warning,
+        confirmLabel: copy.confirm,
+      }).then((confirmed) => {
+        if (confirmed) commit();
+      });
     },
-    [artwork, onApplyResized],
+    [artwork, onApplyResized, confirm],
   );
 
   return {
@@ -64,5 +62,6 @@ export function useCanvasSizePanel({ artwork, onApplyResized }: IUseCanvasSizePa
     openImportExport,
     backToMenu,
     applyCanvasSize,
+    shrinkDialog,
   };
 }
