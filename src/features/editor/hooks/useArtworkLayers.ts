@@ -9,6 +9,7 @@ import { useCallback, useMemo } from "react";
 import { editor } from "@/content/editor";
 import { removeLayer } from "@/features/editor/logic/layerRemoval";
 import type { IArtworkLayer } from "@/features/shared/artwork/artwork.type";
+import { TRANSPARENT_PIXEL_INDEX } from "@/features/shared/artwork/artworkService";
 import { clonePixelBuffer } from "@/features/shared/utils/binaryHelpers";
 import type { IUseArtworkLayersParams } from "./useArtworkLayers.type";
 
@@ -24,8 +25,6 @@ function moveLayerByIds(layers: IArtworkLayer[], activeId: string, overId: strin
   next.splice(to, 0, moved);
   return next;
 }
-
-const TRANSPARENT_SENTINEL_INDEX = 255;
 
 export function useArtworkLayers({
   artwork,
@@ -117,7 +116,7 @@ export function useArtworkLayers({
         visible: true,
         pixelData: new Uint8Array(pixelCount),
       };
-      nextLayer.pixelData.fill(TRANSPARENT_SENTINEL_INDEX);
+      nextLayer.pixelData.fill(TRANSPARENT_PIXEL_INDEX);
       createdLayerId = nextLayer.id;
       return {
         ...prev,

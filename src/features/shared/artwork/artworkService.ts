@@ -19,6 +19,8 @@ const CANON_HEX6 = /^#[0-9A-F]{6}$/;
 
 export const MAX_CANVAS_DIMENSION = 1000;
 export const MAX_PALETTE_ENTRIES = 256;
+/** Pixel value for "no color": any value at or above the palette length draws nothing; 255 is the one written. */
+export const TRANSPARENT_PIXEL_INDEX = 255;
 
 /**
  * Starter palette for new artworks: Sweetie 16 by GrafxKid. Index 0 (darkest) is the primary

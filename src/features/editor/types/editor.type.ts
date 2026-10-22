@@ -18,7 +18,7 @@ export interface IPixelDelta {
 
 export type THistoryDirection = "undo" | "redo";
 
-/** Pixels of one layer that used a removed palette color (they were remapped to index 0). */
+/** Pixels of one layer that used a removed palette color (they were repainted with the replacement). */
 export interface ILayerRemovedPixels {
   layerId: string;
   indices: Uint32Array;
@@ -28,6 +28,8 @@ export interface ILayerRemovedPixels {
 export interface IPaletteRemoval {
   index: number;
   color: string;
+  /** Value written to the removed color's pixels, in the palette without it (or the transparent index). */
+  replacement: number;
   removedPixels: ILayerRemovedPixels[];
 }
 

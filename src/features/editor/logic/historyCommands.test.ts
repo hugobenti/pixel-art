@@ -38,7 +38,7 @@ describe("applyHistoryCommand", () => {
   it("undo of a palette removal restores the color and its pixels; redo removes them again", () => {
     const layer = { id: "a", pixelData: Uint8Array.from([0, 1, 2, 1, 255]) };
     const layers = [layer];
-    const result = removePaletteColor([layer], PALETTE, 1, { primaryIndex: 1, secondaryIndex: 2 });
+    const result = removePaletteColor([layer], PALETTE, 1, { primaryIndex: 1, secondaryIndex: 2 }, 0);
     if (!result) {
       throw new Error("expected a removal");
     }
@@ -53,6 +53,21 @@ describe("applyHistoryCommand", () => {
     expect(paletteAfterHistory(restored, cmd, "redo")).toEqual(["#000000", "#00ff00"]);
     expect(Array.from(layer.pixelData)).toEqual([0, 0, 1, 0, 255]);
   });
+
+  it("redo of a palette removal paints the same replacement again", () => {
+    const layer = { id: "a", pixelData: Uint8Array.from([0, 1, 2, 1, 255]) };
+    const layers = [layer];
+    const result = removePaletteColor(layers, PALETTE, 1, { primaryIndex: 0, secondaryIndex: 1 }, null);
+    if (!result) {
+      throw new Error("expected a removal");
+    }
+    const cmd: IHistoryCommand = { deltas: [], paletteRemoval: result.removal };
+
+    applyHistoryCommand(cmd, "undo", layers, result.palette.length);
+    applyHistoryCommand(cmd, "redo", layers, PALETTE.length);
+
+    expect(Array.from(layer.pixelData)).toEqual([0, 255, 1, 255, 255]);
+  });
 });
 
 describe("isEmptyHistoryCommand", () => {
@@ -61,7 +76,7 @@ describe("isEmptyHistoryCommand", () => {
     expect(
       isEmptyHistoryCommand({
         deltas: [],
-        paletteRemoval: { index: 0, color: "#000000", removedPixels: [] },
+        paletteRemoval: { index: 0, color: "#000000", replacement: 0, removedPixels: [] },
       }),
     ).toBe(false);
     expect(
@@ -83,7 +98,7 @@ describe("palette append history", () => {
     const full = Array.from({ length: 256 }, (_, i) => `#${i.toString(16).padStart(6, "0")}`);
     const layer = { id: "a", pixelData: Uint8Array.from([0, 5, 200]) };
     const layers = [layer];
-    const removed = removePaletteColor(layers, full, 5, { primaryIndex: 0, secondaryIndex: 1 });
+    const removed = removePaletteColor(layers, full, 5, { primaryIndex: 0, secondaryIndex: 1 }, 0);
     if (!removed) {
       throw new Error("expected a removal");
     }

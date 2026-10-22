@@ -150,5 +150,13 @@ export const editor: IEditorContent = {
   paletteRemoval: {
     /** Undo toast after a palette color is removed. */
     removed: (color) => `Removed color ${color}.`,
+    dialog: {
+      title: (color) => `Remove ${color}?`,
+      description: (pixelCount) =>
+        `${pixelCount === 1 ? "1 pixel uses" : `${pixelCount} pixels use`} this color. Pick what ${pixelCount === 1 ? "it becomes" : "they become"}; Undo brings the color back.`,
+      replaceWith: "Replace with",
+      transparent: "Transparent",
+      confirm: "Remove color",
+    },
   },
 };

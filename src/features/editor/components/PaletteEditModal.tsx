@@ -10,7 +10,9 @@ import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
 import { ColorField } from "@/features/shared/components/ColorField";
 import { ColorSwatch } from "@/features/shared/components/ColorSwatch";
+import { ConfirmDialog } from "@/features/shared/components/ConfirmDialog";
 import { Modal } from "@/features/shared/components/Modal";
+import { PaletteReplacementPicker } from "./PaletteReplacementPicker";
 import { paletteEditModal } from "./PaletteEditModal.style";
 import type { IPaletteEditModalProps } from "./PaletteEditModal.type";
 import { usePaletteEditModal } from "./usePaletteEditModal";
@@ -22,6 +24,7 @@ export function PaletteEditModal(props: IPaletteEditModalProps) {
     editHex,
     applyEditHex,
     removeFocused,
+    removal,
     newHex,
     setNewHex,
     newColorValid,
@@ -93,6 +96,13 @@ export function PaletteEditModal(props: IPaletteEditModalProps) {
           <p className={paletteEditModal.fullNote}>{editor.paletteModal.paletteFull}</p>
         ) : null}
       </fieldset>
+      <ConfirmDialog {...removal.dialog}>
+        <PaletteReplacementPicker
+          choices={removal.choices}
+          replacementIndex={removal.replacementIndex}
+          onChoose={removal.chooseReplacement}
+        />
+      </ConfirmDialog>
     </Modal>
   );
 }

@@ -38,7 +38,7 @@ The package name is `pixelator`. The product name is not final yet (see [`PRODUC
 ### Palette
 
 - New artworks start with the Sweetie 16 palette (16 colors). If the chosen background color isn't in the palette, it is added.
-- Edit any swatch, add colors (up to 256) and remove colors. Removing a color can be undone.
+- Edit any swatch, add colors (up to 256) and remove colors. Removing a color that pixels use asks what they become (another palette color or transparent). Removing a color can be undone.
 
 ### Files
 
