@@ -127,6 +127,7 @@ export const editor: IEditorContent = {
     renameModal: {
       title: "Rename layer",
       nameLabel: "Layer name",
+      emptyError: "Name can't be empty.",
     },
   },
   toasts: {

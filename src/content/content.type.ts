@@ -263,6 +263,8 @@ export interface IEditorContent {
     renameModal: {
       title: string;
       nameLabel: string;
+      /** Inline error when the name is blank. */
+      emptyError: string;
     };
   };
   toasts: {

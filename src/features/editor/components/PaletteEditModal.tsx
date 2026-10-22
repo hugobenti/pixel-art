@@ -15,34 +15,11 @@ import { usePaletteEditModal } from "./usePaletteEditModal";
 
 export function PaletteEditModal(props: IPaletteEditModalProps) {
   const { open, onClose, palette, onSelectSwatch, canRemoveSwatch, maxPaletteReached } = props;
-  const {
-    titleId,
-    focusedIndex,
-    editHex,
-    applyEditHex,
-    removeFocused,
-    newHex,
-    changeNewHex,
-    addNewColor,
-  } = usePaletteEditModal(props);
+  const { focusedIndex, editHex, applyEditHex, removeFocused, newHex, changeNewHex, addNewColor } =
+    usePaletteEditModal(props);
 
   return (
-    <Modal
-      open={open}
-      onClose={onClose}
-      placement="bottomSheet"
-      size="lg"
-      overlayProps={{ "aria-labelledby": titleId }}
-    >
-      <div className={paletteEditModal.header}>
-        <h2 id={titleId} className={paletteEditModal.heading}>
-          {editor.paletteModal.title}
-        </h2>
-        <Button type="button" variant="ghost" onClick={onClose}>
-          {shared.actions.close}
-        </Button>
-      </div>
-
+    <Modal open={open} onClose={onClose} title={editor.paletteModal.title} size="lg">
       <div>
         <p className={paletteEditModal.legend}>{editor.paletteModal.swatches}</p>
         <div className={paletteEditModal.swatchGrid}>

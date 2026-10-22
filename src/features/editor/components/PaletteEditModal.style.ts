@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * Classes for the PaletteEditModal: header, swatch grid, selected-color row, add-color section and native color inputs.
+ * Classes for the PaletteEditModal: swatch grid, selected-color row, add-color section and native color inputs.
  */
 
 import { focusRing } from "@/features/shared/components/focus.style";
@@ -12,8 +12,6 @@ const colorInput = cx(
 );
 
 export const paletteEditModal = {
-  header: "flex items-start justify-between gap-3",
-  heading: "text-lg font-semibold text-fg",
   legend: "text-xs font-medium text-muted",
   swatchGrid: "mt-2 grid grid-cols-8 gap-2 sm:grid-cols-10",
   selectedRow: "flex flex-wrap items-center gap-3 border-t border-line pt-4",

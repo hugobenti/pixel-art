@@ -5,7 +5,7 @@
  */
 "use client";
 
-import { useId, useState, type ChangeEvent } from "react";
+import { useState, type ChangeEvent } from "react";
 
 import { clampPaletteIndex } from "@/features/editor/logic/paletteMutations";
 import type { IPaletteEditModalProps } from "./PaletteEditModal.type";
@@ -23,7 +23,6 @@ export function usePaletteEditModal({
   onAddColor,
   onRemoveSwatch,
 }: IPaletteEditModalProps) {
-  const titleId = useId();
   const focusedIndex = clampPaletteIndex(focusedSwatchIndex, palette.length);
 
   const [newHex, setNewHex] = useState(NEW_COLOR_DEFAULT);
@@ -36,7 +35,6 @@ export function usePaletteEditModal({
   }
 
   return {
-    titleId,
     focusedIndex,
     editHex: palette[focusedIndex] ?? EMPTY_PALETTE_COLOR,
     applyEditHex: (event: ChangeEvent<HTMLInputElement>) => {

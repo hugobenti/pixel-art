@@ -1,17 +1,59 @@
 /**
  * Purpose:
- * Modal behavior: traps focus in the panel while open and closes on Escape when enabled.
+ * Modal behavior: the heading id for `aria-labelledby`, mount and fade state (the panel stays mounted
+ * until its exit fade ends), focus trap with an optional `data-autofocus` start field, and Escape.
  */
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 
 import { useFocusTrap } from "@/features/shared/hooks/useFocusTrap";
 import type { IUseModalInput } from "./Modal.type";
 
+/** Matches `duration-200` on the overlay and panel in Modal.style.ts. */
+const MODAL_MOTION_MS = 200;
+/** Element inside the panel that receives focus on open instead of the first focusable (the close button). */
+const AUTOFOCUS_SELECTOR = "[data-autofocus]";
+
 export function useModal({ open, closeOnEscape, onClose }: IUseModalInput) {
+  const titleId = useId();
   const panelRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(open);
+  const [entered, setEntered] = useState(false);
+
+  if (open && !mounted) {
+    setMounted(true);
+  }
+  if (!open && entered) {
+    setEntered(false);
+  }
+
   useFocusTrap(panelRef, open);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+    const target = panelRef.current?.querySelector<HTMLElement>(AUTOFOCUS_SELECTOR);
+    target?.focus();
+    if (target instanceof HTMLInputElement) {
+      target.select();
+    }
+  }, [open]);
+
+  useEffect(() => {
+    if (open) {
+      let frame = window.requestAnimationFrame(() => {
+        frame = window.requestAnimationFrame(() => setEntered(true));
+      });
+      return () => window.cancelAnimationFrame(frame);
+    }
+    if (!mounted) {
+      return;
+    }
+    const timer = window.setTimeout(() => setMounted(false), MODAL_MOTION_MS);
+    return () => window.clearTimeout(timer);
+  }, [open, mounted]);
 
   useEffect(() => {
     if (!open || !closeOnEscape) {
@@ -27,5 +69,5 @@ export function useModal({ open, closeOnEscape, onClose }: IUseModalInput) {
     return () => window.removeEventListener("keydown", onKey);
   }, [open, closeOnEscape, onClose]);
 
-  return { panelRef };
+  return { titleId, panelRef, mounted, entered };
 }
