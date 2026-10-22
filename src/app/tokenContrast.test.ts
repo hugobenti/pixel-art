@@ -57,6 +57,8 @@ const uiPairs = [
   ["guide-horizontal", "checker-dark"],
   ["guide-vertical", "checker-light"],
   ["guide-vertical", "checker-dark"],
+  ["brand-hb", "bg"],
+  ["brand-hb", "surface"],
   ["surface", "surface-inverse"],
   ["control-border", "bg"],
   ["control-border", "surface"],

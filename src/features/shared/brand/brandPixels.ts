@@ -8,7 +8,7 @@
 
 import type { IBrandImageBlock } from "./BrandImage.type";
 import type { TBrandGrid } from "./brandArt.type";
-import type { IBrandRun } from "./brandPixels.type";
+import type { IBrandLockup, IBrandLockupPart, IBrandRun } from "./brandPixels.type";
 
 const TRANSPARENT = ".";
 
@@ -46,4 +46,15 @@ export function gridBlocks(
     height: scale,
     color: colors[run.key],
   }));
+}
+
+/** Grids placed side by side (or stacked) as one drawing, with its size in logo pixels. */
+export function lockup(parts: readonly IBrandLockupPart[]): IBrandLockup {
+  return {
+    width: Math.max(...parts.map((part) => part.x + part.grid[0].length)),
+    height: Math.max(...parts.map((part) => part.y + part.grid.length)),
+    runs: parts.flatMap((part) =>
+      gridRuns(part.grid).map((run) => ({ ...run, x: run.x + part.x, y: run.y + part.y })),
+    ),
+  };
 }

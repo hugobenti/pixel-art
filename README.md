@@ -1,8 +1,11 @@
-# PixelCraft
+<h1>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/brand/pixelhb-banner-dark.svg">
+    <img src="docs/brand/pixelhb-banner-light.svg" alt="PixelHB" width="400" height="56">
+  </picture>
+</h1>
 
-PixelCraft is a local-first pixel-art editor that runs in the browser. You don't need an account or an install: open it, draw, export. Artworks are stored in the browser's IndexedDB (via Dexie), so your work survives a reload and nothing leaves the browser. Canvases go up to 1000 × 1000 pixels, each with an indexed palette of up to 256 colors and any number of layers. It works on desktop (mouse, trackpad, keyboard) and on phones (touch, pinch).
-
-The package name is `pixelator`. The product name is not final yet (see [`PRODUCT.md`](PRODUCT.md)).
+PixelHB is a local-first pixel-art editor that runs in the browser. You don't need an account or an install: open it, draw, export. Artworks are stored in the browser's IndexedDB (via Dexie), so your work survives a reload and nothing leaves the browser. Canvases go up to 1000 × 1000 pixels, each with an indexed palette of up to 256 colors and any number of layers. It works on desktop (mouse, trackpad, keyboard) and on phones (touch, pinch).
 
 ## Features
 
@@ -131,6 +134,7 @@ Pure logic lives in plain `.ts` modules with their own tests. The full rules are
 ## Design system
 
 - [`DESIGN.md`](DESIGN.md): visual system, including tokens, typography (Schibsted Grotesk and JetBrains Mono), and the light and dark themes.
+- [`docs/design/brand.md`](docs/design/brand.md): the PixelHB logo as pixel grids, its palette and usage rules. The logo files in `docs/brand/` and the app icons are generated from the same grids.
 - [`PRODUCT.md`](PRODUCT.md): users, purpose and product principles.
 - [`docs/design/explorations.md`](docs/design/explorations.md): how the theme was chosen.
 
