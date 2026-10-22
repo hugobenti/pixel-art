@@ -9,6 +9,7 @@
 
 import { gallery } from "@/content/gallery";
 import { shared } from "@/content/shared";
+import { BrandLogo } from "@/features/shared/brand/BrandLogo";
 import { Button } from "@/features/shared/components/Button";
 import { ThemeToggle } from "@/features/shared/components/ThemeToggle";
 
@@ -37,7 +38,9 @@ export function GalleryScreen() {
     <main className={galleryScreen.shell}>
       <header className={galleryScreen.header}>
         <div>
-          <h1 className={galleryScreen.heading}>{gallery.screen.title}</h1>
+          <h1 className={galleryScreen.heading}>
+            <BrandLogo />
+          </h1>
           <p className={galleryScreen.intro}>{gallery.screen.intro}</p>
         </div>
         <div className={galleryScreen.actions}>

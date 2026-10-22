@@ -8,6 +8,7 @@
  * from tokens in the live UI; `BRAND_STATIC_THEME_COLORS` are their light-theme values for images.
  */
 
+import type { IBrandLockupPart } from "./brandPixels.type";
 import type { TBrandFixedKey, TBrandGrid, TBrandGridName, TBrandThemeKey } from "./brandArt.type";
 
 /** Side-on pencil with HB stamped on it, pointing right, plus one freshly drawn pixel. 33 × 7. */
@@ -92,3 +93,21 @@ export const BRAND_STATIC_THEME_COLORS: Readonly<Record<TBrandThemeKey, string>>
   i: "#1A1C24",
   h: "#B4500F",
 };
+
+/** Dark-theme values of the theme keys, for generated images shown on dark backgrounds. */
+export const BRAND_DARK_STATIC_THEME_COLORS: Readonly<Record<TBrandThemeKey, string>> = {
+  d: "#EFEBE5",
+  i: "#EFEBE5",
+  h: "#EDA743",
+};
+
+/** Logo pixels between the pencil and the wordmark in the horizontal lockup. */
+const LOCKUP_GAP = 4;
+
+/** Pencil, then the wordmark; both 7 pixels tall and top-aligned. */
+export const HORIZONTAL_LOCKUP: readonly IBrandLockupPart[] = [
+  { grid: PENCIL_GRID, x: 0, y: 0 },
+  { grid: WORDMARK_GRID, x: PENCIL_GRID[0].length + LOCKUP_GAP, y: 0 },
+];
+
+export const BANNER_LOCKUP: readonly IBrandLockupPart[] = [{ grid: BRAND_PENCIL_GRID, x: 0, y: 0 }];

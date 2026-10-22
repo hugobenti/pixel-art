@@ -2,7 +2,6 @@ import type { IGalleryContent } from "./content.type";
 
 export const gallery: IGalleryContent = {
   screen: {
-    title: "Gallery",
     intro: "Local artworks stored in your browser (IndexedDB).",
     importJson: "Import JSON",
     newArtwork: "New artwork",

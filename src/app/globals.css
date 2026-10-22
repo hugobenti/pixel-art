@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /**
- * Design tokens for PixelCraft, declared once here (system and rationale: DESIGN.md).
+ * Design tokens for PixelHB, declared once here (system and rationale: DESIGN.md).
  * Light theme ("Paper & Ink") is the `@theme static` block: Tailwind generates the utilities from it
  * (`bg-surface`, `text-muted`, `outline-focus`…). Dark theme ("Studio Dark") overrides the same
  * variables under `[data-theme="dark"]`, set on <html> before first paint (see
@@ -42,6 +42,9 @@
   --color-focus: #2b3a9e;
   --color-pick-primary: #2b3a9e;
   --color-pick-secondary: #b4500f;
+
+  /* Brand: "HB" in the logo wordmark (docs/design/brand.md) */
+  --color-brand-hb: #b4500f;
 
   /* Status */
   --color-danger: #b3261e;
@@ -104,6 +107,9 @@
   --color-focus: #f5bb64;
   --color-pick-primary: #eda743;
   --color-pick-secondary: #7cb2ff;
+
+  /* Brand */
+  --color-brand-hb: #eda743;
 
   /* Status */
   --color-danger: #f0605f;
