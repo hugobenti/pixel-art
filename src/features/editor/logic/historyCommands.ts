@@ -1,7 +1,7 @@
 /**
  * Purpose:
- * Pure undo/redo application of history commands to layer buffers: pixel deltas and palette-color
- * removals, plus the palette a command leaves behind.
+ * Pure undo/redo application of history commands to layer buffers: pixel deltas, palette-color
+ * removals and appends, plus the palette a command leaves behind.
  */
 
 import {
@@ -12,7 +12,7 @@ import type { IPaletteLayerBuffer } from "@/features/editor/logic/paletteMutatio
 import type { IHistoryCommand, THistoryDirection } from "@/features/editor/types/editor.type";
 
 export function isEmptyHistoryCommand(cmd: IHistoryCommand): boolean {
-  return cmd.deltas.length === 0 && !cmd.paletteRemoval;
+  return cmd.deltas.length === 0 && !cmd.paletteRemoval && !cmd.paletteAppend;
 }
 
 /**
@@ -50,12 +50,18 @@ export function applyHistoryCommand(
   }
 }
 
-/** The palette after undoing or redoing the command (unchanged unless it removed a color). */
+/** The palette after undoing or redoing the command (unchanged unless it removed or added a color). */
 export function paletteAfterHistory(
   palette: string[],
   cmd: IHistoryCommand,
   direction: THistoryDirection,
 ): string[] {
+  const append = cmd.paletteAppend;
+  if (append) {
+    return direction === "undo"
+      ? palette.filter((_, i) => i !== append.index)
+      : [...palette.slice(0, append.index), append.color, ...palette.slice(append.index)];
+  }
   const removal = cmd.paletteRemoval;
   if (!removal) {
     return palette;

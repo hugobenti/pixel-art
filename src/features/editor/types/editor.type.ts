@@ -31,9 +31,16 @@ export interface IPaletteRemoval {
   removedPixels: ILayerRemovedPixels[];
 }
 
+/** A color appended to the end of the palette; undo drops it again. */
+export interface IPaletteAppend {
+  index: number;
+  color: string;
+}
+
 export interface IHistoryCommand {
   deltas: IPixelDelta[];
   paletteRemoval?: IPaletteRemoval;
+  paletteAppend?: IPaletteAppend;
   /** React-state side of the command (palette, color slots); runs after the buffers change. */
   onApplied?: (direction: THistoryDirection) => void;
 }

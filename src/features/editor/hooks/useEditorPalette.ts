@@ -3,8 +3,9 @@
  * Editor palette UI state: active paint/swatch slot, focused swatch for the color picker, and palette mutations.
  *
  * Notes:
- * Removing a color pushes a history command (Undo restores the color, its pixels and the color slots)
- * and shows a toast with an Undo action.
+ * Adding and removing a color push history commands (Undo drops an added color; it restores a removed
+ * color, its pixels and the color slots), so Undo replays them in order and the palette never grows
+ * past its limit. Removing also shows a toast with an Undo action.
  */
 "use client";
 
@@ -78,11 +79,24 @@ export function useEditorPalette({
       if (!next) {
         return;
       }
-      discardRedo();
+      const index = next.length - 1;
+      const cmd: IHistoryCommand = {
+        deltas: [],
+        paletteAppend: { index, color: next[index] },
+        onApplied: (direction) => {
+          setArtwork((a) => ({ ...a, palette: paletteAfterHistory(a.palette, cmd, direction) }));
+          setFocusedSwatchIndex((focused) =>
+            direction === "redo" ? index : clampPaletteIndex(focused, index),
+          );
+          onPaletteOrPixelsDirty();
+        },
+      };
       setArtwork((a) => ({ ...a, palette: next }));
+      setFocusedSwatchIndex(index);
       onPaletteOrPixelsDirty();
+      pushCommand(cmd);
     },
-    [artwork.palette, setArtwork, discardRedo, onPaletteOrPixelsDirty],
+    [artwork.palette, setArtwork, onPaletteOrPixelsDirty, pushCommand],
   );
 
   const removeSwatchAtIndex = useCallback(
