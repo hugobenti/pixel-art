@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * Dynamic editor route that loads a single artwork by id into the PixelCraft workspace.
+ * Dynamic editor route that loads a single artwork by id into the PixelHB workspace.
  */
 "use client";
 

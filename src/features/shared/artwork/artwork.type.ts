@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * Core TypeScript contracts for PixelCraft artwork documents, shared by persistence, the editor and the gallery.
+ * Core TypeScript contracts for PixelHB artwork documents, shared by persistence, the editor and the gallery.
  */
 
 export interface IArtwork {

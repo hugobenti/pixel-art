@@ -32,7 +32,7 @@ Everything stays local: artworks live in the browser's IndexedDB, so it works of
 - Next.js App Router, Tailwind v4 with semantic tokens declared once in `src/app/globals.css`; no third-party UI kit; canvas renderers read colors from the same CSS variables.
 - All UI copy lives in `src/content`.
 - Layer data is `Uint8Array` indexed into a per-artwork palette; PNG and JSON import/export.
-- Undecided: the product name. "PixelCraft" (package name "pixelator") is not binding and may change.
+- Product name: PixelHB. The brand spec (logo, palette, usage) is in `docs/design/brand.md`.
 
 ## Evidence on Hand
 

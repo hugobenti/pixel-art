@@ -4,7 +4,7 @@ Guide for AI coding agents (and humans) working in this repo. Read it before cha
 
 ## What this is
 
-Pixelator (PixelCraft): a browser pixel-art editor built with Next.js. Artworks live in IndexedDB (Dexie) as indexed-palette `Uint8Array` layers up to 1000 × 1000; the editor draws them on stacked `<canvas>` layers. Architecture and data model: `TDD.md`.
+PixelHB: a browser pixel-art editor built with Next.js. Artworks live in IndexedDB (Dexie) as indexed-palette `Uint8Array` layers up to 1000 × 1000; the editor draws them on stacked `<canvas>` layers. Architecture and data model: `TDD.md`.
 
 ## Repo map
 

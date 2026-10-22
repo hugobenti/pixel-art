@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * IndexedDB bootstrap for PixelCraft using Dexie.js (artworks table + schema versioning).
+ * IndexedDB bootstrap for PixelHB using Dexie.js (artworks table + schema versioning).
  */
 import Dexie, { type Table } from "dexie";
 
