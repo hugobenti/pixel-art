@@ -1,6 +1,6 @@
 import type { ISiteContent } from "./content.type";
 
 export const site: ISiteContent = {
-  name: "PixelCraft",
-  description: "Web-based pixel art editor",
+  name: "PixelHB",
+  description: "Pixel-art editor for the browser",
 };
