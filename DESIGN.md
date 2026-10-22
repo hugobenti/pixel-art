@@ -248,8 +248,8 @@ Every color token, as declared in `src/app/globals.css`. Light values are the `@
 
 ### Theming
 
-- **Default and override.** The theme follows `prefers-color-scheme` until the user picks one. The choice is stored in `localStorage` under `pixelcraft-theme` as `"light"` or `"dark"`; no key means "follow the system". The preference logic lives in `src/features/shared/theme/`: `themePreference.ts` (pure parse/resolve helpers and the pre-paint script, unit-tested) and `useThemePreference.ts` (hooks `useThemePreference`, `useResolvedTheme`, `useThemeSync`).
-- **Switch.** The resolved theme is written to `data-theme` on `<html>`. An inline script rendered in `<head>` by `src/app/layout.tsx` sets it before first paint, so there is no flash of the wrong theme. `useThemeSync` (called in `src/app/AppProviders.tsx`) keeps it in sync when the OS setting changes while the user follows the system.
+- **Default and override.** There are two themes and no "System" option. A first visit follows `prefers-color-scheme`; once the user picks Light or Dark, the choice is stored in `localStorage` under `pixelcraft-theme` as `"light"` or `"dark"` and the OS setting is ignored from then on. The preference logic lives in `src/features/shared/theme/`: `themePreference.ts` (pure parse/resolve helpers, the option list and the pre-paint script, unit-tested) and `useThemePreference.ts` (hooks `useSetTheme`, `useResolvedTheme`, `useThemeSync`).
+- **Switch.** The resolved theme is written to `data-theme` on `<html>`. An inline script rendered in `<head>` by `src/app/layout.tsx` sets it before first paint, so there is no flash of the wrong theme. `useThemeSync` (called in `src/app/AppProviders.tsx`) keeps it in sync with a pick in this or another tab, and with the OS setting while nothing has been picked yet.
 - **Tokens.** Light values live in the `@theme static` block of `src/app/globals.css`; dark values override the same `--color-*` custom properties under `[data-theme="dark"]`, which also sets `color-scheme: dark`. Tailwind utilities (`bg-surface`, `text-muted`, `outline-focus`) resolve to whichever value is active.
 - **Canvas.** The editor's canvas renderers read the grid and guide colors from the CSS variables (`--color-grid-line`, `--color-guide-horizontal`, `--color-guide-vertical`) and re-read them when the resolved theme changes.
 - **Contrast.** `src/app/tokenContrast.test.ts` checks the same pair list against both token sets: text pairs at 4.5:1, UI pairs (focus, accent, danger, swatch rings, `control-border` on `bg` / `surface` / `surface-subtle`, guides on the checkerboard, `surface` on `surface-inverse`) at 3:1. It also fails if the dark block leaves any color token undefined, so a light value can never leak into dark.
@@ -378,7 +378,7 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 
 ### Theme Toggle
 
-- `src/features/shared/components/ThemeToggle.tsx`: a segmented native radio group, **System / Light / Dark**. It sits in the gallery header and as a "Theme" row in the editor settings drawer. System clears the stored preference.
+- `src/features/shared/components/ThemeToggle.tsx`: a segmented native radio group, **Light / Dark**; the theme on screen is checked (the OS theme on a first visit). It sits in the gallery header and as a "Theme" row in the editor settings drawer.
 
 ### Switch
 
