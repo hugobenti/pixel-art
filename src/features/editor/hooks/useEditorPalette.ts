@@ -28,6 +28,7 @@ export function useEditorPalette({
   setArtwork,
   onPaletteOrPixelsDirty,
   pushCommand,
+  discardRedo,
   undoCommand,
 }: IUseEditorPaletteParams) {
   const { showToast } = useToast();
@@ -64,10 +65,11 @@ export function useEditorPalette({
     (index: number, hex: string) => {
       const i = Math.min(Math.max(0, index), artwork.palette.length - 1);
       const next = setPaletteColorAt(artwork.palette, i, hex);
+      if (next[i] !== artwork.palette[i]) discardRedo();
       setArtwork((a) => ({ ...a, palette: next }));
       onPaletteOrPixelsDirty();
     },
-    [artwork.palette, setArtwork, onPaletteOrPixelsDirty],
+    [artwork.palette, setArtwork, discardRedo, onPaletteOrPixelsDirty],
   );
 
   const addColor = useCallback(
@@ -76,11 +78,11 @@ export function useEditorPalette({
       if (!next) {
         return;
       }
+      discardRedo();
       setArtwork((a) => ({ ...a, palette: next }));
-      setFocusedSwatchIndex(next.length - 1);
       onPaletteOrPixelsDirty();
     },
-    [artwork.palette, setArtwork, onPaletteOrPixelsDirty],
+    [artwork.palette, setArtwork, discardRedo, onPaletteOrPixelsDirty],
   );
 
   const removeSwatchAtIndex = useCallback(

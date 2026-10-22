@@ -73,7 +73,16 @@ export function useEditorWorkspace({ initialArtwork }: IEditorWorkspaceProps) {
 
   const getLayers = useCallback(() => artworkRef.current.layers, []);
 
-  const { pushCommand, undo, undoCommand, redo, canUndo, canRedo, historyRevision } = useHistory({
+  const {
+    pushCommand,
+    discardRedo,
+    undo,
+    undoCommand,
+    redo,
+    canUndo,
+    canRedo,
+    historyRevision,
+  } = useHistory({
     documentKey: `${artwork.id}:${artwork.width}x${artwork.height}`,
     getLayers,
   });
@@ -83,6 +92,7 @@ export function useEditorWorkspace({ initialArtwork }: IEditorWorkspaceProps) {
     setArtwork,
     onPaletteOrPixelsDirty: schedulePaintBump,
     pushCommand,
+    discardRedo,
     undoCommand,
   });
 

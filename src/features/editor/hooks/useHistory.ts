@@ -14,6 +14,7 @@ import {
   applyHistoryCommand,
   isEmptyHistoryCommand,
 } from "@/features/editor/logic/historyCommands";
+import { discardRedoStack } from "@/features/editor/logic/historyStacks";
 import type { IHistoryCommand } from "@/features/editor/types/editor.type";
 import type { IUseHistoryParams } from "./useHistory.type";
 
@@ -56,6 +57,11 @@ export function useHistory({ documentKey, getLayers }: IUseHistoryParams) {
     },
     [syncFlags],
   );
+  const discardRedo = useCallback(() => {
+    if (redoStack.current.length === 0) return;
+    discardRedoStack(redoStack.current);
+    syncFlags();
+  }, [syncFlags]);
 
   const undo = useCallback(() => {
     const cmd = undoStack.current.pop();
@@ -91,6 +97,7 @@ export function useHistory({ documentKey, getLayers }: IUseHistoryParams) {
 
   return {
     pushCommand,
+    discardRedo,
     undo,
     undoCommand,
     redo,

@@ -7,6 +7,6 @@ export interface IUseEditorPaletteParams {
   setArtwork: Dispatch<SetStateAction<IArtwork>>;
   onPaletteOrPixelsDirty: () => void;
   pushCommand: (cmd: IHistoryCommand) => void;
-  /** Undoes `cmd` only while it is still the latest history entry. */
+  discardRedo: () => void;
   undoCommand: (cmd: IHistoryCommand) => void;
 }
