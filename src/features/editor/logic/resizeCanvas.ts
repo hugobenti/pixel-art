@@ -3,24 +3,33 @@
  * Resize pixel layer buffers and full artwork dimensions with top-left anchoring.
  *
  * Notes:
- * New cells use fillPaletteIndexForExpansion (white swatch when present, else index 0).
+ * New cells use fillPaletteIndexForExpansion (the lightest palette color, so white when present).
  * Validation delegates to artworkService.validateDimensions.
  */
 import type { IArtwork } from "@/features/shared/artwork/artwork.type";
 import { validateDimensions } from "@/features/shared/artwork/artworkService";
-import { normalizeHexColor } from "@/features/shared/utils/colorConverter";
-
-const WHITE_HEX = "#FFFFFF";
+import { relativeLuminance } from "@/features/shared/utils/colorContrast";
+import { parseHexColor } from "@/features/shared/utils/colorConverter";
 
 /**
- * Palette index used for newly exposed pixels after expanding the canvas.
+ * Palette index used for newly exposed pixels after expanding the canvas: the lightest color (white
+ * when the palette has it), or 0 when no entry is a readable hex color.
  */
 export function fillPaletteIndexForExpansion(palette: string[]): number {
-  const white = normalizeHexColor(WHITE_HEX);
-  const idx = palette.findIndex(
-    (entry) => normalizeHexColor(entry) === white
-  );
-  return idx >= 0 ? idx : 0;
+  let best = 0;
+  let bestLuminance = -1;
+  palette.forEach((entry, index) => {
+    const hex = parseHexColor(entry);
+    if (!hex) {
+      return;
+    }
+    const luminance = relativeLuminance(hex);
+    if (luminance > bestLuminance) {
+      best = index;
+      bestLuminance = luminance;
+    }
+  });
+  return best;
 }
 
 /**
