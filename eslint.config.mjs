@@ -1,3 +1,4 @@
+import { builtinRules } from "eslint/use-at-your-own-risk";
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
@@ -122,6 +123,73 @@ const typeFileRules = ["TSInterfaceDeclaration", "TSTypeAliasDeclaration"].map((
   message: TYPE_FILE_MESSAGE,
 }));
 
+// Component architecture (AGENTS.md "Component architecture" / "Styling architecture"): a .tsx
+// component is presentation only. Classes come from X.style.ts (composed with cx()), data from
+// X.data.ts / src/content, derived values and behavior (effects, browser APIs, timers, observers,
+// formatting, computation) from a useX.ts hook next to the component.
+const CLASS_STRING_MESSAGE = "Class strings belong in the component's .style.ts file, not in .tsx.";
+const classStringRules = [
+  "JSXAttribute[name.name='className'] > Literal",
+  "JSXAttribute[name.name='className'] > JSXExpressionContainer > Literal",
+  "JSXAttribute[name.name='className'] > JSXExpressionContainer > TemplateLiteral",
+  "Property[key.name='className'] > Literal",
+  "Property[key.name='className'] > TemplateLiteral",
+  "JSXAttribute[name.name='className'] CallExpression > Literal",
+  "JSXAttribute[name.name='className'] LogicalExpression > Literal",
+  "JSXAttribute[name.name='className'] ConditionalExpression > Literal",
+].map((selector) => ({ selector, message: CLASS_STRING_MESSAGE }));
+
+const BEHAVIOR_MESSAGE =
+  "Components are presentation: move effects and browser APIs into a useX.ts hook next to the component.";
+const presentationRules = [
+  "ImportSpecifier[imported.name=/^use(Layout|Insertion)?Effect$/]",
+  "MemberExpression[object.name=/^(window|document|navigator|history|location)$/]",
+  "NewExpression[callee.name=/^(IntersectionObserver|ResizeObserver|MutationObserver)$/]",
+  "CallExpression[callee.name=/^(setTimeout|setInterval|requestAnimationFrame)$/]",
+].map((selector) => ({ selector, message: BEHAVIOR_MESSAGE }));
+
+const LOGIC_MESSAGE =
+  "Components are presentation: derive values in a useX.ts hook or a .ts module, not in .tsx.";
+const logicRules = [
+  // Helper functions, at module level or inside a component.
+  "Program > FunctionDeclaration[id.name=/^[a-z]/]",
+  "Program > ExportNamedDeclaration > FunctionDeclaration[id.name=/^[a-z]/]",
+  "FunctionDeclaration FunctionDeclaration",
+  "VariableDeclarator > :matches(ArrowFunctionExpression, FunctionExpression)",
+  // Computation and formatting.
+  "BinaryExpression[operator=/^[-+*\\/%]$/]",
+  "ConditionalExpression > ConditionalExpression",
+  "TemplateLiteral[expressions.length>0]",
+  "NewExpression[callee.name=/^(Date|URL|Map|Set)$/]",
+  "CallExpression[callee.property.name=/^(filter|reduce|sort|find|findIndex|some|every|flatMap|slice|splice|join|split|replace|replaceAll|toFixed|toLocaleString)$/]",
+  // Plain function calls in markup; only the class helper is allowed.
+  "JSXExpressionContainer > CallExpression[callee.type='Identifier']:not([callee.name='cx'])",
+].map((selector) => ({ selector, message: LOGIC_MESSAGE }));
+
+const DATA_MESSAGE =
+  "Data a component renders belongs in an X.data.ts module (or src/content), not in .tsx.";
+const dataRules = [
+  "Program > VariableDeclaration > VariableDeclarator > :matches(ArrayExpression, ObjectExpression, Literal, TemplateLiteral, CallExpression)",
+  "Program > ExportNamedDeclaration > VariableDeclaration > VariableDeclarator > :matches(ArrayExpression, ObjectExpression, Literal, TemplateLiteral, CallExpression)",
+  "MemberExpression > ArrayExpression.object",
+].map((selector) => ({ selector, message: DATA_MESSAGE }));
+
+const STYLE_COMPOSE_MESSAGE =
+  "Compose classes with cx() in .style.ts: no .join() or template literals, so there's one way to do it and Tailwind sees every class literally.";
+const styleComposeRules = [
+  "CallExpression[callee.property.name='join']",
+  "TemplateLiteral[expressions.length>0]",
+].map((selector) => ({ selector, message: STYLE_COMPOSE_MESSAGE }));
+
+// The architecture selectors run through a second registration of the core `no-restricted-syntax`
+// rule, `presentation/no-restricted-syntax`. A rule has one severity and one option list per file, and
+// a later `no-restricted-syntax` block replaces an earlier one, so merging these selectors into the
+// copy/type arrays above would force one severity on all of them. Under its own name the rule keeps
+// its own severity and never displaces (or is displaced by) the copy and type rules.
+const presentationPlugin = {
+  rules: { "no-restricted-syntax": builtinRules.get("no-restricted-syntax") },
+};
+
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
@@ -195,6 +263,34 @@ const eslintConfig = defineConfig([
     rules: {
       "no-restricted-syntax": ["error", ...typeFileRules],
     },
+  },
+  // Presentation-only components, rolled out folder by folder: every component warns until its folder
+  // is converted, then the folder joins the "error" block below. Re-stating only the severity keeps
+  // the selector list from this block.
+  {
+    files: ["**/*.tsx"],
+    ignores: ["**/*.test.tsx"],
+    plugins: { presentation: presentationPlugin },
+    rules: {
+      "presentation/no-restricted-syntax": [
+        "warn",
+        ...classStringRules,
+        ...presentationRules,
+        ...logicRules,
+        ...dataRules,
+      ],
+    },
+  },
+  {
+    files: ["src/features/shared/**/*.tsx"],
+    ignores: ["**/*.test.tsx"],
+    rules: { "presentation/no-restricted-syntax": "error" },
+  },
+  // Style files hold class strings composed with cx() (AGENTS.md "Styling architecture").
+  {
+    files: ["**/*.style.ts"],
+    plugins: { presentation: presentationPlugin },
+    rules: { "presentation/no-restricted-syntax": ["error", ...styleComposeRules] },
   },
   // Override default ignores of eslint-config-next.
   globalIgnores([
