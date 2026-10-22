@@ -18,11 +18,11 @@ export const button = {
     step: "h-9 min-w-9 rounded-md text-lg leading-none font-semibold disabled:cursor-not-allowed",
   },
   variant: {
-    primary: "bg-accent text-on-accent hover:bg-accent-hover focus-visible:outline-accent",
+    primary: "bg-accent text-on-accent hover:bg-accent-hover",
     ghost: "bg-transparent text-fg-soft hover:bg-surface-muted",
-    danger: "bg-danger text-on-danger hover:bg-danger-hover focus-visible:outline-danger",
+    danger: "bg-danger text-on-danger hover:bg-danger-hover",
     outline:
-      "border border-line-strong bg-surface text-fg-soft shadow-sm hover:bg-surface-subtle active:bg-surface-muted",
+      "border border-control-border bg-surface text-fg-soft shadow-sm hover:bg-surface-subtle active:bg-surface-muted",
   },
   /** Ghost variant at step size: keeps the hover tint and dims less when disabled. */
   ghostStep: "hover:bg-surface-muted disabled:opacity-40",

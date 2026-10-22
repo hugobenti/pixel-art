@@ -7,7 +7,7 @@ import { focusRing } from "@/features/shared/components/focus.style";
 import { cx } from "@/features/shared/utils/cx";
 
 const colorInput = cx(
-  "h-10 w-12 cursor-pointer rounded border border-line-strong bg-surface p-1",
+  "h-10 w-12 cursor-pointer rounded border border-control-border bg-surface p-1",
   focusRing,
 );
 

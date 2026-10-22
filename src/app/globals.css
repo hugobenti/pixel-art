@@ -26,6 +26,7 @@
   /* Borders and dividers */
   --color-line: #dcd8cd;
   --color-line-strong: #c5c0b3;
+  --color-control-border: #857f73;
 
   /* Text: ink */
   --color-fg: #1a1c24;
@@ -87,6 +88,7 @@
   /* Borders and dividers */
   --color-line: #2f2d2a;
   --color-line-strong: #46433f;
+  --color-control-border: #78736b;
 
   /* Text */
   --color-fg: #efebe5;
@@ -129,10 +131,32 @@ html {
   color-scheme: light;
 }
 
-/* Font comes from the `font-sans` utility on <body> (layout.style.ts); an unlayered font-family here
- * would override it. */
-body {
-  color: var(--color-fg);
+/* Font, size (14/20) and color come from utilities on <body> (layout.style.ts); unlayered rules here
+ * would override them. */
+
+/* Browser surfaces follow the theme instead of OS defaults. */
+@layer base {
+  html {
+    scrollbar-color: var(--color-line-strong) transparent;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-accent) 28%, transparent);
+  }
+
+  input,
+  textarea {
+    caret-color: var(--color-accent);
+  }
+
+  h1,
+  h2 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
 }
 
 /**

@@ -13,7 +13,7 @@ export const editorSettingsDrawer = {
     "flex min-h-12 w-full items-center justify-between gap-3 px-4 py-3",
     "text-left text-sm font-medium text-fg transition-colors",
     "touch-manipulation active:bg-surface-muted",
-    "focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2",
+    "focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus",
   ),
   /** The reference-image row while no image is loaded. */
   menuRowMuted: "cursor-not-allowed opacity-50 active:bg-transparent",

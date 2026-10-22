@@ -5,5 +5,5 @@
 
 export const rootLayout = {
   html: "h-full min-h-dvh bg-bg antialiased",
-  body: "flex min-h-dvh flex-col bg-bg font-sans",
+  body: "flex min-h-dvh flex-col bg-bg font-sans text-sm text-fg",
 };
