@@ -37,6 +37,7 @@ export function Menu(props: IMenuProps) {
           ref={menuRef}
           id={menuId}
           role="menu"
+          tabIndex={-1}
           aria-labelledby={triggerId}
           className={menuStyle.items}
           onKeyDown={onMenuKeyDown}

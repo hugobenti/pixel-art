@@ -24,13 +24,14 @@ export function usePaletteEditModal({
   onRemoveSwatch,
 }: IPaletteEditModalProps) {
   const focusedIndex = clampPaletteIndex(focusedSwatchIndex, palette.length);
-
   const [newHex, setNewHex] = useState(NEW_COLOR_DEFAULT);
+  const [newColorValid, setNewColorValid] = useState(true);
   const [wasOpen, setWasOpen] = useState(open);
   if (open !== wasOpen) {
     setWasOpen(open);
     if (open) {
       setNewHex(NEW_COLOR_DEFAULT);
+      setNewColorValid(true);
     }
   }
 
@@ -45,8 +46,10 @@ export function usePaletteEditModal({
     },
     newHex,
     setNewHex,
+    newColorValid,
+    setNewColorValid,
     addNewColor: () => {
-      onAddColor(newHex);
+      if (newColorValid) onAddColor(newHex);
     },
   };
 }

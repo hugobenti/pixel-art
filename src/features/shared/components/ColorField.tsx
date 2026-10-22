@@ -16,6 +16,7 @@ export function ColorField({
   hideLabel = false,
   value,
   onValueChange,
+  onValidityChange,
   disabled,
   hint,
   className,
@@ -32,7 +33,7 @@ export function ColorField({
     changeHex,
     blurHex,
     keyDownHex,
-  } = useColorField({ label, value, onValueChange });
+  } = useColorField({ label, value, onValueChange, onValidityChange });
 
   return (
     <FormField

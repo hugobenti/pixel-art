@@ -30,6 +30,7 @@ export function CreateArtworkModal({ open, onClose, onCreate }: ICreateArtworkMo
     presets,
     backgroundColor,
     setBackgroundColor,
+    setBackgroundColorValid,
     busy,
     errors,
     widthRef,
@@ -112,6 +113,7 @@ export function CreateArtworkModal({ open, onClose, onCreate }: ICreateArtworkMo
         label={gallery.create.backgroundLabel}
         value={backgroundColor}
         onValueChange={setBackgroundColor}
+        onValidityChange={setBackgroundColorValid}
       />
       <p className={createArtworkModal.hint}>{hint}</p>
       {errors.form ? (

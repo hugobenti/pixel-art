@@ -25,6 +25,7 @@ export function useCreateArtworkForm({ onCreate }: TUseCreateArtworkFormOptions)
   const [width, setWidth] = useState("64");
   const [height, setHeight] = useState("64");
   const [backgroundColor, setBackgroundColor] = useState(DEFAULT_PALETTE[1] ?? "#FFFFFF");
+  const [backgroundColorValid, setBackgroundColorValid] = useState(true);
   const [busy, setBusy] = useState(false);
   const [errors, setErrors] = useState<TCreateArtworkFormErrors>({});
   const widthRef = useRef<HTMLInputElement>(null);
@@ -33,6 +34,7 @@ export function useCreateArtworkForm({ onCreate }: TUseCreateArtworkFormOptions)
   const handleSubmit = useCallback(
     async (e: FormEvent) => {
       e.preventDefault();
+      if (!backgroundColorValid) return;
       const { size, errors: fieldErrors } = parseCanvasSizeFields(
         width,
         height,
@@ -54,7 +56,7 @@ export function useCreateArtworkForm({ onCreate }: TUseCreateArtworkFormOptions)
         setBusy(false);
       }
     },
-    [title, width, height, backgroundColor, onCreate],
+    [title, width, height, backgroundColor, backgroundColorValid, onCreate],
   );
 
   const changeWidth = (value: string) => {
@@ -85,6 +87,7 @@ export function useCreateArtworkForm({ onCreate }: TUseCreateArtworkFormOptions)
     })),
     backgroundColor,
     setBackgroundColor,
+    setBackgroundColorValid,
     busy,
     errors,
     widthRef,

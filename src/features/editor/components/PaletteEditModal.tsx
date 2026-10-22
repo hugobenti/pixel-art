@@ -17,8 +17,17 @@ import { usePaletteEditModal } from "./usePaletteEditModal";
 
 export function PaletteEditModal(props: IPaletteEditModalProps) {
   const { open, onClose, palette, onSelectSwatch, canRemoveSwatch, maxPaletteReached } = props;
-  const { focusedIndex, editHex, applyEditHex, removeFocused, newHex, setNewHex, addNewColor } =
-    usePaletteEditModal(props);
+  const {
+    focusedIndex,
+    editHex,
+    applyEditHex,
+    removeFocused,
+    newHex,
+    setNewHex,
+    newColorValid,
+    setNewColorValid,
+    addNewColor,
+  } = usePaletteEditModal(props);
 
   return (
     <Modal open={open} onClose={onClose} title={editor.paletteModal.title} size="lg">
@@ -67,11 +76,12 @@ export function PaletteEditModal(props: IPaletteEditModalProps) {
             value={newHex}
             disabled={maxPaletteReached}
             onValueChange={setNewHex}
+            onValidityChange={setNewColorValid}
           />
           <Button
             type="button"
             variant="outline"
-            disabled={maxPaletteReached}
+            disabled={maxPaletteReached || !newColorValid}
             onClick={addNewColor}
           >
             {editor.paletteModal.addButton}

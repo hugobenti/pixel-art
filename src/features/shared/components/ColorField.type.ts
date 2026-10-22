@@ -8,10 +8,15 @@ export interface IColorFieldProps {
   value: string;
   /** Called with a valid `#RRGGBB` (upper case) from the picker or the hex input. */
   onValueChange: (hex: string) => void;
+  /** Called whenever the current draft becomes valid or invalid. */
+  onValidityChange?: (valid: boolean) => void;
   disabled?: boolean;
   hint?: ReactNode;
   /** Layout classes for the field stack. */
   className?: string;
 }
 
-export type TUseColorFieldInput = Pick<IColorFieldProps, "label" | "value" | "onValueChange">;
+export type TUseColorFieldInput = Pick<
+  IColorFieldProps,
+  "label" | "value" | "onValueChange" | "onValidityChange"
+>;

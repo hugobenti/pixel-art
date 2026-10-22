@@ -9,13 +9,14 @@
 import { useId, useState, type ChangeEvent, type KeyboardEvent } from "react";
 
 import { shared } from "@/content/shared";
+import { isColorFieldDraftValid } from "@/features/shared/logic/colorFieldValidity";
 import { parseHexColor } from "@/features/shared/utils/colorConverter";
 import type { TUseColorFieldInput } from "./ColorField.type";
 
 /** A complete six-digit hex, `#` optional: applied while typing; shorter forms wait for blur or Enter. */
 const FULL_HEX = /^#?[0-9a-f]{6}$/i;
 
-export function useColorField({ label, value, onValueChange }: TUseColorFieldInput) {
+export function useColorField({ label, value, onValueChange, onValidityChange }: TUseColorFieldInput) {
   const hexId = useId();
   const errorId = useId();
   const [draft, setDraft] = useState(value);
@@ -30,9 +31,7 @@ export function useColorField({ label, value, onValueChange }: TUseColorFieldInp
 
   const apply = (hex: string) => {
     setSyncedValue(hex);
-    if (hex !== value) {
-      onValueChange(hex);
-    }
+    if (hex !== value) onValueChange(hex);
   };
 
   /** Applies the draft or shows the error; returns whether it was valid. */
@@ -40,9 +39,11 @@ export function useColorField({ label, value, onValueChange }: TUseColorFieldInp
     const hex = parseHexColor(draft);
     if (!hex) {
       setError(shared.colorField.invalid);
+      onValidityChange?.(false);
       return false;
     }
     setDraft(hex);
+    onValidityChange?.(true);
     apply(hex);
     return true;
   };
@@ -60,6 +61,7 @@ export function useColorField({ label, value, onValueChange }: TUseColorFieldInp
       if (hex) {
         setDraft(hex);
         setError(undefined);
+        onValidityChange?.(true);
         apply(hex);
       }
     },
@@ -67,22 +69,17 @@ export function useColorField({ label, value, onValueChange }: TUseColorFieldInp
       const text = event.target.value;
       setDraft(text);
       setError(undefined);
+      onValidityChange?.(isColorFieldDraftValid(text));
       const hex = FULL_HEX.test(text.trim()) ? parseHexColor(text) : null;
-      if (hex) {
-        apply(hex);
-      }
+      if (hex) apply(hex);
     },
     blurHex: () => {
       commitDraft();
     },
     keyDownHex: (event: KeyboardEvent<HTMLInputElement>) => {
-      if (event.key !== "Enter") {
-        return;
-      }
+      if (event.key !== "Enter") return;
       const pending = parseHexColor(draft) !== value;
-      if (!commitDraft() || pending) {
-        event.preventDefault();
-      }
+      if (!commitDraft() || pending) event.preventDefault();
     },
   };
 }
