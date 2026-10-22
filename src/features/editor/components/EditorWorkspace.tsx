@@ -138,6 +138,7 @@ export function EditorWorkspace(props: IEditorWorkspaceProps) {
           onToggleVisibility={layersState.toggleLayerVisibility}
           onAddLayer={addLayer}
           onCopyLayer={layersState.copyLayer}
+          onDeleteLayer={layersState.deleteLayer}
           onRenameLayer={layersState.renameLayer}
           onReorderLayers={layersState.reorderLayers}
         />

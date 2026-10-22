@@ -396,7 +396,7 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 
 ### Layers Drawer Rows
 
-- Borderless drag handle (grip, `muted`), then the preview (the only bordered box), the name, and ghost `IconButton` actions (visibility, duplicate, rename).
+- Borderless drag handle (grip, `muted`), then the preview (the only bordered box), the name, and ghost `IconButton` actions (visibility, duplicate, rename, delete). Delete opens `ConfirmDialog` naming the layer and is disabled while it is the only layer; when the active layer is deleted, the row that takes its place becomes active.
 - Idle row: `surface` with a `line` border, `surface-subtle` on hover. Active row: `surface-muted` with an `accent` border, the one place the accent marks a selection outside the swatch rings.
 
 ### Planned

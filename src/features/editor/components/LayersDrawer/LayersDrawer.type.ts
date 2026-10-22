@@ -11,6 +11,7 @@ export interface ILayersDrawerProps {
   onToggleVisibility: (layerId: string) => void;
   onAddLayer: () => void;
   onCopyLayer: (layerId: string) => void;
+  onDeleteLayer: (layerId: string) => void;
   onRenameLayer: (layerId: string, nextName: string) => void;
   onReorderLayers: (activeId: string, overId: string | null) => void;
 }

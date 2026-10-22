@@ -118,11 +118,17 @@ export const editor: IEditorContent = {
       hide: "Hide layer",
       duplicate: "Duplicate layer",
       rename: "Rename layer",
+      delete: "Delete layer",
     },
     renameModal: {
       title: "Rename layer",
       nameLabel: "Layer name",
       emptyError: "Name can't be empty.",
+    },
+    deleteDialog: {
+      title: (name) => `Delete “${name}”?`,
+      description: "The layer and all its pixels are removed. This can’t be undone.",
+      confirm: "Delete layer",
     },
   },
   toasts: {
