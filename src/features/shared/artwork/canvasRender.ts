@@ -4,12 +4,12 @@
  */
 
 import type { IArtwork } from "@/features/shared/artwork/artwork.type";
-import type { IViewportState } from "@/features/editor/types/editor.type";
+import type { IRenderViewport } from "./canvasRender.type";
 
 export function renderCanvas(
   ctx: CanvasRenderingContext2D,
   artwork: Pick<IArtwork, "width" | "height" | "layers" | "palette">,
-  viewport: IViewportState
+  viewport: IRenderViewport
 ): void {
   const { width, height, layers, palette } = artwork;
 

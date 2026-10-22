@@ -11,7 +11,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 
 import { EDITOR_ROOT_CSS_VARS } from "@/features/editor/constants/editorRootCssVars";
-import { renderCanvas } from "@/features/editor/logic/canvasRender";
+import { renderCanvas } from "@/features/shared/artwork/canvasRender";
 import { renderPixelGrid } from "@/features/editor/logic/gridRender";
 import { renderReferenceImage } from "@/features/editor/logic/referenceImageRender";
 import { useResolvedTheme } from "@/features/shared/theme/useThemePreference";

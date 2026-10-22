@@ -344,7 +344,8 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 - **Corner Style:** `rounded-xl` (12px).
 - **Background:** `surface` with a `line` border.
 - **Shadow Strategy:** `shadow-sm` (see Elevation & Depth).
-- **Artwork card:** `p-4`; a square thumbnail link on a `surface-muted` well (`rounded-lg`, image `object-cover`), a title link in `font-medium fg`, and a `Menu` overflow trigger for Rename, Clone and Delete. Delete opens `ConfirmDialog`; danger styling appears only on the confirmation button.
+- **Artwork card:** `p-4`; a square thumbnail link on a `surface-muted` well (`rounded-lg`, image `object-contain` with `image-rendering: pixelated`), a title link in `font-medium fg`, and a `Menu` overflow trigger for Rename, Clone and Delete. Delete opens `ConfirmDialog`; danger styling appears only on the confirmation button.
+- **Thumbnails:** a lossless PNG of the visible layers at the largest integer scale that fits 256px, with no grid lines. Thumbnails saved by the old renderer (WebP or a fractional scale, which showed seams between pixels) are detected on gallery load (`isThumbnailCurrent`) and regenerated from the pixel data.
 
 ### Modal
 
@@ -404,7 +405,6 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 Agreed follow-ups, not yet in the code:
 
 - **Mono numeric readouts.** The settings size hint, zoom percentage and image-detail values move to JetBrains Mono (The Measured in Mono Rule); size fields and hex inputs already use it.
-- **Clean thumbnails.** Gallery thumbnails render without grid lines.
 - **Type migration.** Labels and buttons move from `text-sm` (14/20) to the 13/16 label style; off-scale headings (`text-lg`) move onto the scale.
 
 ## Do's and Don'ts

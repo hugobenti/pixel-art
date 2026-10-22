@@ -245,6 +245,11 @@ export async function renameArtwork(id: string, title: string): Promise<void> {
   });
 }
 
+/** Stores a regenerated thumbnail; leaves `updatedAt` alone so the gallery order doesn't change. */
+export async function saveThumbnail(id: string, thumbnail: string): Promise<void> {
+  await db.artworks.update(id, { thumbnail });
+}
+
 export async function cloneArtwork(id: string): Promise<IArtwork | undefined> {
   const source = await getArtwork(id);
   if (!source) return undefined;
