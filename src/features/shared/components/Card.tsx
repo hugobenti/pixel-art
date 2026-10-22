@@ -3,15 +3,13 @@
  * Bordered surface for lists and summaries (gallery cards, settings panels).
  */
 "use client";
+import { cx } from "@/features/shared/utils/cx";
+import { card } from "./Card.style";
 import type { ICardProps } from "./Card.type";
 
-const cardBaseClass =
-  "rounded-xl border border-line bg-surface shadow-sm";
-
-export function Card({ children, className = "", ...rest }: ICardProps) {
-  const classes = `${cardBaseClass} ${className}`.trim();
+export function Card({ children, className, ...rest }: ICardProps) {
   return (
-    <div className={classes} {...rest}>
+    <div className={cx(card.base, className)} {...rest}>
       {children}
     </div>
   );

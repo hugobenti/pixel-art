@@ -1,12 +1,17 @@
-import type {
-  ReactNode,
-} from "react";
-export type TToastTone = "neutral" | "success" | "error";
+import type { ReactNode } from "react";
+import type { toast } from "./ToastProvider.style";
+
+export type TToastTone = keyof typeof toast.tone;
 
 export interface IToastRecord {
   id: string;
   message: string;
   tone: TToastTone;
+}
+
+/** A toast as the stack renders it: the record plus its DOM id. */
+export interface IToastItem extends IToastRecord {
+  elementId: string;
 }
 
 export interface IShowToastInput {
@@ -23,7 +28,7 @@ export interface IToastContextValue {
 }
 
 export interface IToastStackProps {
-  toasts: IToastRecord[];
+  toasts: IToastItem[];
   onDismiss: (id: string) => void;
 }
 

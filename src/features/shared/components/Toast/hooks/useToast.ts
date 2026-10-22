@@ -6,10 +6,12 @@
 
 import { useContext } from "react";
 
-import {
-  ToastContext
-} from "@/features/shared/components/Toast/ToastProvider";
-import type { IShowToastInput, IToastContextValue, TToastTone } from "@/features/shared/components/Toast/ToastProvider.type";
+import { ToastContext } from "@/features/shared/components/Toast/ToastContext";
+import type {
+  IShowToastInput,
+  IToastContextValue,
+  TToastTone,
+} from "@/features/shared/components/Toast/ToastProvider.type";
 
 export type { TToastTone };
 

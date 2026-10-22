@@ -7,30 +7,15 @@
  */
 "use client";
 
-import { useId, useRef } from "react";
-
 import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
 import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
 import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
-import { useFocusTrap } from "@/features/shared/hooks/useFocusTrap";
+import { cx } from "@/features/shared/utils/cx";
 
-import {
-  drawerBackdropBaseClass,
-  drawerBackdropClosedClass,
-  drawerBackdropOpenClass,
-  drawerHeaderClass,
-  drawerPanelBaseClass,
-  drawerPanelClosedClass,
-  drawerPanelOpenClass,
-  drawerShellRootClass,
-  drawerTitleClass,
-} from "@/features/shared/components/drawer.styles";
+import { sideDrawer } from "./SideDrawer.style";
 import type { ISideDrawerProps, THeaderIconButtonProps } from "./SideDrawer.type";
-
-const headerIconMaskClass = "h-5 w-5 text-fg-soft";
-
-const headerIconButtonClass = "shrink-0 touch-manipulation";
+import { useSideDrawer } from "./useSideDrawer";
 
 export function SideDrawer({
   entered,
@@ -44,25 +29,12 @@ export function SideDrawer({
   children,
   backdropAriaLabel = shared.sideDrawer.closeLabel,
 }: ISideDrawerProps) {
-  const titleId = useId();
-  const rootRef = useRef<HTMLDivElement>(null);
-  useFocusTrap(rootRef, true);
-
-  const motionStyle = {
-    transitionDuration: `${motionDurationMs}ms`,
-  } as const;
-
-  const backdropClass = `${drawerBackdropBaseClass} ${
-    entered ? drawerBackdropOpenClass : drawerBackdropClosedClass
-  }`;
-  const panelClass = `${drawerPanelBaseClass} ${
-    entered ? drawerPanelOpenClass : drawerPanelClosedClass
-  }`;
+  const { titleId, rootRef, motionStyle } = useSideDrawer(motionDurationMs);
 
   return (
     <div
       ref={rootRef}
-      className={`${drawerShellRootClass} pointer-events-auto`}
+      className={sideDrawer.root}
       aria-modal="true"
       aria-labelledby={titleId}
       role="dialog"
@@ -70,16 +42,27 @@ export function SideDrawer({
       <button
         type="button"
         tabIndex={-1}
-        className={backdropClass}
+        className={cx(
+          sideDrawer.backdrop,
+          entered ? sideDrawer.backdropState.open : sideDrawer.backdropState.closed,
+        )}
         style={motionStyle}
         onClick={onBackdropClick}
         aria-label={backdropAriaLabel}
       />
-      <aside className={panelClass} style={motionStyle}>
-        <header className={drawerHeaderClass}>
-          <div className="flex min-w-0 flex-1 items-center gap-2">
+      <aside
+        className={cx(
+          sideDrawer.panel,
+          entered ? sideDrawer.panelState.open : sideDrawer.panelState.closed,
+        )}
+        style={motionStyle}
+      >
+        <header className={sideDrawer.header}>
+          <div className={sideDrawer.titleRow}>
             {headerLeft}
-            <h2 id={titleId} className={`${drawerTitleClass} min-w-0 truncate`}>{title}</h2>
+            <h2 id={titleId} className={sideDrawer.heading}>
+              {title}
+            </h2>
           </div>
           {headerRight}
         </header>
@@ -94,19 +77,16 @@ export function SideDrawer({
 /**
  * Ghost icon button for the leading header slot (drill-in back).
  */
-export function SideDrawerBackButton({
-  className = "",
-  ...rest
-}: THeaderIconButtonProps) {
+export function SideDrawerBackButton({ className, ...rest }: THeaderIconButtonProps) {
   return (
     <Button
       type="button"
       variant="ghost"
       size="icon"
-      className={`${headerIconButtonClass} ${className}`.trim()}
+      className={cx(sideDrawer.headerButton, className)}
       {...rest}
     >
-      <PublicMaskIcon src={PUBLIC_ICONS.chevronLeft} className={headerIconMaskClass} />
+      <PublicMaskIcon src={PUBLIC_ICONS.chevronLeft} className={sideDrawer.headerIcon} />
     </Button>
   );
 }
@@ -114,19 +94,16 @@ export function SideDrawerBackButton({
 /**
  * Ghost icon button for dismissing the drawer (header trailing slot).
  */
-export function SideDrawerCloseButton({
-  className = "",
-  ...rest
-}: THeaderIconButtonProps) {
+export function SideDrawerCloseButton({ className, ...rest }: THeaderIconButtonProps) {
   return (
     <Button
       type="button"
       variant="ghost"
       size="icon"
-      className={`${headerIconButtonClass} ${className}`.trim()}
+      className={cx(sideDrawer.headerButton, className)}
       {...rest}
     >
-      <PublicMaskIcon src={PUBLIC_ICONS.xMark} className={headerIconMaskClass} />
+      <PublicMaskIcon src={PUBLIC_ICONS.xMark} className={sideDrawer.headerIcon} />
     </Button>
   );
 }

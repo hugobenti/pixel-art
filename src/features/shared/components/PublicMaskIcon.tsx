@@ -4,27 +4,22 @@
  *
  * Notes:
  * SVG files should use opaque strokes/fills (e.g. black) so masking picks up shape reliably.
+ * Without a className the icon is 20px square; a className replaces that size.
  */
 "use client";
 
+import { cx } from "@/features/shared/utils/cx";
+import { publicMaskIcon } from "./PublicMaskIcon.style";
 import type { IPublicMaskIconProps } from "./PublicMaskIcon.type";
+import { usePublicMaskIcon } from "./usePublicMaskIcon";
 
-const maskLayoutClass =
-  "pointer-events-none inline-block shrink-0 bg-current [mask-size:contain] [mask-repeat:no-repeat] [mask-position:center]";
-
-export function PublicMaskIcon({
-  src,
-  className = "h-5 w-5",
-}: IPublicMaskIconProps) {
-  const maskUrl = `url("${src}")`;
+export function PublicMaskIcon({ src, className }: IPublicMaskIconProps) {
+  const maskStyle = usePublicMaskIcon(src);
   return (
     <span
       aria-hidden
-      className={`${maskLayoutClass} ${className}`.trim()}
-      style={{
-        maskImage: maskUrl,
-        WebkitMaskImage: maskUrl,
-      }}
+      className={cx(publicMaskIcon.base, className ?? publicMaskIcon.defaultSize)}
+      style={maskStyle}
     />
   );
 }
