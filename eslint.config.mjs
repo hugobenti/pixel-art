@@ -282,7 +282,7 @@ const eslintConfig = defineConfig([
     },
   },
   {
-    files: ["src/features/shared/**/*.tsx"],
+    files: ["src/features/shared/**/*.tsx", "src/features/gallery/**/*.tsx", "src/app/**/*.tsx"],
     ignores: ["**/*.test.tsx"],
     rules: { "presentation/no-restricted-syntax": "error" },
   },
