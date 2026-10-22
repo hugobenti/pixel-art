@@ -45,12 +45,15 @@ export function useGalleryScreen() {
     event.currentTarget.value = "";
   };
 
-  const createAndOpen = async (input: ICreateArtworkInput) => {
-    const created = await createArtwork(input);
-    if (created) {
-      setModalOpen(false);
-      router.push(editorPath(created.id));
+  /** Resolves to an error message for the dialog, or null once the editor opens. */
+  const createAndOpen = async (input: ICreateArtworkInput): Promise<string | null> => {
+    const { artwork, error: createError } = await createArtwork(input);
+    if (!artwork) {
+      return createError;
     }
+    setModalOpen(false);
+    router.push(editorPath(artwork.id));
+    return null;
   };
 
   return {

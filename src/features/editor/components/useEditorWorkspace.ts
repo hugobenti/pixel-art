@@ -52,6 +52,14 @@ export function useEditorWorkspace({ initialArtwork }: IEditorWorkspaceProps) {
     artworkRef.current = artwork;
   }, [artwork]);
 
+  useEffect(() => {
+    const previousTitle = document.title;
+    document.title = editor.screen.documentTitle(artwork.title);
+    return () => {
+      document.title = previousTitle;
+    };
+  }, [artwork.title]);
+
   const bumpPaintRaf = useRef<number | null>(null);
   const schedulePaintBump = useCallback(() => {
     if (bumpPaintRaf.current != null) {
