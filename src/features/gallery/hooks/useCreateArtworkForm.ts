@@ -6,9 +6,11 @@
 
 import { useCallback, useState, type FormEvent } from "react";
 
+import { gallery } from "@/content/gallery";
 import { shared } from "@/content/shared";
 import {
-  DEFAULT_PALETTE
+  DEFAULT_PALETTE,
+  MAX_CANVAS_DIMENSION,
 } from "@/features/shared/artwork/artworkService";
 import type { TUseCreateArtworkFormOptions } from "./useCreateArtworkForm.type";
 
@@ -54,6 +56,7 @@ export function useCreateArtworkForm({ onCreate }: TUseCreateArtworkFormOptions)
     backgroundColor,
     setBackgroundColor,
     busy,
+    maxSizeHint: gallery.create.maxSize(MAX_CANVAS_DIMENSION),
     handleSubmit,
   };
 }
