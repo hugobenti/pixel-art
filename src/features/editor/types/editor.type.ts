@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * Core TypeScript contracts for the PixelCraft canvas engine and undo history.
+ * Core TypeScript contracts for the PixelHB canvas engine and undo history.
  * The artwork document model lives in `@/features/shared/artwork/artwork.types`.
  */
 

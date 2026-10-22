@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * Root layout for the PixelCraft App Router shell (fonts, global styles, full-height body).
+ * Root layout for the PixelHB App Router shell (fonts, global styles, full-height body).
  *
  * Notes:
  * The inline <head> script sets `data-theme` before first paint, so the page never flashes the wrong

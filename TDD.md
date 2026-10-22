@@ -1,6 +1,6 @@
-# Technical Design Document (TDD) — PixelCraft Engine
+# Technical Design Document (TDD) — PixelHB Engine
 
-This document specifies the architecture, data structures, and implementation details for PixelCraft, a high-performance web-based Pixel Art editor capable of handling matrices up to $1000 \times 1000$ efficiently.
+This document specifies the architecture, data structures, and implementation details for PixelHB, a high-performance web-based Pixel Art editor capable of handling matrices up to $1000 \times 1000$ efficiently.
 
 ---
 

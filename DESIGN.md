@@ -1,5 +1,5 @@
 ---
-name: PixelCraft
+name: PixelHB
 description: A local-first browser pixel-art editor; warm paper by day, warm graphite by night, the artwork always leads.
 colors:
   bg: "#ece9e1"
@@ -159,13 +159,13 @@ components:
     size: "40px"
 ---
 
-# Design System: PixelCraft
+# Design System: PixelHB
 
 ## Overview
 
 **Creative North Star: "The Sketchbook and the Darkroom"**
 
-PixelCraft is one studio seen under two lighting conditions. By day it is a sketchbook on a desk: warm off-white paper, ink-dark text and a single ultramarine ink accent. By night it is a darkroom: warm graphite chrome that steps back so the work glows, with amber as the only warm signal. The furniture never moves between the two; only the light changes. Whatever the lighting, the artwork is always the brightest, most saturated thing on screen.
+PixelHB is one studio seen under two lighting conditions. By day it is a sketchbook on a desk: warm off-white paper, ink-dark text and a single ultramarine ink accent. By night it is a darkroom: warm graphite chrome that steps back so the work glows, with amber as the only warm signal. The furniture never moves between the two; only the light changes. Whatever the lighting, the artwork is always the brightest, most saturated thing on screen.
 
 The chrome is quiet, low-chroma and compact enough to leave the canvas room on a phone. Users stare at arbitrary, saturated palette colors for long stretches, so every neutral is a warm gray close to true neutral, every surface is flat, and there is exactly one accent per theme. One type system serves both themes: Schibsted Grotesk for the interface, JetBrains Mono for numbers. Switching theme changes color only, never metrics, so there is no layout shift.
 
@@ -179,6 +179,10 @@ This system replaces the earlier blue-gray theme (a `#cfd9df` page that tinted t
 - One accent per theme: ultramarine `#2b3a9e` in light, amber `#eda743` in dark.
 - Depth by a soft shadow in light, by surface steps in dark.
 - Every token pair meets WCAG 2.2 AA in both themes, enforced by a test.
+
+## Brand
+
+The logo, brand palette and usage rules live in [`docs/design/brand.md`](docs/design/brand.md). This document covers the interface design system.
 
 ## Colors
 
