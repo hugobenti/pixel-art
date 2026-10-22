@@ -1,6 +1,9 @@
 /**
  * Purpose:
  * Single toolbar row: navigation, document title, icon toolbar (undo/redo/pan/zoom/… ), and settings (drawer).
+ *
+ * Notes:
+ * Toggles use IconButton's pressed state; the painting-slot switch is the only accent fill.
  */
 "use client";
 
@@ -8,6 +11,7 @@ import Link from "next/link";
 
 import { editor } from "@/content/editor";
 import { Button } from "@/features/shared/components/Button";
+import { IconButton } from "@/features/shared/components/IconButton";
 import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
 import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
 import { editorActionsBar } from "./EditorActionsBar.style";
@@ -39,125 +43,85 @@ export function EditorActionsBar(props: IEditorActionsBarProps) {
     onToggleSettingsDrawer,
   } = props;
   const { slotLabel, slotAriaLabel } = useEditorActionsBar(props);
+  const { toolbar } = editor;
 
   return (
     <div className={editorActionsBar.bar}>
       <div className={editorActionsBar.leftCluster}>
         <Link href="/gallery" className={editorActionsBar.backLink}>
-          <span aria-hidden>{editor.toolbar.backArrow}</span> {editor.toolbar.back}
+          <PublicMaskIcon src={PUBLIC_ICONS.chevronLeft} />
+          {toolbar.back}
         </Link>
         <h1 className={editorActionsBar.heading}>{title}</h1>
       </div>
-      <div className={editorActionsBar.actions} role="group" aria-label={editor.toolbar.groupLabel}>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
+      <div className={editorActionsBar.actions} role="group" aria-label={toolbar.groupLabel}>
+        <IconButton
+          icon={PUBLIC_ICONS.undo}
+          label={toolbar.undo.label}
+          shortcut={toolbar.undo.shortcut}
           disabled={!canUndo}
           onClick={onUndo}
-          aria-label={editor.toolbar.undo.label}
-          title={editor.toolbar.undo.title}
-        >
-          <PublicMaskIcon src={PUBLIC_ICONS.undo} />
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
+        />
+        <IconButton
+          icon={PUBLIC_ICONS.redo}
+          label={toolbar.redo.label}
+          shortcut={toolbar.redo.shortcut}
           disabled={!canRedo}
           onClick={onRedo}
-          aria-label={editor.toolbar.redo.label}
-          title={editor.toolbar.redo.title}
-        >
-          <PublicMaskIcon src={PUBLIC_ICONS.redo} />
-        </Button>
-        <Button
-          type="button"
-          variant={panMode ? "primary" : "ghost"}
-          size="icon"
+        />
+        <IconButton
+          icon={PUBLIC_ICONS.pan}
+          label={toolbar.pan.label}
+          shortcut={toolbar.pan.shortcut}
+          pressed={panMode}
           onClick={onTogglePanMode}
-          aria-pressed={panMode}
-          aria-label={editor.toolbar.pan.label}
-          title={editor.toolbar.pan.title}
-        >
-          <PublicMaskIcon src={PUBLIC_ICONS.pan} />
-        </Button>
-        <Button
-          type="button"
-          variant={bucketMode ? "primary" : "ghost"}
-          size="icon"
+        />
+        <IconButton
+          icon={PUBLIC_ICONS.bucket}
+          label={toolbar.bucket.label}
+          pressed={bucketMode}
           onClick={onToggleBucketMode}
-          aria-pressed={bucketMode}
-          aria-label={editor.toolbar.bucket.label}
-          title={editor.toolbar.bucket.title}
-        >
-          <PublicMaskIcon src={PUBLIC_ICONS.bucket} />
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
+        />
+        <IconButton
+          icon={PUBLIC_ICONS.zoomOut}
+          label={toolbar.zoomOut.label}
           disabled={!canZoomOut}
           onClick={onZoomOut}
-          aria-label={editor.toolbar.zoomOut.label}
-          title={editor.toolbar.zoomOut.title}
-        >
-          <PublicMaskIcon src={PUBLIC_ICONS.zoomOut} />
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
+        />
+        <IconButton
+          icon={PUBLIC_ICONS.zoomIn}
+          label={toolbar.zoomIn.label}
           disabled={!canZoomIn}
           onClick={onZoomIn}
-          aria-label={editor.toolbar.zoomIn.label}
-          title={editor.toolbar.zoomIn.title}
-        >
-          <PublicMaskIcon src={PUBLIC_ICONS.zoomIn} />
-        </Button>
-        <Button
-          type="button"
-          variant={shiftOverlayOpen ? "primary" : "ghost"}
-          size="icon"
+        />
+        <IconButton
+          icon={PUBLIC_ICONS.move}
+          label={toolbar.shift.label}
+          pressed={shiftOverlayOpen}
           onClick={onToggleShiftOverlay}
-          aria-pressed={shiftOverlayOpen}
-          aria-label={editor.toolbar.shift.label}
-          title={editor.toolbar.shift.title}
-        >
-          <PublicMaskIcon src={PUBLIC_ICONS.panArrows} />
-        </Button>
-        <Button
-          type="button"
-          variant={layersDrawerOpen ? "primary" : "ghost"}
-          size="icon"
+        />
+        <IconButton
+          icon={PUBLIC_ICONS.layers}
+          label={toolbar.layers.label}
+          pressed={layersDrawerOpen}
           onClick={onToggleLayersDrawer}
-          aria-pressed={layersDrawerOpen}
-          aria-label={editor.toolbar.layers.label}
-          title={editor.toolbar.layers.title}
-        >
-          <PublicMaskIcon src={PUBLIC_ICONS.layers} />
-        </Button>
+        />
         <Button
           type="button"
           variant={activeSlot === "primary" ? "primary" : "outline"}
           className={editorActionsBar.slotToggle}
           onClick={onToggleActiveSlot}
           aria-label={slotAriaLabel}
-          title={editor.toolbar.slot.title}
+          title={toolbar.slot.title}
         >
           {slotLabel}
         </Button>
-        <Button
-          type="button"
-          variant={settingsDrawerOpen ? "primary" : "outline"}
-          size="icon"
+        <IconButton
+          icon={PUBLIC_ICONS.cog}
+          label={toolbar.settings.label}
+          pressed={settingsDrawerOpen}
           onClick={onToggleSettingsDrawer}
-          aria-pressed={settingsDrawerOpen}
-          aria-label={editor.toolbar.settings.label}
-          title={editor.toolbar.settings.title}
-        >
-          <PublicMaskIcon src={PUBLIC_ICONS.cog} />
-        </Button>
+        />
       </div>
     </div>
   );

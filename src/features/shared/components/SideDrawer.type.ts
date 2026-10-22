@@ -1,4 +1,6 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ReactNode } from "react";
+
+import type { TIconButtonProps } from "@/features/shared/components/IconButton.type";
 
 export interface ISideDrawerProps {
   entered: boolean;
@@ -14,9 +16,6 @@ export interface ISideDrawerProps {
   backdropAriaLabel?: string;
 }
 
-export type THeaderIconButtonProps = Omit<
-  ButtonHTMLAttributes<HTMLButtonElement>,
-  "type" | "children"
-> & {
+export type THeaderIconButtonProps = Omit<TIconButtonProps, "icon" | "label"> & {
   "aria-label": string;
 };

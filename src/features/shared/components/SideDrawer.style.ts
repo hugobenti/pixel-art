@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * Classes for the shared right-edge SideDrawer shell (backdrop + sliding panel + header) and its icon buttons.
+ * Classes for the shared right-edge SideDrawer shell (backdrop + sliding panel + header).
  */
 
 import { cx } from "@/features/shared/utils/cx";
@@ -24,6 +24,4 @@ export const sideDrawer = {
   header: "flex shrink-0 items-center justify-between gap-2 border-b border-line px-3 py-3 sm:px-4",
   titleRow: "flex min-w-0 flex-1 items-center gap-2",
   heading: "min-w-0 truncate text-base font-semibold text-fg",
-  headerButton: "shrink-0 touch-manipulation",
-  headerIcon: "h-5 w-5 text-fg-soft",
 };

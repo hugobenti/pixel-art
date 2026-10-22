@@ -6,6 +6,8 @@
 
 import { editor } from "@/content/editor";
 import { Button } from "@/features/shared/components/Button";
+import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
+import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
 import { shiftDirectionOverlay } from "./ShiftDirectionOverlay.style";
 import type { IShiftDirectionOverlayProps } from "./ShiftDirectionOverlay.type";
 import { useShiftDirectionOverlay } from "./useShiftDirectionOverlay";
@@ -39,45 +41,57 @@ export function ShiftDirectionOverlay({ open, onClose, onShift }: IShiftDirectio
         >
           <Button
             type="button"
-            variant="ghost"
+            variant="outline"
             className={shiftDirectionOverlay.arrow}
             title={editor.shiftOverlay.directions.up.title}
             aria-label={editor.shiftOverlay.directions.up.label}
             onClick={() => onShift("up")}
           >
-            {editor.shiftOverlay.directions.up.glyph}
+            <PublicMaskIcon
+              src={PUBLIC_ICONS.chevronUp}
+              className={shiftDirectionOverlay.arrowIcon}
+            />
           </Button>
           <div className={shiftDirectionOverlay.sideRow}>
             <Button
               type="button"
-              variant="ghost"
+              variant="outline"
               className={shiftDirectionOverlay.arrow}
               title={editor.shiftOverlay.directions.left.title}
               aria-label={editor.shiftOverlay.directions.left.label}
               onClick={() => onShift("left")}
             >
-              {editor.shiftOverlay.directions.left.glyph}
+              <PublicMaskIcon
+                src={PUBLIC_ICONS.chevronLeft}
+                className={shiftDirectionOverlay.arrowIcon}
+              />
             </Button>
             <Button
               type="button"
-              variant="ghost"
+              variant="outline"
               className={shiftDirectionOverlay.arrow}
               title={editor.shiftOverlay.directions.right.title}
               aria-label={editor.shiftOverlay.directions.right.label}
               onClick={() => onShift("right")}
             >
-              {editor.shiftOverlay.directions.right.glyph}
+              <PublicMaskIcon
+                src={PUBLIC_ICONS.chevronRight}
+                className={shiftDirectionOverlay.arrowIcon}
+              />
             </Button>
           </div>
           <Button
             type="button"
-            variant="ghost"
+            variant="outline"
             className={shiftDirectionOverlay.arrow}
             title={editor.shiftOverlay.directions.down.title}
             aria-label={editor.shiftOverlay.directions.down.label}
             onClick={() => onShift("down")}
           >
-            {editor.shiftOverlay.directions.down.glyph}
+            <PublicMaskIcon
+              src={PUBLIC_ICONS.chevronDown}
+              className={shiftDirectionOverlay.arrowIcon}
+            />
           </Button>
         </div>
       </div>
