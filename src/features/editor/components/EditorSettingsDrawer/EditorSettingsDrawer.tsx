@@ -17,6 +17,7 @@ import {
   SideDrawerBackButton,
   SideDrawerCloseButton,
 } from "@/features/shared/components/SideDrawer";
+import { ThemeToggle } from "@/features/shared/components/ThemeToggle";
 import { PUBLIC_ICONS } from "@/features/shared/constants/publicIcons";
 
 import { EditorSettingsCanvasSizePanel } from "@/features/editor/components/EditorSettingsDrawer/EditorSettingsCanvasSizePanel";
@@ -214,6 +215,7 @@ export function EditorSettingsDrawer({
                 </span>
                 <span className={menuHintClass}>{menu.imageDetail.hint}</span>
               </button>
+              <ThemeToggle variant="row" />
             </div>
           </div>
         ) : settingsView === "canvasSize" ? (

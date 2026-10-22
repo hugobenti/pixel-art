@@ -1,13 +1,18 @@
 /**
  * Purpose:
  * Root layout for the PixelCraft App Router shell (fonts, global styles, full-height body).
+ *
+ * Notes:
+ * The inline <head> script sets `data-theme` before first paint, so the page never flashes the wrong
+ * theme; React doesn't know that attribute, hence suppressHydrationWarning on <html>.
  */
 import type { Metadata } from "next";
 
 import { AppProviders } from "@/app/AppProviders";
 import { siteMetadata } from "@/content/metadata";
+import { themeInitScript } from "@/features/shared/theme/themePreference";
 import { cx } from "@/features/shared/utils/cx";
-import { geistMono, geistSans } from "./fonts";
+import { fontMono, fontSans } from "./fonts";
 import { rootLayout } from "./layout.style";
 
 import "./globals.css";
@@ -20,7 +25,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cx(geistSans.variable, geistMono.variable, rootLayout.html)}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={cx(fontSans.variable, fontMono.variable, rootLayout.html)}
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className={rootLayout.body}>
         <AppProviders>{children}</AppProviders>
       </body>

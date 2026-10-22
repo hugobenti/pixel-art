@@ -21,7 +21,7 @@ npm run build      # production build (NEXT_DIST_DIR=.next-verify npm run build 
 npm run format     # Prettier (with Tailwind class sorting)
 ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Light and dark themes (following the OS until the user picks one), fonts (Schibsted Grotesk + JetBrains Mono via [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts)) and every design token are specified in [`DESIGN.md`](DESIGN.md); product context is in [`PRODUCT.md`](PRODUCT.md), and how the theme was chosen is in [`docs/design/explorations.md`](docs/design/explorations.md).
 
 ## Learn More
 

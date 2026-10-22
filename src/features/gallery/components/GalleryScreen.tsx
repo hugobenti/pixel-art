@@ -10,6 +10,7 @@
 import { gallery } from "@/content/gallery";
 import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
+import { ThemeToggle } from "@/features/shared/components/ThemeToggle";
 
 import { CreateArtworkModal } from "@/features/gallery/components/CreateArtworkModal";
 import { GalleryGrid } from "@/features/gallery/components/GalleryGrid";
@@ -47,6 +48,7 @@ export function GalleryScreen() {
             className={galleryScreen.importInput}
             onChange={onImportChange}
           />
+          <ThemeToggle />
           <Button type="button" variant="outline" onClick={openImportPicker}>
             {gallery.screen.importJson}
           </Button>
