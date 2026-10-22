@@ -36,3 +36,7 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Agent skills: engine binary is downloaded per machine; local harness overrides stay local
+.claude/skills/impeccable/scripts/bin/
+.claude/settings.local.json

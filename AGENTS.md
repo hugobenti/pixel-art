@@ -50,14 +50,28 @@ Markup and styling never share a file.
 
 ## Commands
 
-| Command             | What it does                                             |
-| ------------------- | -------------------------------------------------------- |
-| `npm run dev`       | Next.js dev server                                       |
-| `npm run build`     | production build                                         |
-| `npm run lint`      | ESLint (boundary, component, style-file and type rules)  |
-| `npm run typecheck` | route types + `tsc --noEmit`                             |
-| `npm test`          | Vitest                                                   |
-| `npm run format`    | Prettier; also sorts Tailwind classes, inside `cx()` too |
+| Command                               | What it does                                                     |
+| ------------------------------------- | ---------------------------------------------------------------- |
+| `npm run dev`                         | Next.js dev server                                               |
+| `npm run build`                       | production build                                                 |
+| `npm run lint`                        | ESLint (boundary, component, style-file and type rules)          |
+| `npm run typecheck`                   | route types + `tsc --noEmit`                                     |
+| `npm test`                            | Vitest                                                           |
+| `npm run format`                      | Prettier; also sorts Tailwind classes, inside `cx()` too         |
+| `npm run design:detect -- <src\|url>` | Impeccable's deterministic design detector (see "Design review") |
+
+## Design review
+
+Two project-scoped agent skills live in `.claude/skills/` (pinned in `skills-lock.json` and the skill's `scripts/VERSION`):
+
+- **`impeccable`** (`/impeccable <command>`): design direction and review. Product truth lives in `PRODUCT.md`, the visual system in `DESIGN.md`; read both before any UI change. `.claude/settings.json` runs its detector hook after UI edits. Refresh with `npx impeccable update`.
+- **`web-design-guidelines`** (`/web-design-guidelines <files>`): Vercel's Web Interface Guidelines checklist (focus, forms, hit targets, states). Refresh with `npx skills update`.
+
+Their critiques are model judgment: useful, but they can miss real problems and flag non-problems. Order of trust when reviewing or changing UI:
+
+1. **Deterministic checks decide.** `npm test` (token contrast), `npm run lint` (jsx-a11y, architecture rules) and `npm run design:detect -- src` plus a scan of the running page (`npm run design:detect -- http://localhost:<port>/gallery`, again with `--viewport 390x844`). File scans skip element rules such as contrast and tiny text; only the URL scan runs them.
+2. **Judgment findings need evidence.** A finding from `/impeccable critique|audit` or `/web-design-guidelines` cites a file and line or selector and a screenshot of the rendered page at the size it ships, and says what to change. Without that it is a suggestion, not a defect.
+3. **Hugo decides judgment calls.** Fix deterministic failures directly; list judgment findings in the PR for review instead of applying taste changes unasked. `PRODUCT.md`, `DESIGN.md` and the rules above win over generic skill advice.
 
 ## Workflow
 
@@ -66,6 +80,7 @@ Never commit to `main`. Each stage of work gets its own branch (`feat/<name>`, `
 **Verifying a production build while Hugo works:** never delete or build into `.next` (his `next dev` and builds use it). Build and serve in isolation: `NEXT_DIST_DIR=.next-verify npm run build`, then `NEXT_DIST_DIR=.next-verify npm start -- -p <port>` once the build has finished.
 
 <!-- BEGIN:nextjs-agent-rules -->
+
 # This is NOT the Next.js you know
 
 This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
