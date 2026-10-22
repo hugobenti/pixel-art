@@ -1,4 +1,4 @@
-# PixelCraft UI improvement plan
+# PixelHB UI improvement plan
 
 Date: Oct 22, 2026, on `main` at `d815755` (after the presentation-component refactor).
 Scope: every screen, in both themes, at 1440 and 390 wide. Keep: the color tokens (Paper & Ink / Studio Dark), Schibsted Grotesk + JetBrains Mono, and the architecture rules in AGENTS.md.
@@ -132,5 +132,5 @@ Gallery: an app header (logo/name, theme in a menu, "New artwork" as the single 
 ## Decisions (Hugo, Oct 22, 2026)
 
 1. **Desktop panels:** a docked inspector with no scrim, at ≥1024px.
-2. **Name:** the product is being renamed before release. The brand work (app header wordmark, favicon, metadata, `src/content/site.ts`) waits for the new name, so the favicon item moves from PR 1 to PR 3.
+2. **Name:** the product is renamed **PixelHB** (spec: [`brand.md`](brand.md)). The brand work (logo, favicon and app icons, metadata, `src/content/site.ts`) ships in its own PRs ahead of PR 3; PR 3's `AppHeader` reuses the logo component.
 3. **Behavior changes:** Delete layer, undo for palette Remove, and keyboard shortcuts for tools are all in scope.
