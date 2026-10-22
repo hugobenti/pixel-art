@@ -316,5 +316,13 @@ export interface IEditorContent {
   };
   paletteRemoval: {
     removed: (color: string) => string;
+    /** Asked only when pixels use the color: what those pixels become. */
+    dialog: {
+      title: (color: string) => string;
+      description: (pixelCount: number) => string;
+      replaceWith: string;
+      transparent: string;
+      confirm: string;
+    };
   };
 }

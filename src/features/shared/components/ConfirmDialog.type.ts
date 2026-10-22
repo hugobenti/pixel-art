@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 export interface IConfirmOptions {
   /** Names the target, e.g. Delete “Slime”? */
   title: string;
@@ -12,4 +14,6 @@ export interface IConfirmDialogProps {
   options: IConfirmOptions | null;
   onConfirm: () => void;
   onCancel: () => void;
+  /** Extra controls between the description and the buttons (e.g. a choice the confirm applies). */
+  children?: ReactNode;
 }

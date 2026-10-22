@@ -1,7 +1,8 @@
 /**
  * Purpose:
- * PaletteEditModal behavior: the swatch being edited (kept inside the palette) and its color, and the
- * add-color field, which starts from a neutral gray each time the modal opens.
+ * PaletteEditModal behavior: the swatch being edited (kept inside the palette) and its color, its
+ * removal (with a replacement step when pixels use it), and the add-color field, which starts from a
+ * neutral gray each time the modal opens.
  */
 "use client";
 
@@ -9,6 +10,7 @@ import { useState } from "react";
 
 import { clampPaletteIndex } from "@/features/editor/logic/paletteMutations";
 import type { IPaletteEditModalProps } from "./PaletteEditModal.type";
+import { usePaletteRemoval } from "./usePaletteRemoval";
 
 /** Shown for the edited swatch when the palette is empty. */
 const EMPTY_PALETTE_COLOR = "#000000";
@@ -22,8 +24,10 @@ export function usePaletteEditModal({
   onApplyHex,
   onAddColor,
   onRemoveSwatch,
+  getColorUsage,
 }: IPaletteEditModalProps) {
   const focusedIndex = clampPaletteIndex(focusedSwatchIndex, palette.length);
+  const removal = usePaletteRemoval({ palette, getColorUsage, onRemoveSwatch });
   const [newHex, setNewHex] = useState(NEW_COLOR_DEFAULT);
   const [newColorValid, setNewColorValid] = useState(true);
   const [wasOpen, setWasOpen] = useState(open);
@@ -45,8 +49,9 @@ export function usePaletteEditModal({
       onApplyHex(focusedIndex, hex);
     },
     removeFocused: () => {
-      onRemoveSwatch(focusedIndex);
+      removal.requestRemove(focusedIndex);
     },
+    removal,
     newHex,
     setNewHex,
     newColorValid,

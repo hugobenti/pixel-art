@@ -5,7 +5,8 @@
  * Notes:
  * Adding and removing a color push history commands (Undo drops an added color; it restores a removed
  * color, its pixels and the color slots), so Undo replays them in order and the palette never grows
- * past its limit. Removing also shows a toast with an Undo action.
+ * past its limit. Pixels that used a removed color take the replacement the user picked (another
+ * palette color or transparent). Removing also shows a toast with an Undo action.
  */
 "use client";
 
@@ -16,6 +17,7 @@ import { paletteAfterHistory } from "@/features/editor/logic/historyCommands";
 import {
   appendPaletteColor,
   clampPaletteIndex,
+  countColorUsage,
   removePaletteColor,
   setPaletteColorAt,
 } from "@/features/editor/logic/paletteMutations";
@@ -99,11 +101,22 @@ export function useEditorPalette({
     [artwork.palette, setArtwork, onPaletteOrPixelsDirty, pushCommand],
   );
 
+  const getColorUsage = useCallback(
+    (index: number) => countColorUsage(artwork.layers, index),
+    [artwork.layers],
+  );
+
   const removeSwatchAtIndex = useCallback(
-    (idx: number) => {
+    (idx: number, replacementIndex: number | null) => {
       const index = clampPaletteIndex(idx, artwork.palette.length);
       const slotsBefore: IColorSlots = { primaryIndex, secondaryIndex };
-      const result = removePaletteColor(artwork.layers, artwork.palette, index, slotsBefore);
+      const result = removePaletteColor(
+        artwork.layers,
+        artwork.palette,
+        index,
+        slotsBefore,
+        replacementIndex,
+      );
       if (!result) {
         return;
       }
@@ -148,10 +161,6 @@ export function useEditorPalette({
     ],
   );
 
-  const removeFocusedSwatch = useCallback(() => {
-    removeSwatchAtIndex(focusedSwatchIndex);
-  }, [focusedSwatchIndex, removeSwatchAtIndex]);
-
   return {
     activeSlot,
     setActiveSlot,
@@ -163,7 +172,7 @@ export function useEditorPalette({
     selectSwatchForEditing,
     applyHexAtIndex,
     addColor,
-    removeFocusedSwatch,
+    getColorUsage,
     removeSwatchAtIndex,
   };
 }

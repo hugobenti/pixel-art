@@ -18,7 +18,7 @@ import { Modal } from "./Modal";
 import { useConfirmDialog } from "./useConfirmDialog";
 
 export function ConfirmDialog(props: IConfirmDialogProps) {
-  const { options, onConfirm, onCancel } = props;
+  const { options, onConfirm, onCancel, children } = props;
   const { open, portalTarget, descriptionId, warningId, describedBy } = useConfirmDialog(props);
 
   if (!portalTarget) return null;
@@ -39,6 +39,7 @@ export function ConfirmDialog(props: IConfirmDialogProps) {
             {options?.description}
           </p>
         </div>
+        {children}
         {options?.warning ? (
           <p id={warningId} className={confirmDialog.warning}>
             {options.warning}

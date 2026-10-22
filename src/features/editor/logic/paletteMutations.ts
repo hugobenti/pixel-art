@@ -4,9 +4,9 @@
  * a removal is recorded so undo can restore the color and its pixels.
  */
 
-import { normalizeHexColor } from "@/features/shared/utils/colorConverter";
+import { normalizeHexColor, parseHexColor } from "@/features/shared/utils/colorConverter";
 
-import { MAX_PALETTE_ENTRIES } from "@/features/shared/artwork/artworkService";
+import { MAX_PALETTE_ENTRIES, TRANSPARENT_PIXEL_INDEX } from "@/features/shared/artwork/artworkService";
 import type { IPaletteRemoval } from "@/features/editor/types/editor.type";
 import type {
   IColorSlots,
@@ -47,33 +47,100 @@ function slotAfterRemoval(index: number, removeIndex: number, nextLength: number
 }
 
 /**
- * Forward remap of one buffer: the removed index becomes 0, higher palette indices move down by
+ * Forward remap of one buffer: the removed index becomes `replacement` (already an index in the
+ * palette without the removed color, or the transparent index), higher palette indices move down by
  * one. Values outside the palette (`>= paletteLength`, e.g. the 255 transparent fill) are left alone.
  */
-function remapForRemoval(pixelData: Uint8Array, removeIndex: number, paletteLength: number): void {
+function remapForRemoval(
+  pixelData: Uint8Array,
+  removeIndex: number,
+  paletteLength: number,
+  replacement: number,
+): void {
   for (let i = 0; i < pixelData.length; i++) {
     const v = pixelData[i];
     if (v === removeIndex) {
-      pixelData[i] = 0;
+      pixelData[i] = replacement;
     } else if (v > removeIndex && v < paletteLength) {
       pixelData[i] = v - 1;
     }
   }
 }
 
+/** How many pixels, across every layer, use palette index `index`. */
+export function countColorUsage(layers: readonly IPaletteLayerBuffer[], index: number): number {
+  let count = 0;
+  for (const { pixelData } of layers) {
+    for (let i = 0; i < pixelData.length; i++) {
+      if (pixelData[i] === index) {
+        count++;
+      }
+    }
+  }
+  return count;
+}
+
+function rgbChannels(hex: string): [number, number, number] | null {
+  const parsed = parseHexColor(hex);
+  if (!parsed) {
+    return null;
+  }
+  const value = Number.parseInt(parsed.slice(1), 16);
+  return [(value >> 16) & 0xff, (value >> 8) & 0xff, value & 0xff];
+}
+
 /**
- * Removes one palette entry: remaps every layer buffer in place, records the pixels that used the
- * color (so undo can restore them) and clamps the primary/secondary selection.
+ * The palette entry closest to `palette[index]` by RGB distance, excluding the entry itself (the
+ * lower index wins a tie), or null when there is no other entry.
+ */
+export function nearestPaletteIndex(palette: readonly string[], index: number): number | null {
+  const target = rgbChannels(palette[index] ?? "");
+  let best: number | null = null;
+  let bestDistance = Number.POSITIVE_INFINITY;
+  for (let i = 0; i < palette.length; i++) {
+    if (i === index) {
+      continue;
+    }
+    const rgb = rgbChannels(palette[i]);
+    const distance =
+      target && rgb
+        ? (target[0] - rgb[0]) ** 2 + (target[1] - rgb[1]) ** 2 + (target[2] - rgb[2]) ** 2
+        : Number.MAX_VALUE;
+    if (distance < bestDistance) {
+      best = i;
+      bestDistance = distance;
+    }
+  }
+  return best;
+}
+
+/**
+ * Removes one palette entry: the pixels that used it take `replacementIndex` (another entry of the
+ * current palette, or null for transparent), every layer buffer is remapped in place, those pixels are
+ * recorded (so undo can restore them) and the primary/secondary selection is clamped.
  */
 export function removePaletteColor(
   layers: readonly IPaletteLayerBuffer[],
   palette: string[],
   removeIndex: number,
   slots: IColorSlots,
+  replacementIndex: number | null,
 ): IPaletteRemovalResult | null {
   if (palette.length <= 1 || removeIndex < 0 || removeIndex >= palette.length) {
     return null;
   }
+  if (
+    replacementIndex !== null &&
+    (replacementIndex === removeIndex || replacementIndex < 0 || replacementIndex >= palette.length)
+  ) {
+    return null;
+  }
+  const replacement =
+    replacementIndex === null
+      ? TRANSPARENT_PIXEL_INDEX
+      : replacementIndex > removeIndex
+        ? replacementIndex - 1
+        : replacementIndex;
   const removedPixels = layers.map(({ id, pixelData }) => {
     let count = 0;
     for (let i = 0; i < pixelData.length; i++) {
@@ -88,7 +155,7 @@ export function removePaletteColor(
         indices[next++] = i;
       }
     }
-    remapForRemoval(pixelData, removeIndex, palette.length);
+    remapForRemoval(pixelData, removeIndex, palette.length, replacement);
     return { layerId: id, indices };
   });
   const nextPalette = palette.filter((_, i) => i !== removeIndex);
@@ -98,7 +165,7 @@ export function removePaletteColor(
       primaryIndex: slotAfterRemoval(slots.primaryIndex, removeIndex, nextPalette.length),
       secondaryIndex: slotAfterRemoval(slots.secondaryIndex, removeIndex, nextPalette.length),
     },
-    removal: { index: removeIndex, color: palette[removeIndex], removedPixels },
+    removal: { index: removeIndex, color: palette[removeIndex], replacement, removedPixels },
   };
 }
 
@@ -112,7 +179,7 @@ export function reapplyPaletteRemoval(
   paletteLength: number,
 ): void {
   for (const layer of layers) {
-    remapForRemoval(layer.pixelData, removal.index, paletteLength);
+    remapForRemoval(layer.pixelData, removal.index, paletteLength, removal.replacement);
   }
 }
 

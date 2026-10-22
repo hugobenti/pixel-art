@@ -111,6 +111,7 @@ export function EditorWorkspace(props: IEditorWorkspaceProps) {
         onApplyHex={paletteUi.applyHexAtIndex}
         onAddColor={paletteUi.addColor}
         onRemoveSwatch={paletteUi.removeSwatchAtIndex}
+        getColorUsage={paletteUi.getColorUsage}
         canRemoveSwatch={canRemoveSwatch}
         maxPaletteReached={maxPaletteReached}
       />
