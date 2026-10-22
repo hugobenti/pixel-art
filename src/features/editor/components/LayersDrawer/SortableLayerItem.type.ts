@@ -10,5 +10,7 @@ export interface ISortableLayerItemProps {
   onToggleVisibility: (layerId: string) => void;
   onCopyLayer: (layerId: string) => void;
   onRenameClick: (layerId: string) => void;
+  /** Opens the delete confirmation; omitted (button disabled) when this is the only layer. */
+  onDeleteClick?: (layerId: string) => void;
   drawerOpen: boolean;
 }

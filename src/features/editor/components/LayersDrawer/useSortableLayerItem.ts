@@ -1,7 +1,8 @@
 /**
  * Purpose:
  * SortableLayerItem behavior: dnd-kit sortable wiring and drag style, the visibility toggle's label and
- * icon, row actions that don't also select the layer, and the preview key that redraws it on drawer open.
+ * icon, row actions that don't also select the layer (delete is unavailable on the only layer), and
+ * the preview key that redraws it on drawer open.
  */
 "use client";
 
@@ -23,6 +24,7 @@ export function useSortableLayerItem({
   onToggleVisibility,
   onCopyLayer,
   onRenameClick,
+  onDeleteClick,
   drawerOpen,
 }: ISortableLayerItemProps) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -53,6 +55,11 @@ export function useSortableLayerItem({
     rename: (event: MouseEvent) => {
       event.stopPropagation();
       onRenameClick(layer.id);
+    },
+    canDelete: onDeleteClick !== undefined,
+    remove: (event: MouseEvent) => {
+      event.stopPropagation();
+      onDeleteClick?.(layer.id);
     },
   };
 }

@@ -1,7 +1,8 @@
 /**
  * Purpose:
- * LayersDrawer behavior: panel motion (useLayersDrawerPanel), the rename dialog session, dnd-kit sensors
- * and reorder on drop, and Escape that closes the rename dialog first, then the drawer.
+ * LayersDrawer behavior: panel motion (useLayersDrawerPanel), the rename dialog session, the delete
+ * confirmation, dnd-kit sensors and reorder on drop, and Escape that closes the rename dialog first,
+ * then the drawer (an open delete confirmation catches Escape itself).
  */
 "use client";
 
@@ -17,8 +18,10 @@ import {
 } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 
+import { editor } from "@/content/editor";
 import { useLayerRenameDialog } from "@/features/editor/components/LayersDrawer/hooks/useLayerRenameDialog";
 import { useLayersDrawerPanel } from "@/features/editor/components/LayersDrawer/useLayersDrawerPanel";
+import { useConfirm } from "@/features/shared/components/useConfirm";
 import type { ILayersDrawerProps } from "./LayersDrawer.type";
 
 export function useLayersDrawer({
@@ -26,8 +29,10 @@ export function useLayersDrawer({
   onClose,
   onRenameLayer,
   onReorderLayers,
+  onDeleteLayer,
 }: ILayersDrawerProps) {
   const { panelEntered, handleClose } = useLayersDrawerPanel({ onClose });
+  const { confirm, dialog: deleteDialog } = useConfirm();
 
   const layerRename = useLayerRenameDialog(onRenameLayer);
   const { session: renameSessionOpen, dismiss: dismissRename, requestRename } = layerRename;
@@ -38,6 +43,22 @@ export function useLayersDrawer({
       return;
     }
     requestRename(layerId, layer.name);
+  };
+
+  const handleDeleteClick = async (layerId: string) => {
+    const layer = layers.find((l) => l.id === layerId);
+    if (!layer) {
+      return;
+    }
+    const { deleteDialog: copy } = editor.layers;
+    const confirmed = await confirm({
+      title: copy.title(layer.name),
+      description: copy.description,
+      confirmLabel: copy.confirm,
+    });
+    if (confirmed) {
+      onDeleteLayer(layerId);
+    }
   };
 
   const sensors = useSensors(
@@ -84,6 +105,9 @@ export function useLayersDrawer({
     handleDragEnd,
     layerIds: layers.map((layer) => layer.id),
     handleRenameClick,
+    /** Undefined while only one layer is left, which disables every row's delete button. */
+    handleDeleteClick: layers.length > 1 ? handleDeleteClick : undefined,
+    deleteDialog,
     renameSession: layerRename.session,
     dismissRename,
     confirmRename: layerRename.confirm,

@@ -282,12 +282,18 @@ export interface IEditorContent {
       hide: string;
       duplicate: string;
       rename: string;
+      delete: string;
     };
     renameModal: {
       title: string;
       nameLabel: string;
       /** Inline error when the name is blank. */
       emptyError: string;
+    };
+    deleteDialog: {
+      title: (name: string) => string;
+      description: string;
+      confirm: string;
     };
   };
   toasts: {

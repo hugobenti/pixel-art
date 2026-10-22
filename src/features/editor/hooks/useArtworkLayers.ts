@@ -1,11 +1,13 @@
 /**
  * Purpose:
- * Manage editor layer behavior (active layer selection, visibility toggles, ordering updates, and duplication).
+ * Manage editor layer behavior (active layer selection, visibility toggles, ordering updates,
+ * duplication and deletion).
  */
 "use client";
 
 import { useCallback, useMemo } from "react";
 import { editor } from "@/content/editor";
+import { removeLayer } from "@/features/editor/logic/layerRemoval";
 import type { IArtworkLayer } from "@/features/shared/artwork/artwork.type";
 import { clonePixelBuffer } from "@/features/shared/utils/binaryHelpers";
 import type { IUseArtworkLayersParams } from "./useArtworkLayers.type";
@@ -154,6 +156,25 @@ export function useArtworkLayers({
     [setArtwork, onLayersChanged]
   );
 
+  /** Deletes a layer; the last remaining layer can't be deleted. */
+  const deleteLayer = useCallback(
+    (layerId: string) => {
+      let didChange = false;
+      setArtwork((prev) => {
+        const result = removeLayer(prev.layers, prev.activeLayerId, layerId);
+        if (!result) {
+          return prev;
+        }
+        didChange = true;
+        return { ...prev, layers: result.layers, activeLayerId: result.activeLayerId };
+      });
+      if (didChange) {
+        onLayersChanged();
+      }
+    },
+    [setArtwork, onLayersChanged]
+  );
+
   const renameLayer = useCallback(
     (layerId: string, nextName: string) => {
       const trimmed = nextName.trim();
@@ -212,6 +233,7 @@ export function useArtworkLayers({
     reorderLayers,
     addLayer,
     copyLayer,
+    deleteLayer,
     renameLayer,
     withUpdatedActiveLayerPixels,
   };

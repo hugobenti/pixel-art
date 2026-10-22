@@ -12,6 +12,7 @@ import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
 
 import { editor } from "@/content/editor";
 import { Button } from "@/features/shared/components/Button";
+import { ConfirmDialog } from "@/features/shared/components/ConfirmDialog";
 import { SideDrawer, SideDrawerCloseButton } from "@/features/shared/components/SideDrawer";
 
 import { ANIMATION_MS } from "@/features/editor/components/LayersDrawer/layersDrawer.constants";
@@ -40,6 +41,8 @@ export function LayersDrawer(props: ILayersDrawerProps) {
     handleDragEnd,
     layerIds,
     handleRenameClick,
+    handleDeleteClick,
+    deleteDialog,
     renameSession,
     dismissRename,
     confirmRename,
@@ -90,6 +93,7 @@ export function LayersDrawer(props: ILayersDrawerProps) {
                     onToggleVisibility={onToggleVisibility}
                     onCopyLayer={onCopyLayer}
                     onRenameClick={handleRenameClick}
+                    onDeleteClick={handleDeleteClick}
                     drawerOpen={panelEntered}
                   />
                 ))}
@@ -104,6 +108,7 @@ export function LayersDrawer(props: ILayersDrawerProps) {
         onDismiss={dismissRename}
         onConfirm={confirmRename}
       />
+      <ConfirmDialog {...deleteDialog} />
     </>
   );
 }
