@@ -286,7 +286,7 @@ Every color token, as declared in `src/app/globals.css`. Light values are the `@
 
 - **Gallery.** Centered column, `max-w-6xl` (1152px), `px-4 py-10`, `gap-8` between header and grid. The header stacks on phones and becomes a row (title left, actions right) from `sm`; it ends in a `line` divider. The card grid is one column on phones, two from `sm` (640px), three from `lg` (1024px), four from `xl` (1280px), with `gap-6`.
 - **Cards.** `p-4` with `gap-3` between a square thumbnail, the title row and the action row.
-- **Modals.** Centered; the create flow uses a bottom-sheet placement on phones that recenters from `sm`. Widths `max-w-sm` / `max-w-md` / `max-w-lg` with `p-4` / `p-6` / `p-5`; the large size caps at 85vh and scrolls.
+- **Modals.** An edge-to-edge bottom sheet on phones (top corners rounded, bottom safe-area inset), a centered card from `sm`. Widths `max-w-sm` / `max-w-md` / `max-w-lg`, all with `p-5` and `gap-4`; every size caps at 85dvh and scrolls without chaining to the page.
 - **Side drawers.** Slide in from the right edge: 90% width on phones, half the viewport from `sm`, capped at 720px; full height with the bottom safe-area inset respected.
 - **Hit targets.** Buttons are at least 40px tall (`min-h-10`), icon buttons 40 × 40, both 44px on coarse pointers (`pointer-coarse:`); step buttons 36 × 36. Swatches are 40px (comfortable) or 36px (compact).
 - **Spacing.** The system uses Tailwind's 4px spacing scale directly; there are no named spacing tokens.
@@ -303,8 +303,8 @@ Depth is quiet and differs by theme, while the classes stay the same (The Tokens
 Tailwind's default shadows, unchanged per theme:
 
 - **Resting** (`shadow-sm`): cards, outline buttons, inputs, button groups.
-- **Floating** (`shadow-lg`): the small modal, toasts, the editor's shift-direction pad.
-- **Dialog** (`shadow-xl`): medium and large modals.
+- **Floating** (`shadow-lg`): toasts, the editor's shift-direction pad.
+- **Dialog** (`shadow-xl`): modals.
 - **Drawer** (`shadow-2xl`): side drawers.
 
 ### Named Rules
@@ -348,9 +348,10 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 
 ### Modal
 
-- Panel: `surface`, `line` border, `rounded-xl`, sized sm / md / lg (see Layout), `shadow-lg` / `shadow-xl`.
-- Overlay: `scrim` at 40% with a small backdrop blur; clicking the backdrop dismisses, Escape covers the keyboard.
-- The create-artwork modal heading is `text-lg font-semibold` (18px / 28px), outside the type scale; it moves to the section-heading style with the type migration.
+- `src/features/shared/components/Modal.tsx`: one skeleton for every dialog. Header: the title as a section heading (`text-base font-semibold fg`, wired to `aria-labelledby`) and a ghost X icon button; then the content; then an optional footer of right-aligned actions (Cancel ghost, primary last). Form dialogs pass `onSubmit`, so Enter in a field submits.
+- Panel: `surface`, `line` border, `rounded-xl` (`rounded-t-xl` as a phone sheet), sized sm / md / lg (see Layout), `shadow-xl`.
+- Overlay: `scrim` at 40% with a small backdrop blur by default (`dim="scrim"` drops the blur, `dim="none"` the scrim); clicking the backdrop dismisses, Escape covers the keyboard.
+- Motion: overlay and panel fade in and out (the panel also rises 8px); opacity only under `prefers-reduced-motion`.
 
 ### Side Drawer
 
