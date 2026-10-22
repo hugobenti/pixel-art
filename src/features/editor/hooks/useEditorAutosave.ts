@@ -11,7 +11,7 @@
 import { useCallback, useEffect, useRef } from "react";
 
 import * as artworkService from "@/features/shared/artwork/artworkService";
-import { artworkToPngThumbnail } from "@/features/editor/utils/thumbnail";
+import { artworkToPngThumbnail } from "@/features/shared/artwork/thumbnail";
 import type { IUseEditorAutosaveParams } from "./useEditorAutosave.type";
 
 const AUTOSAVE_DEBOUNCE_MS = 650;

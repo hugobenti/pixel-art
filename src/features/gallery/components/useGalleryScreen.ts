@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, type ChangeEvent } from "react";
 
 import { useGalleryImport } from "@/features/gallery/hooks/useGalleryImport";
+import { useStaleThumbnailRefresh } from "@/features/gallery/hooks/useStaleThumbnailRefresh";
 import { editorPath } from "@/features/gallery/logic/artworkLinks";
 import { useGalleryStore } from "@/features/gallery/store/useGalleryStore";
 import type { ICreateArtworkInput } from "@/features/shared/artwork/artworkService.type";
@@ -25,6 +26,7 @@ export function useGalleryScreen() {
     renameArtwork,
     cloneArtwork,
     deleteArtwork,
+    updateThumbnail,
   } = useGalleryStore();
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -32,6 +34,8 @@ export function useGalleryScreen() {
   useEffect(() => {
     void loadArtworks();
   }, [loadArtworks]);
+
+  useStaleThumbnailRefresh(artworks, updateThumbnail);
 
   const { importInputRef, openImportPicker, onImportFile } = useGalleryImport({
     importArtwork,

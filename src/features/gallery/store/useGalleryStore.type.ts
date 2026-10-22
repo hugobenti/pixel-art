@@ -16,4 +16,6 @@ export interface IGalleryState {
   renameArtwork: (id: string, title: string) => Promise<void>;
   cloneArtwork: (id: string) => Promise<IArtwork | undefined>;
   deleteArtwork: (id: string) => Promise<void>;
+  /** Replaces a stale thumbnail in storage and in the list, without changing the gallery order. */
+  updateThumbnail: (id: string, thumbnail: string) => Promise<void>;
 }
