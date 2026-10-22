@@ -20,23 +20,28 @@ const CANON_HEX6 = /^#[0-9A-F]{6}$/;
 export const MAX_CANVAS_DIMENSION = 1000;
 export const MAX_PALETTE_ENTRIES = 256;
 
+/**
+ * Starter palette for new artworks: Sweetie 16 by GrafxKid. Index 0 (darkest) is the primary
+ * painting slot and index 1 (lightest) the secondary slot and default background; the rest follow
+ * the palette's warm-to-cool order.
+ */
 export const DEFAULT_PALETTE: string[] = [
-  "#000000",
-  "#FFFFFF",
-  "#FF0000",
-  "#00FF00",
-  "#0000FF",
-  "#FFFF00",
-  "#FF00FF",
-  "#00FFFF",
-  "#808080",
-  "#404040",
-  "#C0C0C0",
-  "#800000",
-  "#008000",
-  "#000080",
-  "#FFA500",
-  "#800080",
+  "#1A1C2C",
+  "#F4F4F4",
+  "#5D275D",
+  "#B13E53",
+  "#EF7D57",
+  "#FFCD75",
+  "#A7F070",
+  "#38B764",
+  "#257179",
+  "#29366F",
+  "#3B5DC9",
+  "#41A6F6",
+  "#73EFF7",
+  "#94B0C2",
+  "#566C86",
+  "#333C57",
 ];
 
 function newId(): string {
@@ -243,6 +248,11 @@ export async function renameArtwork(id: string, title: string): Promise<void> {
     title: title.trim() || shared.artwork.untitled,
     updatedAt: Date.now(),
   });
+}
+
+/** Stores a regenerated thumbnail; leaves `updatedAt` alone so the gallery order doesn't change. */
+export async function saveThumbnail(id: string, thumbnail: string): Promise<void> {
+  await db.artworks.update(id, { thumbnail });
 }
 
 export async function cloneArtwork(id: string): Promise<IArtwork | undefined> {

@@ -6,8 +6,8 @@
  * The canvas is the artwork at an integer scale (see thumbnailScale), keeping its aspect ratio, so each
  * art pixel is a whole block with no seams; the gallery upscales it with `image-rendering: pixelated`.
  */
-import { renderCanvas } from "@/features/editor/logic/canvasRender";
-import { thumbnailScale } from "@/features/editor/logic/thumbnailScale";
+import { renderCanvas } from "@/features/shared/artwork/canvasRender";
+import { thumbnailScale } from "@/features/shared/artwork/thumbnailScale";
 import type { IArtwork } from "@/features/shared/artwork/artwork.type";
 
 /**

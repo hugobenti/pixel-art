@@ -248,8 +248,8 @@ Every color token, as declared in `src/app/globals.css`. Light values are the `@
 
 ### Theming
 
-- **Default and override.** The theme follows `prefers-color-scheme` until the user picks one. The choice is stored in `localStorage` under `pixelcraft-theme` as `"light"` or `"dark"`; no key means "follow the system". The preference logic lives in `src/features/shared/theme/`: `themePreference.ts` (pure parse/resolve helpers and the pre-paint script, unit-tested) and `useThemePreference.ts` (hooks `useThemePreference`, `useResolvedTheme`, `useThemeSync`).
-- **Switch.** The resolved theme is written to `data-theme` on `<html>`. An inline script rendered in `<head>` by `src/app/layout.tsx` sets it before first paint, so there is no flash of the wrong theme. `useThemeSync` (called in `src/app/AppProviders.tsx`) keeps it in sync when the OS setting changes while the user follows the system.
+- **Default and override.** There are two themes and no "System" option. A first visit follows `prefers-color-scheme`; once the user picks Light or Dark, the choice is stored in `localStorage` under `pixelcraft-theme` as `"light"` or `"dark"` and the OS setting is ignored from then on. The preference logic lives in `src/features/shared/theme/`: `themePreference.ts` (pure parse/resolve helpers, the option list and the pre-paint script, unit-tested) and `useThemePreference.ts` (hooks `useSetTheme`, `useResolvedTheme`, `useThemeSync`).
+- **Switch.** The resolved theme is written to `data-theme` on `<html>`. An inline script rendered in `<head>` by `src/app/layout.tsx` sets it before first paint, so there is no flash of the wrong theme. `useThemeSync` (called in `src/app/AppProviders.tsx`) keeps it in sync with a pick in this or another tab, and with the OS setting while nothing has been picked yet.
 - **Tokens.** Light values live in the `@theme static` block of `src/app/globals.css`; dark values override the same `--color-*` custom properties under `[data-theme="dark"]`, which also sets `color-scheme: dark`. Tailwind utilities (`bg-surface`, `text-muted`, `outline-focus`) resolve to whichever value is active.
 - **Canvas.** The editor's canvas renderers read the grid and guide colors from the CSS variables (`--color-grid-line`, `--color-guide-horizontal`, `--color-guide-vertical`) and re-read them when the resolved theme changes.
 - **Contrast.** `src/app/tokenContrast.test.ts` checks the same pair list against both token sets: text pairs at 4.5:1, UI pairs (focus, accent, danger, swatch rings, `control-border` on `bg` / `surface` / `surface-subtle`, guides on the checkerboard, `surface` on `surface-inverse`) at 3:1. It also fails if the dark block leaves any color token undefined, so a light value can never leak into dark.
@@ -344,7 +344,8 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 - **Corner Style:** `rounded-xl` (12px).
 - **Background:** `surface` with a `line` border.
 - **Shadow Strategy:** `shadow-sm` (see Elevation & Depth).
-- **Artwork card:** `p-4`; a square thumbnail link on a `surface-muted` well (`rounded-lg`, image `object-cover`), a title link in `font-medium fg`, and a `Menu` overflow trigger for Rename, Clone and Delete. Delete opens `ConfirmDialog`; danger styling appears only on the confirmation button.
+- **Artwork card:** `p-4`; a square thumbnail link on a `surface-muted` well (`rounded-lg`, image `object-contain` with `image-rendering: pixelated`), a title link in `font-medium fg`, and a `Menu` overflow trigger for Rename, Clone and Delete. Delete opens `ConfirmDialog`; danger styling appears only on the confirmation button.
+- **Thumbnails:** a lossless PNG of the visible layers at the largest integer scale that fits 256px, with no grid lines. Thumbnails saved by the old renderer (WebP or a fractional scale, which showed seams between pixels) are detected on gallery load (`isThumbnailCurrent`) and regenerated from the pixel data.
 
 ### Modal
 
@@ -373,12 +374,13 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 ### Color Swatch
 
 - 40 × 40 (comfortable) or 36 × 36 (compact), `rounded-md`, the swatch color itself as fill.
-- **Rings:** idle 1px `control-border`; primary slot 2px `pick-primary`; secondary slot 2px `pick-secondary`; both slots 2px `accent`; selected (single-slot pickers) 2px `pick-primary` offset over `surface`. Rings offset by 2px over `bg` (the row's background) so the swatch color is never touched; the scroller pads 4px so the first ring is not clipped.
+- **Rings:** idle 1px `control-border`; primary slot 2px `pick-primary`; secondary slot 2px `pick-secondary`; both slots 2px `accent`; selected (single-slot pickers) 2px `pick-primary` offset over `surface`. Rings offset by 2px over `bg` (the row's background) so the swatch color is never touched; a ring therefore reaches 4px past its swatch, so the palette row spaces swatches 10px apart (`gap-2.5`) and adjacent primary and secondary rings never touch; the scroller pads 4px so the first ring is not clipped.
+- **Starter palette:** new artworks start with Sweetie 16 (by GrafxKid), ordered darkest (`#1A1C2C`, primary slot), lightest (`#F4F4F4`, secondary slot and default background), then the palette's warm-to-cool ramp. Growing the canvas fills new cells with the lightest palette color.
 - **Roving keyboard position:** a 2px dashed `focus` outline, offset 2px, distinct from the selection ring.
 
 ### Theme Toggle
 
-- `src/features/shared/components/ThemeToggle.tsx`: a segmented native radio group, **System / Light / Dark**. It sits in the gallery header and as a "Theme" row in the editor settings drawer. System clears the stored preference.
+- `src/features/shared/components/ThemeToggle.tsx`: a segmented native radio group, **Light / Dark**; the theme on screen is checked (the OS theme on a first visit). It sits in the gallery header and as a "Theme" row in the editor settings drawer.
 
 ### Switch
 
@@ -396,7 +398,7 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 
 ### Layers Drawer Rows
 
-- Borderless drag handle (grip, `muted`), then the preview (the only bordered box), the name, and ghost `IconButton` actions (visibility, duplicate, rename).
+- Borderless drag handle (grip, `muted`), then the preview (the only bordered box), the name, and ghost `IconButton` actions (visibility, duplicate, rename, delete). Delete opens `ConfirmDialog` naming the layer and is disabled while it is the only layer; when the active layer is deleted, the row that takes its place becomes active.
 - Idle row: `surface` with a `line` border, `surface-subtle` on hover. Active row: `surface-muted` with an `accent` border, the one place the accent marks a selection outside the swatch rings.
 
 ### Planned
@@ -404,7 +406,6 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 Agreed follow-ups, not yet in the code:
 
 - **Mono numeric readouts.** The settings size hint, zoom percentage and image-detail values move to JetBrains Mono (The Measured in Mono Rule); size fields and hex inputs already use it.
-- **Clean thumbnails.** Gallery thumbnails render without grid lines.
 - **Type migration.** Labels and buttons move from `text-sm` (14/20) to the 13/16 label style; off-scale headings (`text-lg`) move onto the scale.
 
 ## Do's and Don'ts

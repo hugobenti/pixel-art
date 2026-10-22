@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * One reorderable layer row: grip, preview, name, visibility, duplicate, and rename actions.
+ * One reorderable layer row: grip, preview, name, visibility, duplicate, rename, and delete actions.
  */
 "use client";
 
@@ -29,6 +29,8 @@ export function SortableLayerItem(props: ISortableLayerItemProps) {
     toggleVisibility,
     copy,
     rename,
+    canDelete,
+    remove,
   } = useSortableLayerItem(props);
 
   return (
@@ -78,6 +80,12 @@ export function SortableLayerItem(props: ISortableLayerItemProps) {
             icon={LAYER_ICON_SRC.pencil}
             label={editor.layers.item.rename}
             onClick={rename}
+          />
+          <IconButton
+            icon={LAYER_ICON_SRC.trash}
+            label={editor.layers.item.delete}
+            disabled={!canDelete}
+            onClick={remove}
           />
         </div>
       </div>

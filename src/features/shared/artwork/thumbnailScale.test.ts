@@ -5,7 +5,7 @@
 
 import { describe, expect, it } from "vitest";
 
-import { thumbnailScale } from "@/features/editor/logic/thumbnailScale";
+import { thumbnailScale } from "@/features/shared/artwork/thumbnailScale";
 
 describe("thumbnailScale", () => {
   it("picks the largest integer scale that fits the target", () => {

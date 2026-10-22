@@ -81,4 +81,17 @@ export const useGalleryStore = create<IGalleryState>((set, get) => ({
       set({ error: message });
     }
   },
+
+  updateThumbnail: async (id, thumbnail) => {
+    set((state) => ({
+      artworks: state.artworks.map((artwork) =>
+        artwork.id === id ? { ...artwork, thumbnail } : artwork,
+      ),
+    }));
+    try {
+      await artworkService.saveThumbnail(id, thumbnail);
+    } catch {
+      // The fresh thumbnail still shows for this visit; it is regenerated on the next load.
+    }
+  },
 }));

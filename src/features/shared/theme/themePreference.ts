@@ -4,8 +4,8 @@
  * the inline script that sets `data-theme` on <html> before first paint (no flash of the wrong theme).
  *
  * Notes:
- * Dark tokens live under `[data-theme="dark"]` in src/app/globals.css. The stored value is
- * "light" | "dark"; no stored value means "follow the system".
+ * Dark tokens live under `[data-theme="dark"]` in src/app/globals.css. The control offers only Light
+ * and Dark; the stored value is "light" | "dark", and no stored value (a first visit) follows the OS.
  */
 import type { TResolvedTheme, TThemePreference } from "./theme.type";
 
@@ -13,8 +13,8 @@ export const THEME_STORAGE_KEY = "pixelcraft-theme";
 
 export const DARK_SCHEME_QUERY = "(prefers-color-scheme: dark)";
 
-/** Order the theme control lists its options in. */
-export const THEME_PREFERENCES: readonly TThemePreference[] = ["system", "light", "dark"];
+/** The choices the theme control offers, in order. */
+export const THEME_OPTIONS: readonly TResolvedTheme[] = ["light", "dark"];
 
 export function parseThemePreference(raw: string | null): TThemePreference {
   return raw === "light" || raw === "dark" ? raw : "system";
