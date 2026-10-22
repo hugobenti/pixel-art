@@ -47,6 +47,10 @@ export interface ISharedContent {
     /** Name of the click-outside button behind a dialog panel. */
     backdropLabel: string;
   };
+  numberField: {
+    /** Inline error on a NumberField whose value is not a whole number from min to max. */
+    range: (min: number, max: number) => string;
+  };
   theme: {
     /** Name of the theme switch (visible in settings rows, screen-reader only in headers). */
     label: string;
@@ -123,11 +127,15 @@ export interface IGalleryContent {
     title: string;
     titleLabel: string;
     backgroundLabel: string;
-    backgroundHint: string;
     backgroundAriaLabel: string;
-    maxSize: (max: number) => string;
-    /** Inline error on a width or height field outside 1…max or not a whole number. */
-    sizeRange: (max: number) => string;
+    /** Legend of the size group (presets plus width and height). */
+    sizeLabel: string;
+    /** Accessible name of the preset group. */
+    sizePresetsLabel: string;
+    /** Accessible name of one square preset. */
+    sizePresetLabel: (size: number) => string;
+    /** The form's one hint: size limit and what happens to a new background color. */
+    hint: (max: number) => string;
     submit: string;
     submitting: string;
   };
@@ -225,8 +233,6 @@ export interface IEditorContent {
     };
     canvasSize: {
       hint: string;
-      invalidSize: string;
-      outOfRange: string;
       confirmShrink: string;
     };
     imageDetail: {

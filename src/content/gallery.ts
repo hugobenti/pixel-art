@@ -20,11 +20,12 @@ export const gallery: IGalleryContent = {
     title: "New artwork",
     titleLabel: "Title",
     backgroundLabel: "Background color",
-    backgroundHint:
-      "If this color is not in the default palette, it is added when the artwork is created.",
     backgroundAriaLabel: "Canvas background color",
-    maxSize: (max) => `Maximum ${max} × ${max} pixels.`,
-    sizeRange: (max) => `Enter a whole number from 1 to ${max}.`,
+    sizeLabel: "Canvas size",
+    sizePresetsLabel: "Size presets",
+    sizePresetLabel: (size) => `${size} × ${size} pixels`,
+    hint: (max) =>
+      `Up to ${max} × ${max} px. A background color not in the palette is added to it.`,
     submit: "Create",
     submitting: "Creating…",
   },

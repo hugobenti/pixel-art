@@ -1,6 +1,7 @@
 /**
  * Purpose:
- * Form state and submit flow for the “new artwork” dialog (title, size, background color).
+ * Form state and submit flow for the “new artwork” dialog (title, size with square presets,
+ * background color).
  */
 "use client";
 
@@ -9,11 +10,14 @@ import { useCallback, useRef, useState, type FormEvent } from "react";
 import { gallery } from "@/content/gallery";
 import { shared } from "@/content/shared";
 import { DEFAULT_PALETTE, MAX_CANVAS_DIMENSION } from "@/features/shared/artwork/artworkService";
-import { parseCanvasSizeFields } from "@/features/gallery/logic/createArtworkFields";
+import { parseCanvasSizeFields } from "@/features/shared/logic/canvasSizeFields";
 import type {
   TCreateArtworkFormErrors,
   TUseCreateArtworkFormOptions,
 } from "./useCreateArtworkForm.type";
+
+/** Square sizes offered as one-tap presets (the most common pixel-art canvases). */
+const SIZE_PRESETS = [16, 32, 64, 128];
 
 export function useCreateArtworkForm({ onCreate }: TUseCreateArtworkFormOptions) {
   const [title, setTitle] = useState(shared.artwork.untitled);
@@ -32,7 +36,7 @@ export function useCreateArtworkForm({ onCreate }: TUseCreateArtworkFormOptions)
         width,
         height,
         MAX_CANVAS_DIMENSION,
-        gallery.create.sizeRange(MAX_CANVAS_DIMENSION),
+        shared.numberField.range(1, MAX_CANVAS_DIMENSION),
       );
       setErrors(fieldErrors);
       if (!size) {
@@ -52,20 +56,39 @@ export function useCreateArtworkForm({ onCreate }: TUseCreateArtworkFormOptions)
     [title, width, height, backgroundColor, onCreate],
   );
 
+  const changeWidth = (value: string) => {
+    setWidth(value);
+    setErrors((prev) => ({ ...prev, width: undefined }));
+  };
+  const changeHeight = (value: string) => {
+    setHeight(value);
+    setErrors((prev) => ({ ...prev, height: undefined }));
+  };
+
   return {
     title,
     setTitle,
     width,
-    setWidth,
+    changeWidth,
     height,
-    setHeight,
+    changeHeight,
+    presets: SIZE_PRESETS.map((size) => ({
+      size,
+      label: gallery.create.sizePresetLabel(size),
+      pressed: width.trim() === String(size) && height.trim() === String(size),
+      apply: () => {
+        changeWidth(String(size));
+        changeHeight(String(size));
+      },
+    })),
     backgroundColor,
     setBackgroundColor,
     busy,
     errors,
     widthRef,
     heightRef,
-    maxSizeHint: gallery.create.maxSize(MAX_CANVAS_DIMENSION),
+    maxDimension: MAX_CANVAS_DIMENSION,
+    hint: gallery.create.hint(MAX_CANVAS_DIMENSION),
     handleSubmit,
   };
 }

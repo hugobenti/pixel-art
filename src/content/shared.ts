@@ -28,6 +28,9 @@ export const shared: ISharedContent = {
   modal: {
     backdropLabel: "Close dialog",
   },
+  numberField: {
+    range: (min, max) => `Enter a whole number from ${min} to ${max}.`,
+  },
   theme: {
     label: "Theme",
     options: { system: "System", light: "Light", dark: "Dark" },

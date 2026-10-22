@@ -1,19 +1,21 @@
 /**
  * Purpose:
- * Parses the new-artwork width and height fields: whole numbers from 1 to `max`, one error per field.
+ * Parses whole-number field text within a range, and the canvas width/height pair (1 to `max`) with
+ * one error per field.
  */
 
-import type { ICanvasSizeFieldErrors, ICanvasSizeFieldsResult } from "./createArtworkFields.type";
+import type { ICanvasSizeFieldErrors, ICanvasSizeFieldsResult } from "./canvasSizeFields.type";
 
 const WHOLE_NUMBER = /^\d+$/;
 
-function parseDimension(text: string, max: number): number | null {
+/** The value of `text` as a whole number from `min` to `max`, or null when it is not one. */
+export function parseWholeNumber(text: string, min: number, max: number): number | null {
   const trimmed = text.trim();
   if (!WHOLE_NUMBER.test(trimmed)) {
     return null;
   }
   const value = Number.parseInt(trimmed, 10);
-  return value >= 1 && value <= max ? value : null;
+  return value >= min && value <= max ? value : null;
 }
 
 export function parseCanvasSizeFields(
@@ -22,8 +24,8 @@ export function parseCanvasSizeFields(
   max: number,
   rangeMessage: string,
 ): ICanvasSizeFieldsResult {
-  const width = parseDimension(widthText, max);
-  const height = parseDimension(heightText, max);
+  const width = parseWholeNumber(widthText, 1, max);
+  const height = parseWholeNumber(heightText, 1, max);
   const errors: ICanvasSizeFieldErrors = {};
   if (width === null) {
     errors.width = rangeMessage;
