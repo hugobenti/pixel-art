@@ -4,6 +4,13 @@
  */
 
 import type { IViewportState } from "@/features/editor/types/editor.type";
+import {
+  MAX_VIEWPORT_SCALE,
+  normalizeViewportToPixelGrid,
+} from "@/features/editor/logic/viewportPixelAlign";
+
+/** Zoom-out limit as a share of the contain-fit scale: the artwork may shrink a bit past "fit". */
+const MIN_ZOOM_RATIO_OF_CONTAIN = 0.75;
 
 /**
  * Scale and offset so the full world rectangle [0,w)×[0,h) is visible and as large as possible
@@ -27,4 +34,25 @@ export function computeContainFit(
   };
 
   return { scale, viewOffset };
+}
+
+/**
+ * Default viewport for a container: the contain fit snapped to the integer pixel grid, and the
+ * minimum zoom scale (fractional; normalizeViewportToPixelGrid rounds it up) derived from it.
+ */
+export function containFitViewport(
+  containerW: number,
+  containerH: number,
+  worldW: number,
+  worldH: number
+) {
+  const fit = computeContainFit(containerW, containerH, worldW, worldH);
+  const minScale = fit.scale * MIN_ZOOM_RATIO_OF_CONTAIN;
+  return {
+    minScale,
+    viewport: normalizeViewportToPixelGrid(fit, {
+      minScale,
+      maxScale: MAX_VIEWPORT_SCALE,
+    }),
+  };
 }
