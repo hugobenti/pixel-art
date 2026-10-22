@@ -4,19 +4,16 @@
  */
 "use client";
 
-import { useParams } from "next/navigation";
-
 import { editor } from "@/content/editor";
 import { EditorScreen } from "@/features/editor/components/EditorScreen";
+import { editorPage } from "./page.style";
+import { useEditorPage } from "./useEditorPage";
 
 export default function EditorPage() {
-  const params = useParams();
-  const id = typeof params.id === "string" ? params.id : "";
+  const { id } = useEditorPage();
 
   if (!id) {
-    return (
-      <main className="p-8 text-center text-muted">{editor.route.missingId}</main>
-    );
+    return <main className={editorPage.missingId}>{editor.route.missingId}</main>;
   }
 
   return <EditorScreen artworkId={id} />;

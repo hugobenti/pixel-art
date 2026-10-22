@@ -12,18 +12,10 @@ import { Input } from "@/features/shared/components/Input";
 import { Modal } from "@/features/shared/components/Modal";
 import { useCreateArtworkForm } from "@/features/gallery/hooks/useCreateArtworkForm";
 import { MAX_CANVAS_DIMENSION } from "@/features/shared/artwork/artworkService";
+import { createArtworkModal } from "./CreateArtworkModal.style";
 import type { ICreateArtworkModalProps } from "./CreateArtworkModal.type";
 
-const colorRowClass = "flex flex-wrap items-center gap-3";
-
-const colorPickerClass =
-  "h-10 w-14 shrink-0 cursor-pointer rounded border border-line-strong bg-surface p-1";
-
-export function CreateArtworkModal({
-  open,
-  onClose,
-  onCreate,
-}: ICreateArtworkModalProps) {
+export function CreateArtworkModal({ open, onClose, onCreate }: ICreateArtworkModalProps) {
   const {
     title,
     setTitle,
@@ -34,6 +26,7 @@ export function CreateArtworkModal({
     backgroundColor,
     setBackgroundColor,
     busy,
+    maxSizeHint,
     handleSubmit,
   } = useCreateArtworkForm({ onCreate });
 
@@ -45,10 +38,10 @@ export function CreateArtworkModal({
       size="md"
       overlayProps={{ "aria-labelledby": "create-artwork-heading" }}
     >
-      <h2 id="create-artwork-heading" className="text-lg font-semibold text-fg">
+      <h2 id="create-artwork-heading" className={createArtworkModal.heading}>
         {gallery.create.title}
       </h2>
-      <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
+      <form className={createArtworkModal.form} onSubmit={handleSubmit}>
         <FormField label={gallery.create.titleLabel} htmlFor="create-artwork-title">
           <Input
             id="create-artwork-title"
@@ -57,7 +50,7 @@ export function CreateArtworkModal({
             required
           />
         </FormField>
-        <div className="grid grid-cols-2 gap-3">
+        <div className={createArtworkModal.sizeFields}>
           <FormField label={shared.fields.width} htmlFor="create-artwork-width">
             <Input
               id="create-artwork-width"
@@ -86,21 +79,19 @@ export function CreateArtworkModal({
           htmlFor="create-artwork-bg"
           hint={gallery.create.backgroundHint}
         >
-          <div className={colorRowClass}>
+          <div className={createArtworkModal.colorRow}>
             <input
               type="color"
               id="create-artwork-bg"
               value={backgroundColor}
               onChange={(ev) => setBackgroundColor(ev.target.value)}
-              className={colorPickerClass}
+              className={createArtworkModal.colorPicker}
               aria-label={gallery.create.backgroundAriaLabel}
             />
           </div>
         </FormField>
-        <p className="text-xs text-subtle">
-          {gallery.create.maxSize(MAX_CANVAS_DIMENSION)}
-        </p>
-        <div className="mt-2 flex justify-end gap-2">
+        <p className={createArtworkModal.maxSize}>{maxSizeHint}</p>
+        <div className={createArtworkModal.actions}>
           <Button type="button" variant="ghost" onClick={onClose}>
             {shared.actions.cancel}
           </Button>

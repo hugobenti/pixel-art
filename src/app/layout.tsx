@@ -3,22 +3,14 @@
  * Root layout for the PixelCraft App Router shell (fonts, global styles, full-height body).
  */
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 
 import { AppProviders } from "@/app/AppProviders";
 import { siteMetadata } from "@/content/metadata";
+import { cx } from "@/features/shared/utils/cx";
+import { geistMono, geistSans } from "./fonts";
+import { rootLayout } from "./layout.style";
 
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = siteMetadata;
 
@@ -28,11 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full min-h-dvh bg-bg antialiased`}
-    >
-      <body className="flex min-h-dvh flex-col bg-bg font-sans">
+    <html lang="en" className={cx(geistSans.variable, geistMono.variable, rootLayout.html)}>
+      <body className={rootLayout.body}>
         <AppProviders>{children}</AppProviders>
       </body>
     </html>
