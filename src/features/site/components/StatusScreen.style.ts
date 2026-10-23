@@ -13,5 +13,5 @@ export const statusScreen = {
   text: siteType.lead,
   actions: "flex flex-wrap items-center gap-3",
   primary: cx(button.base, button.size.default, button.variant.primary),
-  home: siteType.link,
+  home: siteType.linkStandalone,
 };

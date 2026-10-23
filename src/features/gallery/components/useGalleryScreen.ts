@@ -72,6 +72,8 @@ export function useGalleryScreen() {
     now,
     loaded,
     error,
+    /** The empty state only shows after a successful load; a failed first load shows just the error. */
+    showEmpty: loaded && !error && artworks.length === 0,
     count: artworks.length,
     countLabel: gallery.screen.countLabel(artworks.length),
     showSkeleton: !loaded || (loading && artworks.length === 0),

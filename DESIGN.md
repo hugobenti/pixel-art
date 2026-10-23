@@ -296,7 +296,7 @@ Every color token, as declared in `src/app/globals.css`. Light values are the `@
 
 - **Page frame.** Every page except the editor sits in `SiteShell`: `max-w-6xl` (1152px), `px-4` in the header, main column and footer alike, `py-8` (`py-12` from `sm`) in the main column. The footer is pushed to the bottom of short pages (`min-h-dvh` column).
 - **Gallery.** Inside the shell's main column, `gap-6` between header and grid. The header is a heading row (title and count left, Import right, wrapping when narrow) over the storage note. The card grid is one column on phones, two from `sm` (640px), three from `lg` (1024px), four from `xl` (1280px), with `gap-6`.
-- **Cards.** `overflow-hidden`; a full-bleed square thumbnail, then a `p-3` body with `gap-1` between the title row and the meta line.
+- **Cards.** No `overflow-hidden` (the `⋯` dropdown must extend past the card); a full-bleed square thumbnail, then a `p-3` body with `gap-1` between the title row and the meta line.
 - **Reading pages** (Help, About, Contact, 404, error). The shell column with `gap-10` (`gap-8` on Contact) between sections; the page title and lead sit in a `gap-3` header. Prose is capped at `max-w-prose` so lines stay readable; the pages never go full-width.
 - **Modals.** An edge-to-edge bottom sheet on phones (top corners rounded, bottom safe-area inset), a centered card from `sm`. Widths `max-w-sm` / `max-w-md` / `max-w-lg`, all with `p-5` and `gap-4`; every size caps at 85dvh and scrolls without chaining to the page.
 - **Side drawers.** Slide in from the right edge: 90% width on phones, half the viewport from `sm`, capped at 720px; full height with the bottom safe-area inset respected.
@@ -342,8 +342,8 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 
 - **Shape:** `rounded-lg` (10px), at least 40px tall, `px-3 py-2`, label in `text-sm font-medium`.
 - **Primary:** `accent` fill, `on-accent` text, `accent-hover` on hover. One per view (The One Accent Rule).
-- **Ghost:** transparent, `fg-soft` text, `surface-muted` fill on hover. The default for secondary actions (Rename, Clone, Cancel).
-- **Outline:** `surface` fill, `control-border` border, `fg-soft` text, `shadow-sm`; `surface-subtle` on hover, `surface-muted` when pressed (Import JSON).
+- **Ghost:** transparent, `fg-soft` text, `surface-muted` fill on hover. The default for secondary actions (Rename, Duplicate, Cancel).
+- **Outline:** `surface` fill, `control-border` border, `fg-soft` text, `shadow-sm`; `surface-subtle` on hover, `surface-muted` when pressed (Import file).
 - **Danger:** `danger` fill, `on-danger` text, `danger-hover` on hover.
 - **Step size:** 36 × 36 (`rounded-md`, `text-lg`), with ghost steps dimming to 40% when disabled.
 - **Icon button** (`IconButton`): ghost, 40 × 40 (44 × 44 on coarse pointers), `rounded-lg`, 20px icon in `fg-soft`; its label is the accessible name and the tooltip, plus the shortcut when there is one ("Undo (Ctrl+Z)"). Toggles (pan, bucket, panels) set `pressed`: `surface-strong` fill, `fg` icon and an inset 1px `control-border` ring, with `aria-pressed`. A pressed state never uses the accent (The One Accent Rule).
@@ -356,7 +356,7 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 - **Corner Style:** `rounded-xl` (12px).
 - **Background:** `surface` with a `line` border.
 - **Shadow Strategy:** `shadow-sm` (see Elevation & Depth).
-- **Artwork card:** a square thumbnail link on a `surface-muted` full-bleed well (`rounded-t-xl`, clipped by the card's `overflow-hidden`; image `object-contain` with `image-rendering: pixelated`), a body with a title row (title link in `font-medium fg`, truncated, and the `Menu` overflow trigger `⋯` for Rename, Clone and Delete at its right) and a meta line under it (`text-xs muted`: size in `font-mono`, then "Edited …"). The whole card is `overflow-hidden` with a `p-3` body. Delete opens `ConfirmDialog`; danger styling appears only on the confirmation button.
+- **Artwork card:** a square thumbnail link on a `surface-muted` full-bleed well (`rounded-t-xl`, clipped by its own `overflow-hidden`; image `object-contain` with `image-rendering: pixelated`), a body with a title row (title link in `font-medium fg`, truncated, and the `Menu` overflow trigger `⋯` for Rename, Duplicate and Delete at its right) and a meta line under it (`text-xs muted`: size in `font-mono`, then "Edited …"). The card itself is not clipped, so the dropdown can overlap the cards below; the body is `p-3`. Delete opens `ConfirmDialog`; danger styling appears only on the confirmation button.
 - **Thumbnails:** a lossless PNG of the visible layers at the largest integer scale that fits 256px, with no grid lines. Thumbnails saved by the old renderer (WebP or a fractional scale, which showed seams between pixels) are detected on gallery load (`isThumbnailCurrent`) and regenerated from the pixel data.
 
 ### Modal

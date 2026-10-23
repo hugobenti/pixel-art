@@ -13,6 +13,6 @@ export const aboutScreen = {
   section: "flex scroll-mt-24 flex-col gap-4",
   sectionTitle: siteType.section,
   prose: siteType.prose,
-  link: siteType.link,
+  link: siteType.linkStandalone,
   signature: "text-base font-semibold text-fg",
 };

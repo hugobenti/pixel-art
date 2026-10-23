@@ -21,7 +21,7 @@ const subscribeNever = () => () => {};
 
 function clientPlatform(): TKeyPlatform {
   const nav = navigator as Navigator & { userAgentData?: { platform?: string } };
-  const platform = nav.userAgentData?.platform ?? nav.platform;
+  const platform = nav.userAgentData?.platform || nav.platform;
   return APPLE_PLATFORM.test(platform) ? "apple" : "other";
 }
 

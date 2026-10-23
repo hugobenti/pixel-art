@@ -26,6 +26,7 @@ export function GalleryScreen() {
     now,
     loaded,
     showSkeleton,
+    showEmpty,
     error,
     count,
     countLabel,
@@ -76,7 +77,7 @@ export function GalleryScreen() {
           </div>
           <p className={galleryScreen.note}>
             {gallery.screen.storageNote}{" "}
-            <Link href="/help#saving" className={siteType.link}>
+            <Link href="/help#saving" className={siteType.linkStandalone}>
               {gallery.screen.storageLink}
             </Link>
           </p>
@@ -93,6 +94,7 @@ export function GalleryScreen() {
         ) : (
           <GalleryGrid
             artworks={artworks}
+            showEmpty={showEmpty}
             now={now}
             onRename={renameArtwork}
             onClone={cloneArtwork}

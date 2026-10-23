@@ -145,6 +145,8 @@ export function useMenu({ items }: IMenuProps) {
   return {
     open,
     sheet,
+    triggerPopup: sheet ? ("dialog" as const) : ("menu" as const),
+    triggerControls: !sheet && open ? menuId : undefined,
     dropdownClass: cx(
       menuStyle.items,
       menuStyle.placement[placement ?? "below"],

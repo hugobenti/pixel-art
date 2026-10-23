@@ -39,15 +39,15 @@ export const gallery: IGalleryContent = {
   },
   import: {
     success: "Artwork imported.",
-    failed: "This file isn't a PixelHB artwork.",
+    failed: "This file isn’t a PixelHB artwork.",
   },
   errors: {
-    load: "Couldn't open your artworks. Reload the page to try again.",
-    create: "Couldn't create the artwork. Try again.",
-    import: "This file isn't a PixelHB artwork.",
-    rename: "Couldn't rename the artwork. Try again.",
-    clone: "Couldn't duplicate the artwork. Try again.",
-    delete: "Couldn't delete the artwork. Try again.",
+    load: "Couldn’t open your artworks. Reload the page to try again.",
+    create: "Couldn’t create the artwork. Try again.",
+    import: "This file isn’t a PixelHB artwork.",
+    rename: "Couldn’t rename the artwork. Try again.",
+    clone: "Couldn’t duplicate the artwork. Try again.",
+    delete: "Couldn’t delete the artwork. Try again.",
   },
   toasts: {
     duplicated: "Artwork duplicated.",

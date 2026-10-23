@@ -429,6 +429,8 @@ export interface IHelpContent {
   metaTitle: string;
   metaDescription: string;
   h1: string;
+  /** Accessible name of the table-of-contents landmark. */
+  tocLabel: string;
   intro: string;
   sections: { id: string; title: string; paragraphs: string[] }[];
   shortcutsTitle: string;

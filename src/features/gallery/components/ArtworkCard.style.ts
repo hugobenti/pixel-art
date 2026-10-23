@@ -7,7 +7,6 @@ import { focusRing } from "@/features/shared/components/focus.style";
 import { cx } from "@/features/shared/utils/cx";
 
 export const artworkCard = {
-  card: "overflow-hidden",
   body: "flex flex-col gap-1 p-3",
   thumbnailLink:
     "relative block aspect-square w-full overflow-hidden rounded-t-xl bg-surface-muted",

@@ -36,7 +36,7 @@ export function ArtworkCard(props: IArtworkCardProps) {
 
   return (
     <article>
-      <Card className={artworkCard.card}>
+      <Card>
         <Link href={href} aria-hidden tabIndex={-1} className={artworkCard.thumbnailLink}>
           <Image
             src={thumbnail.src}
