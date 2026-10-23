@@ -360,3 +360,27 @@ export interface IEditorContent {
     };
   };
 }
+
+/** A titled blurb: a Home promise or a How-it-works step. */
+export interface IHomeBlurb {
+  title: string;
+  text: string;
+}
+
+/** Copy for the Home page. */
+export interface IHomeContent {
+  metaTitle: { absolute: string };
+  h1: string;
+  lead: string;
+  primary: string;
+  secondary: string;
+  promises: IHomeBlurb[];
+  insideLabel: string;
+  inside: string[];
+  stepsTitle: string;
+  steps: IHomeBlurb[];
+  storageNote: string;
+  storageLink: string;
+  closingTitle: string;
+  closingCta: string;
+}

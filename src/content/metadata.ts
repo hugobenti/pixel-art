@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { gallery } from "./gallery";
+import { home } from "./home";
 import { site } from "./site";
 
 /** Page metadata for the whole app, derived from the site content. */
@@ -10,3 +11,6 @@ export const siteMetadata: Metadata = {
 
 /** The gallery tab reads "Your artworks · PixelHB". */
 export const galleryMetadata: Metadata = { title: gallery.screen.heading };
+
+/** The home tab reads "PixelHB · Pixel art, right in your browser" (no template suffix). */
+export const homeMetadata: Metadata = { title: home.metaTitle };

@@ -29,6 +29,13 @@ const galleryImports = (from) =>
     `${from} must not import the gallery feature; move what both need to src/features/shared.`
   );
 
+const siteImports = (from) =>
+  layerImports(
+    "site",
+    "@/features/site",
+    `${from} must not import the site feature; move what both need to src/features/shared.`
+  );
+
 const featureFiles = (feature) => [`src/features/${feature}/**/*.{ts,tsx,mts,mjs}`];
 
 /**
@@ -210,20 +217,42 @@ const eslintConfig = defineConfig([
     rules: {
       "no-restricted-imports": [
         "error",
-        { patterns: [appImports, editorImports("shared"), galleryImports("shared")] },
+        {
+          patterns: [
+            appImports,
+            editorImports("shared"),
+            galleryImports("shared"),
+            siteImports("shared"),
+          ],
+        },
       ],
     },
   },
   {
     files: featureFiles("editor"),
     rules: {
-      "no-restricted-imports": ["error", { patterns: [appImports, galleryImports("editor")] }],
+      "no-restricted-imports": [
+        "error",
+        { patterns: [appImports, galleryImports("editor"), siteImports("editor")] },
+      ],
     },
   },
   {
     files: featureFiles("gallery"),
     rules: {
-      "no-restricted-imports": ["error", { patterns: [appImports, editorImports("gallery")] }],
+      "no-restricted-imports": [
+        "error",
+        { patterns: [appImports, editorImports("gallery"), siteImports("gallery")] },
+      ],
+    },
+  },
+  {
+    files: featureFiles("site"),
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        { patterns: [appImports, editorImports("site"), galleryImports("site")] },
+      ],
     },
   },
   // Accessibility: next registers the jsx-a11y plugin but enables only a handful of its rules.
