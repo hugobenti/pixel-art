@@ -34,4 +34,10 @@ export const PUBLIC_ICONS = {
   layers: "/icons/layers.svg",
   moreHorizontal: "/icons/more-horizontal.svg",
   trash: "/icons/trash.svg",
+  sun: "/icons/sun.svg",
+  moon: "/icons/moon.svg",
+  menu: "/icons/menu.svg",
+  mail: "/icons/mail.svg",
+  lock: "/icons/lock.svg",
+  chat: "/icons/chat.svg",
 } as const;
