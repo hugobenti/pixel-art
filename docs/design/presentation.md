@@ -249,7 +249,7 @@ Plus a tip on what to include in a bug report (browser, device, what you did).
 - H1: About PixelHB
 - PixelHB is a pixel-art editor that runs in your browser. It's made for drawing sprites, icons and tiles without accounts, downloads or waiting.
 - H2 "Your work stays with you": Everything happens on your device. Your artworks are saved in this browser, and nothing is sent to a server.
-- H2 "Why PixelHB exists" (Hugo's story, edited; pending his OK):
+- H2 "Why PixelHB exists" (Hugo's story, edited; approved by Hugo Oct 22):
   - I was working on an art project and needed a complete pixel tool: layers I could organize, a reference image to draw from, a palette I fully control, and nothing to install. Every editor I tried was missing something, so I built my own.
   - Now PixelHB is for anyone who loves pixels: artists, designers, game makers, and everyone who simply enjoys drawing.
   - It's made by an artist, for artists, and it grows with your feedback. Tell me what's missing, and let's build the best pixel tool together. *Send feedback* (→ `/contact`)
