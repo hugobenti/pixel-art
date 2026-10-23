@@ -376,12 +376,14 @@ export interface IHomeContent {
   secondary: string;
   promises: IHomeBlurb[];
   insideLabel: string;
-  inside: string[];
+  insideIntro: string;
+  inside: IHomeBlurb[];
   stepsTitle: string;
   steps: IHomeBlurb[];
   storageNote: string;
   storageLink: string;
   closingTitle: string;
+  closingText: string;
   closingCta: string;
 }
 
