@@ -23,13 +23,24 @@ export interface IPickHoldStartInput {
   panDeferred: boolean;
 }
 
-export interface ILoupePlacementInput {
+/** A box that floats next to the pointer (the loupe, the cancel pill). */
+export interface IFloatingPlacementInput {
   pointerX: number;
   pointerY: number;
-  /** Loupe diameter, ring included. */
-  size: number;
-  /** Space between the pointer and the loupe. */
+  width: number;
+  height: number;
+  /** Space between the pointer and the box. */
   gap: number;
   viewportWidth: number;
   viewportHeight: number;
+}
+
+export interface IEscapeDisarmInput {
+  key: string;
+  /** Another handler already used this key press. */
+  defaultPrevented: boolean;
+  /** Focus is in a text field. */
+  textEntry: boolean;
+  /** A drawer, modal or the shift pad is open: its own Escape handler closes it. */
+  panelOpen: boolean;
 }

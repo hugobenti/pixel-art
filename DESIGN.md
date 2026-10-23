@@ -256,8 +256,8 @@ Every color token, as declared in `src/app/globals.css`. Light values are the `@
 | `grid-line`        | `color-mix(in srgb, var(--color-fg) 24%, transparent)` | `color-mix(in srgb, var(--color-muted) 34%, transparent)` | Editor pixel grid (canvas renderer)                                     |
 | `guide-horizontal` | `#c0261d`                                              | `#ff5c5c`                                                 | Horizontal symmetry guide (canvas renderer)                             |
 | `guide-vertical`   | `#2b3a9e`                                              | `#5fa8ff`                                                 | Vertical symmetry guide (canvas renderer)                               |
-| `loupe-edge-dark`  | `#000000`                                              | `#000000`                                                 | Color picker: outer edge of the loupe and the picked-pixel outline      |
-| `loupe-edge-light` | `#ffffff`                                              | `#ffffff`                                                 | Color picker: inner edge, paired with `loupe-edge-dark` so it reads on any artwork color |
+| `loupe-edge-dark`  | `#000000`                                              | `#000000`                                                 | Color picker: the black line on each side of the loupe ring and around the picked pixel |
+| `loupe-edge-light` | `#ffffff`                                              | `#ffffff`                                                 | Color picker: the white line paired with `loupe-edge-dark`, so the edges read on any artwork color |
 
 ### Theming
 
@@ -401,9 +401,9 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 
 - Shown only while a pick is held (`ColorPickerOverlay`, a fixed full-window layer that never takes pointer events and is `aria-hidden`).
 - A 114px circle: a 12px ring split horizontally (top half: the color under the pointer; bottom half: the current color of the slot the pick fills), around a lens of 5 × 5 magnified pixels (18px cells) with the target cell outlined. Empty cells and an empty top half show the transparency checkerboard. No color name or hex.
-- Edges: `loupe-edge-dark` outside and `loupe-edge-light` inside, so the ring reads on any artwork color in both themes. The pixel under the pointer gets the same black-and-white outline on the canvas.
-- Placement: above and to the right of the pointer (16px gap, 48px on touch so a finger never covers it), flipping sides near the window edges. It may draw over the toolbar and palette row.
-- Off the canvas the loupe hides and a `surface` pill with a `line-strong` border reads "Release to cancel".
+- Edges: a 1.5px `loupe-edge-dark` line then a 1.5px `loupe-edge-light` line on both sides of the ring (outside: ring, black, white, artwork; inside: lens, black, white, ring), so the ring reads against the artwork and the lens in both themes. The pixel under the pointer gets a 2px white then 2px black outline on the canvas.
+- Placement: above and to the right of the pointer (16px gap, 48px on touch so a finger never covers it), flipping sides near the window edges and kept inside the window when neither side fits. It may draw over the toolbar and palette row.
+- Off the canvas the loupe hides and a `surface` pill with a `line-strong` border reads "Release to cancel"; it floats like the loupe, so a finger never covers it.
 
 ### Theme Toggle
 

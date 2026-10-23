@@ -8,16 +8,17 @@
 import type { CSSProperties } from "react";
 
 import {
+  floatingPlacement,
   LOUPE_GAP_MOUSE_PX,
   LOUPE_GAP_TOUCH_PX,
   LOUPE_SIZE_PX,
   loupeCells,
-  loupePlacement,
 } from "@/features/editor/logic/colorPicker";
 import type { IColorPickerOverlayProps, ILoupeView } from "./ColorPickerOverlay.type";
 
-/** The pill sits just below-right of the pointer, like a tooltip. */
-const PILL_OFFSET_PX = 16;
+/** Upper bound of the "Release to cancel" pill (text-xs, px-2.5 py-1, 1px border), so it stays on screen. */
+const PILL_WIDTH_PX = 132;
+const PILL_HEIGHT_PX = 26;
 
 export function useColorPickerOverlay({
   hold,
@@ -30,9 +31,17 @@ export function useColorPickerOverlay({
     return { outline: null, loupe: null, pill: null };
   }
   const { target, clientX, clientY } = hold;
+  // The pill and the loupe float the same way: beside the pointer, clear of a finger on touch.
+  const float = {
+    pointerX: clientX,
+    pointerY: clientY,
+    gap: hold.pointerType === "touch" ? LOUPE_GAP_TOUCH_PX : LOUPE_GAP_MOUSE_PX,
+    viewportWidth: window.innerWidth,
+    viewportHeight: window.innerHeight,
+  };
 
   if (target.kind === "offCanvas") {
-    const pill: CSSProperties = { left: clientX + PILL_OFFSET_PX, top: clientY + PILL_OFFSET_PX };
+    const pill: CSSProperties = floatingPlacement({ ...float, width: PILL_WIDTH_PX, height: PILL_HEIGHT_PX });
     return { outline: null, loupe: null, pill };
   }
 
@@ -47,14 +56,7 @@ export function useColorPickerOverlay({
       }
     : null;
 
-  const position = loupePlacement({
-    pointerX: clientX,
-    pointerY: clientY,
-    size: LOUPE_SIZE_PX,
-    gap: hold.pointerType === "touch" ? LOUPE_GAP_TOUCH_PX : LOUPE_GAP_MOUSE_PX,
-    viewportWidth: window.innerWidth,
-    viewportHeight: window.innerHeight,
-  });
+  const position = floatingPlacement({ ...float, width: LOUPE_SIZE_PX, height: LOUPE_SIZE_PX });
   const picked = target.kind === "color" ? artwork.palette[target.paletteIndex] : null;
   const loupe: ILoupeView = {
     style: { ...position, width: LOUPE_SIZE_PX, height: LOUPE_SIZE_PX },

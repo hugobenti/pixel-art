@@ -14,7 +14,12 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { pickSlotForButton, pickTargetAt, shouldStartPickHold } from "@/features/editor/logic/colorPicker";
+import {
+  pickSlotForButton,
+  pickTargetAt,
+  shouldEscapeDisarmPicker,
+  shouldStartPickHold,
+} from "@/features/editor/logic/colorPicker";
 import type { TPickTarget } from "@/features/editor/logic/colorPicker.type";
 import { isTextEntryTarget } from "@/features/editor/logic/editorKeyboardGuards";
 import type { IPickHold, IUseColorPickerHoldParams } from "./useColorPickerHold.type";
@@ -137,10 +142,15 @@ export function useColorPickerHold(params: IUseColorPickerHoldParams) {
       return;
     }
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key !== "Escape" || e.defaultPrevented || isTextEntryTarget(e.target as HTMLElement | null)) {
-        return;
+      const disarms = shouldEscapeDisarmPicker({
+        key: e.key,
+        defaultPrevented: e.defaultPrevented,
+        textEntry: isTextEntryTarget(e.target as HTMLElement | null),
+        panelOpen: latest.current.panelOpen,
+      });
+      if (disarms) {
+        latest.current.onDisarm();
       }
-      latest.current.onDisarm();
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);

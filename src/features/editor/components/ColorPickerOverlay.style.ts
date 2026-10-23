@@ -4,8 +4,9 @@
  * loupe (split ring, 5 × 5 lens, center mark) and the "Release to cancel" pill.
  *
  * Notes:
- * Edges use the theme-independent loupe-edge tokens (black and white) so they read on any artwork color.
- * Sizes follow logic/colorPicker.ts: 12px ring (inset-3), 18px cells, center cell at 36px (left-9 top-9).
+ * Edges use the theme-independent loupe-edge tokens: a black line then a white line on both sides of the
+ * ring, so it reads against the artwork outside and the lens inside. Sizes follow logic/colorPicker.ts:
+ * 12px ring (inset-3), 18px cells, center cell at 36px (left-9 top-9).
  */
 
 import { cx } from "@/features/shared/utils/cx";
@@ -24,7 +25,7 @@ export const colorPickerOverlay = {
   ringEmpty: "pixel-checkerboard",
   lens: cx(
     "pixel-checkerboard absolute inset-3 grid grid-cols-[repeat(5,18px)] auto-rows-[18px] overflow-hidden rounded-full",
-    "shadow-[0_0_0_1.5px_var(--color-loupe-edge-dark)]",
+    "shadow-[0_0_0_1.5px_var(--color-loupe-edge-dark),0_0_0_3px_var(--color-loupe-edge-light)]",
   ),
   centerMark: cx("absolute top-9 left-9 h-[18px] w-[18px]", edgePair),
   pill: "absolute rounded-full border border-line-strong bg-surface px-2.5 py-1 text-xs whitespace-nowrap text-fg shadow-lg",

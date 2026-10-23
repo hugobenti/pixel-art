@@ -13,7 +13,8 @@ import { screenToWorldCoordinates } from "./coordinateMath";
 import type { TColorSlot } from "./paletteMutations.type";
 import { compositeOpaquePaletteIndexAt } from "./visibleCompositePixelCounts";
 import type {
-  ILoupePlacementInput,
+  IEscapeDisarmInput,
+  IFloatingPlacementInput,
   IPickHoldStartInput,
   TPickArtwork,
   TPickTarget,
@@ -93,21 +94,35 @@ export function shouldStartPickHold({
   return pointerType !== "touch" || touchCount === 1;
 }
 
+/** Escape turns the picker off only when nothing else (a panel, a text field, another handler) owns it. */
+export function shouldEscapeDisarmPicker({
+  key,
+  defaultPrevented,
+  textEntry,
+  panelOpen,
+}: IEscapeDisarmInput): boolean {
+  return key === "Escape" && !defaultPrevented && !textEntry && !panelOpen;
+}
+
 /**
- * Top-left of the loupe in viewport pixels: above and to the right of the pointer, flipping each axis
- * when the loupe would leave the viewport.
+ * Top-left in viewport pixels of a box floating next to the pointer: above and to the right, flipping
+ * each axis when the box would leave the viewport, and kept inside it when neither side fits.
  */
-export function loupePlacement({
+export function floatingPlacement({
   pointerX,
   pointerY,
-  size,
+  width,
+  height,
   gap,
   viewportWidth,
   viewportHeight,
-}: ILoupePlacementInput): { left: number; top: number } {
+}: IFloatingPlacementInput): { left: number; top: number } {
   const right = pointerX + gap;
-  const left = right + size <= viewportWidth ? right : pointerX - gap - size;
-  const above = pointerY - gap - size;
-  const top = above >= 0 ? above : Math.min(pointerY + gap, viewportHeight - size);
-  return { left, top };
+  const left = right + width <= viewportWidth ? right : pointerX - gap - width;
+  const above = pointerY - gap - height;
+  const top = above >= 0 ? above : pointerY + gap;
+  return {
+    left: Math.max(0, Math.min(left, viewportWidth - width)),
+    top: Math.max(0, Math.min(top, viewportHeight - height)),
+  };
 }

@@ -7,10 +7,11 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  floatingPlacement,
   loupeCells,
-  loupePlacement,
   pickSlotForButton,
   pickTargetAt,
+  shouldEscapeDisarmPicker,
   shouldStartPickHold,
 } from "@/features/editor/logic/colorPicker";
 import type { IViewportState } from "@/features/editor/types/editor.type";
@@ -141,18 +142,47 @@ describe("shouldStartPickHold", () => {
   });
 });
 
-describe("loupePlacement", () => {
-  const base = { size: 114, gap: 16, viewportWidth: 1440, viewportHeight: 900 };
+describe("shouldEscapeDisarmPicker", () => {
+  const base = { key: "Escape", defaultPrevented: false, textEntry: false, panelOpen: false };
+
+  it("disarms on Escape over the canvas", () => {
+    expect(shouldEscapeDisarmPicker(base)).toBe(true);
+  });
+
+  it("leaves the picker armed when Escape closes an open drawer, modal or the shift pad", () => {
+    expect(shouldEscapeDisarmPicker({ ...base, panelOpen: true })).toBe(false);
+  });
+
+  it("ignores other keys, handled Escapes and text fields", () => {
+    expect(shouldEscapeDisarmPicker({ ...base, key: "a" })).toBe(false);
+    expect(shouldEscapeDisarmPicker({ ...base, defaultPrevented: true })).toBe(false);
+    expect(shouldEscapeDisarmPicker({ ...base, textEntry: true })).toBe(false);
+  });
+});
+
+describe("floatingPlacement", () => {
+  const loupe = { width: 114, height: 114, gap: 16, viewportWidth: 1440, viewportHeight: 900 };
 
   it("sits above and to the right of the pointer", () => {
-    expect(loupePlacement({ ...base, pointerX: 500, pointerY: 500 })).toEqual({ left: 516, top: 370 });
+    expect(floatingPlacement({ ...loupe, pointerX: 500, pointerY: 500 })).toEqual({ left: 516, top: 370 });
   });
 
   it("flips to the left near the right edge", () => {
-    expect(loupePlacement({ ...base, pointerX: 1400, pointerY: 500 }).left).toBe(1270);
+    expect(floatingPlacement({ ...loupe, pointerX: 1400, pointerY: 500 }).left).toBe(1270);
   });
 
   it("flips below near the top edge", () => {
-    expect(loupePlacement({ ...base, pointerX: 500, pointerY: 50 }).top).toBe(66);
+    expect(floatingPlacement({ ...loupe, pointerX: 500, pointerY: 50 }).top).toBe(66);
+  });
+
+  it("stays inside a window too narrow for either side", () => {
+    const phone = { ...loupe, gap: 48, viewportWidth: 320, viewportHeight: 640 };
+    expect(floatingPlacement({ ...phone, pointerX: 160, pointerY: 400 }).left).toBe(0);
+  });
+
+  it("places a wide, short box (the cancel pill) above the finger and inside the window", () => {
+    const pill = { width: 132, height: 26, gap: 48, viewportWidth: 390, viewportHeight: 844 };
+    expect(floatingPlacement({ ...pill, pointerX: 100, pointerY: 300 })).toEqual({ left: 148, top: 226 });
+    expect(floatingPlacement({ ...pill, pointerX: 380, pointerY: 300 }).left).toBe(200);
   });
 });

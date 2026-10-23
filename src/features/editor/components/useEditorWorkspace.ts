@@ -277,6 +277,8 @@ export function useEditorWorkspace({ initialArtwork }: IEditorWorkspaceProps) {
     activeSlot: paletteUi.activeSlot,
     onPick,
     onDisarm: togglePicker,
+    panelOpen:
+      paletteModalOpen || layersDrawerOpen || settingsDrawerOpen || pixelShift.shiftOverlayOpen,
   });
 
   /** The picker takes the press first; painting gets it only when the picker does not. */

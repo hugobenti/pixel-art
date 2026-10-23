@@ -31,6 +31,8 @@ export interface IUseColorPickerHoldParams {
   activeSlot: TColorSlot;
   /** A hold ended over a color. */
   onPick: (slot: TColorSlot, paletteIndex: number) => void;
-  /** Escape while armed and not holding. */
+  /** Escape while armed and not holding, unless a panel is open to take it. */
   onDisarm: () => void;
+  /** A drawer, modal or the shift pad is open: Escape closes it and leaves the picker on. */
+  panelOpen: boolean;
 }
