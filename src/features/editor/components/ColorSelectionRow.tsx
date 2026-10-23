@@ -13,11 +13,12 @@ import { useColorSelectionRow } from "./useColorSelectionRow";
 
 export function ColorSelectionRow(props: IColorSelectionRowProps) {
   const { palette, primaryIndex, secondaryIndex, onSwatchPick, onOpenPaletteModal } = props;
-  const { focusedIndex } = useColorSelectionRow(props);
+  const { focusedIndex, scrollerRef } = useColorSelectionRow(props);
 
   return (
     <div className={colorSelectionRow.row}>
       <div
+        ref={scrollerRef}
         className={colorSelectionRow.scroller}
         role="group"
         aria-label={editor.paletteRow.groupLabel}

@@ -52,16 +52,21 @@ export function useEditorPalette({
     setActiveSlot((s) => (s === "primary" ? "secondary" : "primary"));
   }, []);
 
+  /** Focuses the swatch and paints with it from `slot` (the color picker can fill the inactive slot). */
+  const assignSwatchToSlot = useCallback((slot: TColorSlot, index: number) => {
+    setFocusedSwatchIndex(index);
+    if (slot === "primary") {
+      setPrimaryIndex(index);
+    } else {
+      setSecondaryIndex(index);
+    }
+  }, []);
+
   const assignSwatchToActiveSlot = useCallback(
     (index: number) => {
-      setFocusedSwatchIndex(index);
-      if (activeSlot === "primary") {
-        setPrimaryIndex(index);
-      } else {
-        setSecondaryIndex(index);
-      }
+      assignSwatchToSlot(activeSlot, index);
     },
-    [activeSlot],
+    [activeSlot, assignSwatchToSlot],
   );
 
   const applyHexAtIndex = useCallback(
@@ -168,6 +173,7 @@ export function useEditorPalette({
     primaryIndex,
     secondaryIndex,
     assignSwatchToActiveSlot,
+    assignSwatchToSlot,
     focusedSwatchIndex,
     selectSwatchForEditing,
     applyHexAtIndex,
