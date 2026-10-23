@@ -46,9 +46,6 @@ export interface ISharedContent {
     /** Name of the click-outside button behind a dialog panel. */
     backdropLabel: string;
   };
-  menu: {
-    sheetCloseLabel: string;
-  };
   numberField: {
     /** Inline error on a NumberField whose value is not a whole number from min to max. */
     range: (min: number, max: number) => string;

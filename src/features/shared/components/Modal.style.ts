@@ -45,7 +45,7 @@ export const modal = {
     lg: "sm:max-w-lg",
   },
   header: "flex items-center justify-between gap-3",
-  heading: "min-w-0 text-base font-semibold text-fg",
+  heading: "min-w-0 truncate text-base font-semibold text-fg",
   closeButton: "-my-2 -mr-2",
   /** Wraps the content and footer when the dialog is a form, keeping the panel rhythm. */
   form: "flex flex-col gap-4",
