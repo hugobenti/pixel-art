@@ -9,7 +9,7 @@ import Link from "next/link";
 import { home } from "@/content/home";
 import { BrandLogo } from "@/features/shared/brand/BrandLogo";
 import { PublicMaskIcon } from "@/features/shared/components/PublicMaskIcon";
-import { HOME_PROMISE_ICONS, HOME_STEP_NUMBERS } from "./HomeScreen.data";
+import { HOME_FEATURE_ICONS, HOME_PROMISE_ICONS, HOME_STEP_NUMBERS } from "./HomeScreen.data";
 import { homeScreen } from "./HomeScreen.style";
 
 export function HomeScreen() {
@@ -45,10 +45,13 @@ export function HomeScreen() {
 
       <section className={homeScreen.section}>
         <h2 className={homeScreen.sectionTitle}>{home.insideLabel}</h2>
-        <ul className={homeScreen.chips}>
-          {home.inside.map((item) => (
-            <li key={item} className={homeScreen.chip}>
-              {item}
+        <p className={homeScreen.sectionIntro}>{home.insideIntro}</p>
+        <ul className={homeScreen.features}>
+          {home.inside.map((item, index) => (
+            <li key={item.title} className={homeScreen.feature}>
+              <PublicMaskIcon src={HOME_FEATURE_ICONS[index]} className={homeScreen.featureIcon} />
+              <h3 className={homeScreen.featureTitle}>{item.title}</h3>
+              <p className={homeScreen.featureText}>{item.text}</p>
             </li>
           ))}
         </ul>
@@ -59,9 +62,13 @@ export function HomeScreen() {
         <ol className={homeScreen.steps}>
           {home.steps.map((step, index) => (
             <li key={step.title} className={homeScreen.step}>
-              <span className={homeScreen.stepNumber}>{HOME_STEP_NUMBERS[index]}</span>
-              <h3 className={homeScreen.cardTitle}>{step.title}</h3>
-              <p className={homeScreen.cardText}>{step.text}</p>
+              <span aria-hidden="true" className={homeScreen.stepNumber}>
+                {HOME_STEP_NUMBERS[index]}
+              </span>
+              <div className={homeScreen.stepBody}>
+                <h3 className={homeScreen.cardTitle}>{step.title}</h3>
+                <p className={homeScreen.cardText}>{step.text}</p>
+              </div>
             </li>
           ))}
         </ol>
@@ -75,7 +82,9 @@ export function HomeScreen() {
       </p>
 
       <section className={homeScreen.closing}>
-        <h2 className={homeScreen.sectionTitle}>{home.closingTitle}</h2>
+        <BrandLogo variant="pencil" decorative />
+        <h2 className={homeScreen.closingTitle}>{home.closingTitle}</h2>
+        <p className={homeScreen.closingText}>{home.closingText}</p>
         <Link href="/gallery" className={homeScreen.primary}>
           {home.closingCta}
         </Link>

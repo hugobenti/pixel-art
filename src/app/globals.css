@@ -190,11 +190,12 @@ html {
 }
 
 /**
- * Faint pixel grid behind the Home banner. The cell matches the banner's whole-number scale: 8px
+ * Faint pixel grid with two consumers. The Home hero banner: the cell matches the banner's whole-number scale: 8px
  * from lg (400px banner), 6px below (300px banner), 5px under 360px (250px banner, which fits a
  * 320px screen). The banner is centered, and half its width is a whole number of cells, so grid
  * lines run through the panel's horizontal center (`50% + cell / 2`); its height is 7 cells, so the
- * default vertical `50%` lands on the pencil's rows too.
+ * default vertical `50%` lands on the pencil's rows too. The Home closing panel: a decorative
+ * backdrop only; its grid is not aligned to the 2× pencil logo.
  */
 @layer utilities {
   .pixel-grid-panel {

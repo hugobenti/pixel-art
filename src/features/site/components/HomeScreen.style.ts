@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * Classes for HomeScreen: hero, promise cards, feature chips, steps, storage band and closing call.
+ * Classes for HomeScreen: hero, promise cards, feature cards, steps, storage band and closing call.
  */
 
 import { button } from "@/features/shared/components/Button.style";
@@ -26,12 +26,21 @@ export const homeScreen = {
   cardText: "text-sm text-muted",
   section: "flex flex-col gap-4",
   sectionTitle: siteType.section,
-  chips: "flex flex-wrap gap-x-2 gap-y-1 text-sm text-fg-secondary",
-  chip: "after:ml-2 after:text-muted after:content-['·'] last:after:hidden",
-  steps: "grid gap-6 sm:grid-cols-3",
-  step: "flex flex-col gap-1",
-  stepNumber: "font-mono text-sm text-muted",
+  sectionIntro: "text-sm text-muted sm:text-base",
+  features: "grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4",
+  feature: "flex flex-col gap-2 rounded-lg border border-line bg-surface p-3 min-[360px]:p-4",
+  featureIcon: "size-6 text-fg-soft",
+  featureTitle: "text-sm font-semibold text-fg sm:text-base",
+  featureText: "text-xs text-muted sm:text-sm",
+  steps: "flex flex-col gap-6 sm:grid sm:grid-cols-3 sm:gap-0",
+  step: "relative flex items-start gap-4 after:absolute after:top-11 after:-bottom-6 after:left-[22px] after:border-l after:border-dashed after:border-line-strong last:after:hidden sm:flex-col sm:items-center sm:gap-3 sm:px-3 sm:text-center sm:after:top-[22px] sm:after:bottom-auto sm:after:left-1/2 sm:after:h-0 sm:after:w-full sm:after:border-t sm:after:border-l-0",
+  stepNumber:
+    "relative z-10 flex size-11 shrink-0 items-center justify-center rounded-lg border border-line bg-surface font-mono text-lg font-semibold text-accent",
+  stepBody: "flex flex-col gap-1",
   note: "flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg bg-surface px-5 py-4 text-sm text-muted",
   noteLink: siteType.linkStandalone,
-  closing: "flex flex-col items-start gap-4",
+  closing:
+    "pixel-grid-panel flex flex-col items-center gap-4 rounded-xl border border-line bg-surface px-6 py-12 text-center",
+  closingTitle: cx(siteType.section, "sm:text-2xl"),
+  closingText: "text-sm text-muted sm:text-base",
 };
