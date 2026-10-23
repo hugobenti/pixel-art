@@ -16,7 +16,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: site.name,
     short_name: site.name,
     description: site.description,
-    start_url: "/",
+    start_url: "/gallery",
     display: "standalone",
     background_color: lightTokens.bg,
     theme_color: lightTokens.bg,
