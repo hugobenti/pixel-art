@@ -440,3 +440,12 @@ export interface IHelpContent {
   contactPrompt: string;
   contactLink: string;
 }
+
+/** Copy for the 404 and error pages. */
+export interface IStatusPagesContent {
+  metaTitle: string;
+  notFound: { title: string; text: string };
+  error: { title: string; text: string; retry: string };
+  gallery: string;
+  home: string;
+}
