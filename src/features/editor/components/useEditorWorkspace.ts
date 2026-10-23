@@ -29,6 +29,8 @@ import { useToolbarCenterZoom } from "@/features/editor/hooks/useToolbarCenterZo
 import { useViewportKeyboardPan } from "@/features/editor/hooks/useViewportKeyboardPan";
 import { useViewportNavigation } from "@/features/editor/hooks/useViewportNavigation";
 import { useViewportWheelAndPinch } from "@/features/editor/hooks/useViewportWheelAndPinch";
+import { applyToolAction } from "@/features/editor/logic/editorTools";
+import type { TEditorToolAction } from "@/features/editor/logic/editorTools.type";
 import { clampPaletteIndex } from "@/features/editor/logic/paletteMutations";
 import type { IHistoryCommand } from "@/features/editor/types/editor.type";
 import type { IArtwork } from "@/features/shared/artwork/artwork.type";
@@ -46,6 +48,8 @@ export function useEditorWorkspace({ initialArtwork }: IEditorWorkspaceProps) {
   const [layersDrawerOpen, setLayersDrawerOpen] = useState(false);
   const [settingsDrawerOpen, setSettingsDrawerOpen] = useState(false);
   const [bucketMode, setBucketMode] = useState(false);
+  const [pickerArmed, setPickerArmed] = useState(false);
+  const [pickerReturnsToBucket, setPickerReturnsToBucket] = useState(false);
 
   const artworkRef = useRef(artwork);
   useEffect(() => {
@@ -198,25 +202,23 @@ export function useEditorWorkspace({ initialArtwork }: IEditorWorkspaceProps) {
     [schedulePaintBump],
   );
 
-  const togglePanMode = useCallback(() => {
-    setPanMode((value) => {
-      const next = !value;
-      if (next) {
-        setBucketMode(false);
-      }
-      return next;
-    });
-  }, [setPanMode]);
+  const runToolAction = useCallback(
+    (action: TEditorToolAction) => {
+      const next = applyToolAction(
+        { panMode, bucketMode, pickerArmed, pickerReturnsToBucket },
+        action,
+      );
+      setPanMode(next.panMode);
+      setBucketMode(next.bucketMode);
+      setPickerArmed(next.pickerArmed);
+      setPickerReturnsToBucket(next.pickerReturnsToBucket);
+    },
+    [panMode, bucketMode, pickerArmed, pickerReturnsToBucket, setPanMode],
+  );
 
-  const toggleBucketMode = useCallback(() => {
-    setBucketMode((value) => {
-      const next = !value;
-      if (next) {
-        setPanMode(false);
-      }
-      return next;
-    });
-  }, [setPanMode]);
+  const togglePanMode = useCallback(() => runToolAction("togglePan"), [runToolAction]);
+  const toggleBucketMode = useCallback(() => runToolAction("toggleBucket"), [runToolAction]);
+  const togglePicker = useCallback(() => runToolAction("togglePicker"), [runToolAction]);
 
   const onHiddenActiveLayerPaintAttempt = useCallback(() => {
     showToast({
@@ -266,6 +268,8 @@ export function useEditorWorkspace({ initialArtwork }: IEditorWorkspaceProps) {
     togglePanMode,
     bucketMode,
     toggleBucketMode,
+    pickerArmed,
+    togglePicker,
     canZoomIn,
     canZoomOut,
     onZoomIn,
