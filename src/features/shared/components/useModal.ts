@@ -5,7 +5,7 @@
  */
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, type MouseEvent } from "react";
 
 import { useFocusTrap } from "@/features/shared/hooks/useFocusTrap";
 import type { IUseModalInput } from "./Modal.type";
@@ -69,5 +69,11 @@ export function useModal({ open, closeOnEscape, onClose }: IUseModalInput) {
     return () => window.removeEventListener("keydown", onKey);
   }, [open, closeOnEscape, onClose]);
 
-  return { titleId, panelRef, mounted, entered };
+  /** Keeps the press from moving focus onto the backdrop, so the trap can restore it to the opener. */
+  const onBackdropMouseDown = (event: MouseEvent) => {
+    event.preventDefault();
+    onClose();
+  };
+
+  return { titleId, panelRef, mounted, entered, onBackdropMouseDown };
 }

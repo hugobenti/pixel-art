@@ -41,7 +41,12 @@ export function useArtworkCard({ artwork, onRename, onClone, onDelete }: IArtwor
   const menuItems: IMenuItem[] = [
     { key: "rename", label: shared.actions.rename, onSelect: () => setRenaming(true) },
     { key: "clone", label: gallery.card.clone, onSelect: () => void onClone(artwork.id) },
-    { key: "delete", label: gallery.card.delete, onSelect: () => void confirmDelete() },
+    {
+      key: "delete",
+      label: gallery.card.delete,
+      tone: "danger",
+      onSelect: () => void confirmDelete(),
+    },
   ];
 
   return {

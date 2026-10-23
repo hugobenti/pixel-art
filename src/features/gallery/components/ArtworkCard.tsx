@@ -67,12 +67,13 @@ export function ArtworkCard(props: IArtworkCardProps) {
             <Link href={href} className={artworkCard.titleLink}>
               {artwork.title}
             </Link>
+            <Menu
+              label={gallery.card.actionsLabel(artwork.title)}
+              sheetTitle={artwork.title}
+              items={menuItems}
+            />
           </div>
         )}
-
-        <div className={artworkCard.actions}>
-          <Menu label={gallery.card.actionsLabel(artwork.title)} items={menuItems} />
-        </div>
       </Card>
       <ConfirmDialog {...deleteDialog} />
     </article>

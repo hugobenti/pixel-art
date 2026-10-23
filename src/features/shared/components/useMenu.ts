@@ -1,12 +1,30 @@
 "use client";
 
-import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from "react";
 
 import { menuFocusIndex } from "@/features/shared/logic/menuNavigation";
-import type { IMenuProps } from "./Menu.type";
+import { menuPlacement } from "@/features/shared/logic/menuPlacement";
+import type { TMenuPlacement } from "@/features/shared/logic/menuPlacement.type";
+import { useMediaQuery } from "@/features/shared/hooks/useMediaQuery";
+import { MENU_SHEET_QUERY } from "./Menu.data";
+import { cx } from "@/features/shared/utils/cx";
+import { menu as menuStyle } from "./Menu.style";
+import type { IMenuItem, IMenuProps } from "./Menu.type";
+
+const PLACEMENT_GAP = 4;
 
 export function useMenu({ items }: IMenuProps) {
   const [open, setOpen] = useState(false);
+  const [placement, setPlacement] = useState<TMenuPlacement | null>(null);
+  const sheet = useMediaQuery(MENU_SHEET_QUERY);
   const triggerId = useId();
   const menuId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
@@ -21,15 +39,34 @@ export function useMenu({ items }: IMenuProps) {
     [items],
   );
 
+  useLayoutEffect(() => {
+    if (!open || sheet) return;
+    const trigger = rootRef.current?.getBoundingClientRect();
+    const menuBox = menuRef.current?.getBoundingClientRect();
+    if (!trigger || !menuBox) return;
+    setPlacement(
+      menuPlacement({
+        triggerTop: trigger.top,
+        triggerBottom: trigger.bottom,
+        menuHeight: menuBox.height,
+        viewportHeight: window.innerHeight,
+        gap: PLACEMENT_GAP,
+      }),
+    );
+    return () => setPlacement(null);
+  }, [open, sheet]);
+
+  // Focus only once placed: the unmeasured dropdown is `visibility: hidden` and cannot take focus.
   useEffect(() => {
-    if (!open) return;
+    if (!open || sheet || placement === null) return;
     const focusIndex = focusIndexAfterOpen.current;
-    if (focusIndex !== null) {
-      menuRef.current
-        ?.querySelector<HTMLButtonElement>(`[data-menu-index="${focusIndex}"]`)
-        ?.focus();
-      focusIndexAfterOpen.current = null;
-    }
+    if (focusIndex === null) return;
+    menuRef.current?.querySelector<HTMLButtonElement>(`[data-menu-index="${focusIndex}"]`)?.focus();
+    focusIndexAfterOpen.current = null;
+  }, [open, sheet, placement]);
+
+  useEffect(() => {
+    if (!open || sheet) return;
     const closeOnOutsidePointer = (event: PointerEvent) => {
       if (event.target instanceof Node && !rootRef.current?.contains(event.target)) {
         setOpen(false);
@@ -37,7 +74,9 @@ export function useMenu({ items }: IMenuProps) {
     };
     document.addEventListener("pointerdown", closeOnOutsidePointer);
     return () => document.removeEventListener("pointerdown", closeOnOutsidePointer);
-  }, [open]);
+  }, [open, sheet]);
+
+  const close = useCallback(() => setOpen(false), []);
 
   const toggle = useCallback(() => {
     if (open) {
@@ -70,7 +109,8 @@ export function useMenu({ items }: IMenuProps) {
         return;
       }
       const target = event.target;
-      const item = target instanceof Element ? target.closest<HTMLElement>("[data-menu-index]") : null;
+      const item =
+        target instanceof Element ? target.closest<HTMLElement>("[data-menu-index]") : null;
       const currentIndex = item ? Number(item.dataset.menuIndex) : -1;
       if (
         event.key !== "ArrowDown" &&
@@ -97,10 +137,28 @@ export function useMenu({ items }: IMenuProps) {
       if (!item || item.disabled) return;
       item.onSelect();
       setOpen(false);
-      rootRef.current?.querySelector<HTMLButtonElement>("button")?.focus();
+      if (!sheet) rootRef.current?.querySelector<HTMLButtonElement>("button")?.focus();
     },
-    [items],
+    [items, sheet],
   );
 
-  return { open, triggerId, menuId, rootRef, menuRef, toggle, onTriggerKeyDown, onMenuKeyDown, selectItem };
+  return {
+    open,
+    sheet,
+    dropdownClass: cx(
+      menuStyle.items,
+      menuStyle.placement[placement ?? "below"],
+      placement === null && menuStyle.unmeasured,
+    ),
+    toneClass: (item: IMenuItem) => menuStyle.tone[item.tone ?? "default"],
+    close,
+    triggerId,
+    menuId,
+    rootRef,
+    menuRef,
+    toggle,
+    onTriggerKeyDown,
+    onMenuKeyDown,
+    selectItem,
+  };
 }

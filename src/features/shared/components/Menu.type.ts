@@ -4,10 +4,13 @@ export interface IMenuItem {
   label: string;
   onSelect: () => void;
   disabled?: boolean;
+  tone?: "danger";
 }
 
 export interface IMenuProps {
   /** Accessible name of the menu trigger. */
   label: string;
+  /** Heading of the bottom sheet shown on phones. */
+  sheetTitle: string;
   items: readonly IMenuItem[];
 }
