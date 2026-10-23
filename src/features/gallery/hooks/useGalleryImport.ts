@@ -32,12 +32,11 @@ export function useGalleryImport({ importArtwork, onImported }: IUseGalleryImpor
         }
         showToast({ message: gallery.import.success, tone: "success" });
         onImported(created);
-      } catch (error) {
-        const message = error instanceof Error ? error.message : gallery.import.failed;
-        showToast({ message, tone: "error" });
+      } catch {
+        showToast({ message: gallery.import.failed, tone: "error" });
       }
     },
-    [importArtwork, onImported, showToast]
+    [importArtwork, onImported, showToast],
   );
 
   return { importInputRef, openImportPicker, onImportFile };

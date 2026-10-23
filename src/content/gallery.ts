@@ -2,16 +2,25 @@ import type { IGalleryContent } from "./content.type";
 
 export const gallery: IGalleryContent = {
   screen: {
-    intro: "Local artworks stored in your browser (IndexedDB).",
-    importJson: "Import JSON",
+    heading: "Your artworks",
+    countLabel: (n) => (n === 1 ? "1 artwork" : `${n} artworks`),
+    storageNote: "Saved in this browser only.",
+    storageLink: "Learn more",
+    importFile: "Import file",
+    importLabel: "Import file (.json)",
     newArtwork: "New artwork",
     newCompact: "New",
   },
   grid: {
-    empty: "No artworks yet. Create one to get started.",
+    emptyTitle: "No artworks yet",
+    emptyText: "Create your first canvas, or open an artwork file you exported before.",
   },
   card: {
-    clone: "Clone",
+    clone: "Duplicate",
+    size: (w, h) => `${w} × ${h}`,
+    edited: (relative) => `Edited ${relative}`,
+    justNow: "just now",
+    metaSeparator: " · ",
     delete: "Delete",
     titleLabel: "Artwork title",
     actionsLabel: (title) => `Actions for ${title}`,
@@ -30,15 +39,18 @@ export const gallery: IGalleryContent = {
   },
   import: {
     success: "Artwork imported.",
-    failed: "Could not import JSON file.",
+    failed: "This file isn't a PixelHB artwork.",
   },
   errors: {
-    load: "Failed to load gallery.",
-    create: "Could not create artwork.",
-    import: "Could not import artwork.",
-    rename: "Rename failed.",
-    clone: "Clone failed.",
-    delete: "Delete failed.",
+    load: "Couldn't open your artworks. Reload the page to try again.",
+    create: "Couldn't create the artwork. Try again.",
+    import: "This file isn't a PixelHB artwork.",
+    rename: "Couldn't rename the artwork. Try again.",
+    clone: "Couldn't duplicate the artwork. Try again.",
+    delete: "Couldn't delete the artwork. Try again.",
+  },
+  toasts: {
+    duplicated: "Artwork duplicated.",
   },
   deleteDialog: {
     title: (title) => `Delete “${title}”?`,

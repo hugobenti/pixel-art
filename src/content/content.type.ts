@@ -135,17 +135,28 @@ export interface ISharedContent {
 
 export interface IGalleryContent {
   screen: {
-    intro: string;
-    importJson: string;
+    heading: string;
+    countLabel: (n: number) => string;
+    storageNote: string;
+    storageLink: string;
+    importFile: string;
+    /** Accessible name of the Import file button. */
+    importLabel: string;
     newArtwork: string;
     /** Phone label of the header's primary action. */
     newCompact: string;
   };
   grid: {
-    empty: string;
+    emptyTitle: string;
+    emptyText: string;
   };
   card: {
     clone: string;
+    size: (w: number, h: number) => string;
+    edited: (relative: string) => string;
+    justNow: string;
+    /** Separates the size from the edited time in the meta line. */
+    metaSeparator: string;
     delete: string;
     /** Accessible name of the inline rename field. */
     titleLabel: string;
@@ -179,6 +190,7 @@ export interface IGalleryContent {
     clone: string;
     delete: string;
   };
+  toasts: { duplicated: string };
   deleteDialog: {
     /** Names the artwork being deleted. */
     title: (title: string) => string;
