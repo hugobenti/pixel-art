@@ -31,7 +31,11 @@ export function Modal({
   closeOnEscape = true,
   panelProps,
 }: IModalProps) {
-  const { titleId, panelRef, mounted, entered } = useModal({ open, closeOnEscape, onClose });
+  const { titleId, panelRef, mounted, entered, onBackdropMouseDown } = useModal({
+    open,
+    closeOnEscape,
+    onClose,
+  });
 
   if (!mounted) {
     return null;
@@ -53,7 +57,7 @@ export function Modal({
           tabIndex={-1}
           aria-label={shared.modal.backdropLabel}
           className={modal.backdrop}
-          onMouseDown={onClose}
+          onMouseDown={onBackdropMouseDown}
         />
       ) : null}
       <div

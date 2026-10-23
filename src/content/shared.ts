@@ -24,6 +24,9 @@ export const shared: ISharedContent = {
   iconButton: {
     titleWithShortcut: (label, shortcut) => `${label} (${shortcut})`,
   },
+  menu: {
+    sheetCloseLabel: "Close menu",
+  },
   modal: {
     backdropLabel: "Close dialog",
   },
