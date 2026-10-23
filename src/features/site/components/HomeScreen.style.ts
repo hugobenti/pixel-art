@@ -9,14 +9,14 @@ import { cx } from "@/features/shared/utils/cx";
 
 export const homeScreen = {
   page: "flex flex-col gap-12 sm:gap-16",
-  hero: "grid items-center gap-10 md:grid-cols-2",
+  hero: "grid items-center gap-10 lg:grid-cols-2",
   heroText: "flex flex-col items-start gap-6",
   title: cx(siteType.display, "text-balance"),
   lead: siteType.lead,
   actions: "flex flex-wrap gap-3",
   primary: cx(button.base, button.size.default, button.variant.primary),
   secondary: cx(button.base, button.size.default, button.variant.outline),
-  art: "pixel-grid-panel order-first flex items-center justify-center overflow-hidden rounded-lg border border-line bg-surface py-12 md:order-none",
+  art: "pixel-grid-panel order-first flex items-center justify-center overflow-hidden rounded-lg border border-line bg-surface py-12 lg:order-none",
   /** 250px (5×) under 360px, where the 300px banner would overflow the panel. */
   banner: "max-[359px]:w-[250px]",
   promises: "grid gap-4 sm:grid-cols-3",
