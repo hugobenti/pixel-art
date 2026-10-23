@@ -7,27 +7,34 @@
  */
 "use client";
 
+import Link from "next/link";
+
 import { gallery } from "@/content/gallery";
-import { shared } from "@/content/shared";
 import { Button } from "@/features/shared/components/Button";
 import { SiteShell } from "@/features/shared/site/SiteShell";
+import { siteType } from "@/features/shared/site/siteType.style";
 
 import { CreateArtworkModal } from "@/features/gallery/components/CreateArtworkModal";
 import { GalleryGrid } from "@/features/gallery/components/GalleryGrid";
+import { GallerySkeleton } from "@/features/gallery/components/GallerySkeleton";
 import { galleryScreen } from "./GalleryScreen.style";
 import { useGalleryScreen } from "./useGalleryScreen";
 
 export function GalleryScreen() {
   const {
     artworks,
-    loading,
+    now,
+    showSkeleton,
     error,
+    count,
+    countLabel,
     renameArtwork,
     cloneArtwork,
     deleteArtwork,
     modalOpen,
     setModalOpen,
     primaryAction,
+    openCreate,
     createArtwork,
     importInputRef,
     openImportPicker,
@@ -37,17 +44,37 @@ export function GalleryScreen() {
   return (
     <SiteShell primaryAction={primaryAction}>
       <div className={galleryScreen.content}>
-        <div className={galleryScreen.actions}>
-          <input
-            ref={importInputRef}
-            type="file"
-            accept=".json,application/json"
-            className={galleryScreen.importInput}
-            onChange={onImportChange}
-          />
-          <Button type="button" variant="outline" onClick={openImportPicker}>
-            {gallery.screen.importJson}
-          </Button>
+        <div className={galleryScreen.header}>
+          <div className={galleryScreen.headingRow}>
+            <div className={galleryScreen.titleGroup}>
+              <h1 className={siteType.pageTitle}>{gallery.screen.heading}</h1>
+              <span aria-hidden className={galleryScreen.count}>
+                {count}
+              </span>
+              <span className={galleryScreen.srOnly}>{countLabel}</span>
+            </div>
+            <input
+              ref={importInputRef}
+              type="file"
+              accept=".json,application/json"
+              className={galleryScreen.importInput}
+              onChange={onImportChange}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              aria-label={gallery.screen.importLabel}
+              onClick={openImportPicker}
+            >
+              {gallery.screen.importFile}
+            </Button>
+          </div>
+          <p className={galleryScreen.note}>
+            {gallery.screen.storageNote}{" "}
+            <Link href="/help#saving" className={siteType.link}>
+              {gallery.screen.storageLink}
+            </Link>
+          </p>
         </div>
 
         {error ? (
@@ -56,16 +83,17 @@ export function GalleryScreen() {
           </p>
         ) : null}
 
-        {loading ? (
-          <p role="status" className={galleryScreen.loading}>
-            {shared.loading}
-          </p>
+        {showSkeleton ? (
+          <GallerySkeleton />
         ) : (
           <GalleryGrid
             artworks={artworks}
+            now={now}
             onRename={renameArtwork}
             onClone={cloneArtwork}
             onDelete={deleteArtwork}
+            onCreate={openCreate}
+            onImport={openImportPicker}
           />
         )}
 

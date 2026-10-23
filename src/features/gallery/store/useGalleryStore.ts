@@ -18,8 +18,8 @@ export const useGalleryStore = create<IGalleryState>((set, get) => ({
     try {
       const artworks = await artworkService.listArtworks();
       set({ artworks, loading: false });
-    } catch (e) {
-      const message = e instanceof Error ? e.message : gallery.errors.load;
+    } catch {
+      const message = gallery.errors.load;
       set({ error: message, loading: false });
     }
   },
@@ -40,8 +40,8 @@ export const useGalleryStore = create<IGalleryState>((set, get) => ({
       const created = await artworkService.createArtworkFromImport(input);
       await get().loadArtworks();
       return created;
-    } catch (e) {
-      const message = e instanceof Error ? e.message : gallery.errors.import;
+    } catch {
+      const message = gallery.errors.import;
       set({ error: message });
       return null;
     }
@@ -52,8 +52,8 @@ export const useGalleryStore = create<IGalleryState>((set, get) => ({
     try {
       await artworkService.renameArtwork(id, title);
       await get().loadArtworks();
-    } catch (e) {
-      const message = e instanceof Error ? e.message : gallery.errors.rename;
+    } catch {
+      const message = gallery.errors.rename;
       set({ error: message });
     }
   },
@@ -64,8 +64,8 @@ export const useGalleryStore = create<IGalleryState>((set, get) => ({
       const clone = await artworkService.cloneArtwork(id);
       await get().loadArtworks();
       return clone;
-    } catch (e) {
-      const message = e instanceof Error ? e.message : gallery.errors.clone;
+    } catch {
+      const message = gallery.errors.clone;
       set({ error: message });
       return undefined;
     }
@@ -76,8 +76,8 @@ export const useGalleryStore = create<IGalleryState>((set, get) => ({
     try {
       await artworkService.deleteArtwork(id);
       await get().loadArtworks();
-    } catch (e) {
-      const message = e instanceof Error ? e.message : gallery.errors.delete;
+    } catch {
+      const message = gallery.errors.delete;
       set({ error: message });
     }
   },

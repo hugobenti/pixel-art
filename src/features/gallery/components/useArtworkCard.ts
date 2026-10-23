@@ -8,15 +8,23 @@ import { useState, type FormEvent } from "react";
 
 import { gallery } from "@/content/gallery";
 import { shared } from "@/content/shared";
+import { relativeTimeParts } from "@/features/gallery/logic/relativeTime";
 import { artworkThumbnail, editorPath } from "@/features/gallery/logic/artworkLinks";
 import type { IMenuItem } from "@/features/shared/components/Menu.type";
 import { useConfirm } from "@/features/shared/components/useConfirm";
 import type { IArtworkCardProps } from "./ArtworkCard.type";
 
-export function useArtworkCard({ artwork, onRename, onClone, onDelete }: IArtworkCardProps) {
+const relativeFormat = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+
+export function useArtworkCard({ artwork, now, onRename, onClone, onDelete }: IArtworkCardProps) {
   const [renaming, setRenaming] = useState(false);
   const [title, setTitle] = useState(artwork.title);
   const { confirm, dialog: deleteDialog } = useConfirm();
+
+  const parts = relativeTimeParts(artwork.updatedAt, now);
+  const edited = gallery.card.edited(
+    parts ? relativeFormat.format(-parts.value, parts.unit) : gallery.card.justNow,
+  );
 
   const cancelRename = () => {
     setTitle(artwork.title);
@@ -52,6 +60,8 @@ export function useArtworkCard({ artwork, onRename, onClone, onDelete }: IArtwor
   return {
     href: editorPath(artwork.id),
     thumbnail: artworkThumbnail(artwork.thumbnail),
+    size: gallery.card.size(artwork.width, artwork.height),
+    edited,
     renaming,
     setRenaming,
     title,

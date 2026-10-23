@@ -23,6 +23,8 @@ export function ArtworkCard(props: IArtworkCardProps) {
   const {
     href,
     thumbnail,
+    size,
+    edited,
     renaming,
     setTitle,
     title,
@@ -34,7 +36,7 @@ export function ArtworkCard(props: IArtworkCardProps) {
 
   return (
     <article>
-      <Card className={artworkCard.body}>
+      <Card className={artworkCard.card}>
         <Link href={href} aria-hidden tabIndex={-1} className={artworkCard.thumbnailLink}>
           <Image
             src={thumbnail.src}
@@ -46,34 +48,41 @@ export function ArtworkCard(props: IArtworkCardProps) {
           />
         </Link>
 
-        {renaming ? (
-          <form onSubmit={submitRename} className={artworkCard.renameForm}>
-            <Input
-              // eslint-disable-next-line jsx-a11y/no-autofocus -- moves focus to the field that replaces the Rename action
-              autoFocus
-              aria-label={gallery.card.titleLabel}
-              value={title}
-              onChange={(ev) => setTitle(ev.target.value)}
-            />
-            <Button type="submit" variant="primary">
-              {shared.actions.save}
-            </Button>
-            <Button type="button" variant="ghost" onClick={cancelRename}>
-              {shared.actions.cancel}
-            </Button>
-          </form>
-        ) : (
-          <div className={artworkCard.titleRow}>
-            <Link href={href} className={artworkCard.titleLink}>
-              {artwork.title}
-            </Link>
-            <Menu
-              label={gallery.card.actionsLabel(artwork.title)}
-              sheetTitle={artwork.title}
-              items={menuItems}
-            />
-          </div>
-        )}
+        <div className={artworkCard.body}>
+          {renaming ? (
+            <form onSubmit={submitRename} className={artworkCard.renameForm}>
+              <Input
+                // eslint-disable-next-line jsx-a11y/no-autofocus -- moves focus to the field that replaces the Rename action
+                autoFocus
+                aria-label={gallery.card.titleLabel}
+                value={title}
+                onChange={(ev) => setTitle(ev.target.value)}
+              />
+              <Button type="submit" variant="primary">
+                {shared.actions.save}
+              </Button>
+              <Button type="button" variant="ghost" onClick={cancelRename}>
+                {shared.actions.cancel}
+              </Button>
+            </form>
+          ) : (
+            <div className={artworkCard.titleRow}>
+              <Link href={href} className={artworkCard.titleLink}>
+                {artwork.title}
+              </Link>
+              <Menu
+                label={gallery.card.actionsLabel(artwork.title)}
+                sheetTitle={artwork.title}
+                items={menuItems}
+              />
+            </div>
+          )}
+          <p className={artworkCard.meta}>
+            <span className={artworkCard.size}>{size}</span>
+            {gallery.card.metaSeparator}
+            {edited}
+          </p>
+        </div>
       </Card>
       <ConfirmDialog {...deleteDialog} />
     </article>

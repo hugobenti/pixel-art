@@ -13,6 +13,7 @@ import { useStaleThumbnailRefresh } from "@/features/gallery/hooks/useStaleThumb
 import { editorPath } from "@/features/gallery/logic/artworkLinks";
 import { useGalleryStore } from "@/features/gallery/store/useGalleryStore";
 import { gallery } from "@/content/gallery";
+import { useToast } from "@/features/shared/components/Toast/hooks/useToast";
 import type { ICreateArtworkInput } from "@/features/shared/artwork/artworkService.type";
 
 export function useGalleryScreen() {
@@ -30,7 +31,11 @@ export function useGalleryScreen() {
     updateThumbnail,
   } = useGalleryStore();
 
+  const { showToast } = useToast();
+  /** Fixed per mount: card times read as of when the gallery opened. */
+  const [now] = useState(() => Date.now());
   const [modalOpen, setModalOpen] = useState(false);
+  const openCreate = () => setModalOpen(true);
 
   useEffect(() => {
     void loadArtworks();
@@ -63,12 +68,17 @@ export function useGalleryScreen() {
 
   return {
     artworks,
+    now,
     loading,
     error,
+    count: artworks.length,
+    countLabel: gallery.screen.countLabel(artworks.length),
+    showSkeleton: loading && artworks.length === 0,
     renameArtwork,
     /** The grid only awaits the clone; the store reloads the list itself. */
     cloneArtwork: async (id: string) => {
-      await cloneArtwork(id);
+      const clone = await cloneArtwork(id);
+      if (clone) showToast({ message: gallery.toasts.duplicated, tone: "success" });
     },
     deleteArtwork,
     modalOpen,
@@ -77,8 +87,9 @@ export function useGalleryScreen() {
       kind: "button" as const,
       label: gallery.screen.newArtwork,
       compactLabel: gallery.screen.newCompact,
-      onClick: () => setModalOpen(true),
+      onClick: openCreate,
     },
+    openCreate,
     createArtwork: createAndOpen,
     importInputRef,
     openImportPicker,
