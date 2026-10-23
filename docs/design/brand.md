@@ -17,7 +17,7 @@ Goals:
 Non-goals:
 
 - No change to the app's color tokens, fonts or layout system.
-- No mascot, illustration set or marketing site.
+- No mascot or illustration set; no marketing site beyond the home page.
 
 Anti-goals (a failure even if it ships):
 
@@ -101,13 +101,13 @@ The pencil seen from its tip: amber hexagon (lit from the top left), wood ring, 
 
 ## Lockups
 
-| Lockup | Build | Use |
-|---|---|---|
-| Horizontal | Pencil, a gap of 4 pixels, wordmark; both 7 pixels tall and top-aligned | App header, anywhere wide and short |
-| Stacked | Pencil centered above the wordmark, 3 pixels apart | Square-ish spaces |
-| Brand pencil | The banner mark alone | README banner, social image |
-| Pencil alone | The primary mark alone | Small wide spaces |
-| Square icon | Pencil end alone | Favicon, app icons, anything square |
+| Lockup       | Build                                                                   | Use                                 |
+| ------------ | ----------------------------------------------------------------------- | ----------------------------------- |
+| Horizontal   | Pencil, a gap of 4 pixels, wordmark; both 7 pixels tall and top-aligned | App header, anywhere wide and short |
+| Stacked      | Pencil centered above the wordmark, 3 pixels apart                      | Square-ish spaces                   |
+| Brand pencil | The banner mark alone                                                   | README banner, social image         |
+| Pencil alone | The primary mark alone                                                  | Small wide spaces                   |
+| Square icon  | Pencil end alone                                                        | Favicon, app icons, anything square |
 
 "Pixels" in lockup measurements are logo pixels, so they scale with the logo.
 
@@ -115,29 +115,29 @@ The pencil seen from its tip: amber hexagon (lit from the top left), wood ring, 
 
 The pencil's own colors are the brand palette. **Pencil amber** is the brand color.
 
-| Key | Name | Hex | Role |
-|---|---|---|---|
-| `y` | Amber light | `#F6C66E` | top face |
-| `Y` | Pencil amber | `#EDA743` | middle face; the brand color |
-| `o` | Amber shade | `#C27A1E` | bottom face |
-| `w` | Wood | `#F2D3A6` | cone |
-| `W` | Wood shade | `#D6AA78` | cone, lower half |
-| `G` | Graphite | `#2A2C38` | tip, pencil-end core |
-| `q` | Graphite shine | `#8A8D9C` | tip and core highlight |
-| `s` | Stamp | `#1A1C24` | HB / PIXEL HB stamp |
-| `m` | Ferrule | `#D9D4C8` | metal band |
-| `M` | Ferrule ridge | `#8E897E` | band ridges and lower edge |
-| `e` | Eraser | `#E5868A` | eraser |
-| `f` | Eraser shine | `#F2A7A9` | eraser highlight |
-| `E` | Eraser shade | `#B13E53` | eraser, lower edge |
+| Key | Name           | Hex       | Role                         |
+| --- | -------------- | --------- | ---------------------------- |
+| `y` | Amber light    | `#F6C66E` | top face                     |
+| `Y` | Pencil amber   | `#EDA743` | middle face; the brand color |
+| `o` | Amber shade    | `#C27A1E` | bottom face                  |
+| `w` | Wood           | `#F2D3A6` | cone                         |
+| `W` | Wood shade     | `#D6AA78` | cone, lower half             |
+| `G` | Graphite       | `#2A2C38` | tip, pencil-end core         |
+| `q` | Graphite shine | `#8A8D9C` | tip and core highlight       |
+| `s` | Stamp          | `#1A1C24` | HB / PIXEL HB stamp          |
+| `m` | Ferrule        | `#D9D4C8` | metal band                   |
+| `M` | Ferrule ridge  | `#8E897E` | band ridges and lower edge   |
+| `e` | Eraser         | `#E5868A` | eraser                       |
+| `f` | Eraser shine   | `#F2A7A9` | eraser highlight             |
+| `E` | Eraser shade   | `#B13E53` | eraser, lower edge           |
 
 Theme-dependent keys (they follow the light or dark theme):
 
-| Key | Light theme | Dark theme | Role |
-|---|---|---|---|
-| `d` | `#1A1C24` | `#EFEBE5` | the drawn pixel ahead of the tip (the theme's `fg`) |
-| `i` | `#1A1C24` | `#EFEBE5` | "Pixel" in the wordmark (the theme's `fg`) |
-| `h` | `#B4500F` | `#EDA743` | "HB" in the wordmark: burnt amber on paper (contrast), pencil amber on the dark studio |
+| Key | Light theme | Dark theme | Role                                                                                   |
+| --- | ----------- | ---------- | -------------------------------------------------------------------------------------- |
+| `d` | `#1A1C24`   | `#EFEBE5`  | the drawn pixel ahead of the tip (the theme's `fg`)                                    |
+| `i` | `#1A1C24`   | `#EFEBE5`  | "Pixel" in the wordmark (the theme's `fg`)                                             |
+| `h` | `#B4500F`   | `#EDA743`  | "HB" in the wordmark: burnt amber on paper (contrast), pencil amber on the dark studio |
 
 The pencil's colors are fixed in both themes; only the drawn pixel and the wordmark switch. Backgrounds behind the logo are the app's own: Paper `#ECE9E1` / surface `#FCFBF7` (light), Studio `#141312` / surface `#1C1B19` (dark).
 
@@ -170,24 +170,24 @@ xxxxx.xx.xxx.x.x..xxxxxx.xxx.....
 
 ## Assets the app ships
 
-| File | Content |
-|---|---|
-| `favicon.ico` | Square icon at 16, 32 and 48 px, transparent |
-| PNG icons 16, 32, 48 | Square icon, transparent, for `<link rel="icon">` |
-| Apple touch icon, 180 × 180 | Square icon at 7× (112 px) centered on surface `#FCFBF7`, no transparency |
-| PWA icons 192 and 512, plus a maskable 512 | Same tile; the maskable keeps the hexagon inside the central 80% safe zone |
-| Web app manifest | name `PixelHB`, short name `PixelHB`, theme and background colors from the light tokens |
-| Open Graph / social image, 1200 × 630 | Brand pencil centered on paper `#ECE9E1` with a faint pixel grid, and below it **Pixel-art editor for the browser** in Schibsted Grotesk |
-| Logo SVGs | Horizontal lockup (light and dark) and brand pencil, for the README and docs |
+| File                                       | Content                                                                                                                                  |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `favicon.ico`                              | Square icon at 16, 32 and 48 px, transparent                                                                                             |
+| PNG icons 16, 32, 48                       | Square icon, transparent, for `<link rel="icon">`                                                                                        |
+| Apple touch icon, 180 × 180                | Square icon at 7× (112 px) centered on surface `#FCFBF7`, no transparency                                                                |
+| PWA icons 192 and 512, plus a maskable 512 | Same tile; the maskable keeps the hexagon inside the central 80% safe zone                                                               |
+| Web app manifest                           | name `PixelHB`, short name `PixelHB`, theme and background colors from the light tokens                                                  |
+| Open Graph / social image, 1200 × 630      | Brand pencil centered on paper `#ECE9E1` with a faint pixel grid, and below it **Pixel-art editor for the browser** in Schibsted Grotesk |
+| Logo SVGs                                  | Horizontal lockup (light and dark) and brand pencil, for the README and docs                                                             |
 
 ## In the product
 
 - Browser tab, bookmarks, home screen and installs: the square icon.
 - Page title: `PixelHB`; editor pages `{artwork title} · PixelHB` (as today, with the new name). Meta description: "Pixel-art editor for the browser".
-- Gallery header: the horizontal lockup replaces the "Gallery" heading. It is the page's `<h1>`, with the accessible name "PixelHB"; the intro line stays under it.
+- Gallery header: the shared site header carries the logo (the horizontal lockup, a link to `/`, accessible name "PixelHB"); the gallery page's `<h1>` is "Your artworks".
 - Editor: no logo. Its top bar stays a tool surface; the "Gallery" back link is unchanged.
 - README: brand pencil banner at the top.
-- The planned shared `AppHeader` (improvement plan, PR 3) reuses the same logo component when it lands.
+- The shared site header and footer (`SiteHeader`, `SiteFooter`) use the same logo component; the footer uses the brand pencil.
 
 ## Rename rules
 

@@ -278,8 +278,11 @@ Every color token, as declared in `src/app/globals.css`. Light values are the `@
 
 ### Hierarchy
 
-- **Page title** (Schibsted Grotesk 600, 24px / 32px; `text-2xl font-semibold`): one per screen, the gallery heading.
-- **Section heading** (Schibsted Grotesk 600, 16px / 24px; `text-base font-semibold`): drawer and modal headings.
+- **Display** (Schibsted Grotesk 700, 36px, 48px from `md`; `siteType.display`: `text-4xl font-bold tracking-tight`, `md:text-5xl`): the home page headline only.
+- **Lead** (Schibsted Grotesk 400, 18px; `siteType.lead`: `text-lg text-muted`): the line under a page title or the home headline.
+- **Page title** (Schibsted Grotesk 600, 24px / 32px; `siteType.pageTitle`: `text-2xl font-semibold`): one `h1` per screen: the gallery, Help, About, Contact, 404 and error headings.
+- **Section** (Schibsted Grotesk 600, 20px; `siteType.section`: `text-xl font-semibold`): `h2` headings on the content pages.
+- **Panel heading** (Schibsted Grotesk 600, 16px / 24px; `text-base font-semibold`): drawer and modal headings. Modal headings truncate on one line rather than wrapping.
 - **Body** (Schibsted Grotesk 400, 14px / 20px; `text-sm`): descriptions, intro lines, form text.
 - **Label / button** (Schibsted Grotesk 500, 13px / 16px): button labels, field labels, toggles. Until a migration lands, labels and buttons use `text-sm` (14px / 20px), as they do today.
 - **Caption** (Schibsted Grotesk 400, 12px / 16px; `text-xs`): hints, limits, metadata.
@@ -291,8 +294,10 @@ Every color token, as declared in `src/app/globals.css`. Light values are the `@
 
 ## Layout
 
-- **Gallery.** Centered column, `max-w-6xl` (1152px), `px-4 py-10`, `gap-8` between header and grid. The header stacks on phones and becomes a row (title left, actions right) from `sm`; it ends in a `line` divider. The card grid is one column on phones, two from `sm` (640px), three from `lg` (1024px), four from `xl` (1280px), with `gap-6`.
-- **Cards.** `p-4` with `gap-3` between a square thumbnail, the title row and the action row.
+- **Page frame.** Every page except the editor sits in `SiteShell`: `max-w-6xl` (1152px), `px-4` in the header, main column and footer alike, `py-8` (`py-12` from `sm`) in the main column. The footer is pushed to the bottom of short pages (`min-h-dvh` column).
+- **Gallery.** Inside the shell's main column, `gap-6` between header and grid. The header is a heading row (title and count left, Import right, wrapping when narrow) over the storage note. The card grid is one column on phones, two from `sm` (640px), three from `lg` (1024px), four from `xl` (1280px), with `gap-6`.
+- **Cards.** `overflow-hidden`; a full-bleed square thumbnail, then a `p-3` body with `gap-1` between the title row and the meta line.
+- **Reading pages** (Help, About, Contact, 404, error). The shell column with `gap-10` (`gap-8` on Contact) between sections; the page title and lead sit in a `gap-3` header. Prose is capped at `max-w-prose` so lines stay readable; the pages never go full-width.
 - **Modals.** An edge-to-edge bottom sheet on phones (top corners rounded, bottom safe-area inset), a centered card from `sm`. Widths `max-w-sm` / `max-w-md` / `max-w-lg`, all with `p-5` and `gap-4`; every size caps at 85dvh and scrolls without chaining to the page.
 - **Side drawers.** Slide in from the right edge: 90% width on phones, half the viewport from `sm`, capped at 720px; full height with the bottom safe-area inset respected.
 - **Hit targets.** Buttons are at least 40px tall (`min-h-10`), icon buttons 40 × 40, both 44px on coarse pointers (`pointer-coarse:`); step buttons 36 × 36. Swatches are 40px (comfortable) or 36px (compact).
@@ -351,7 +356,7 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 - **Corner Style:** `rounded-xl` (12px).
 - **Background:** `surface` with a `line` border.
 - **Shadow Strategy:** `shadow-sm` (see Elevation & Depth).
-- **Artwork card:** `p-4`; a square thumbnail link on a `surface-muted` well (`rounded-lg`, image `object-contain` with `image-rendering: pixelated`), a title link in `font-medium fg`, and a `Menu` overflow trigger for Rename, Clone and Delete. Delete opens `ConfirmDialog`; danger styling appears only on the confirmation button.
+- **Artwork card:** a square thumbnail link on a `surface-muted` well (`rounded-lg`, image `object-contain` with `image-rendering: pixelated`), a body with a title row (title link in `font-medium fg`, truncated, and the `Menu` overflow trigger `⋯` for Rename, Clone and Delete at its right) and a meta line under it (`text-xs muted`: size in `font-mono`, then "Edited …"). The whole card is `overflow-hidden` with a `p-3` body, and the thumbnail runs full-bleed to the card edge. Delete opens `ConfirmDialog`; danger styling appears only on the confirmation button.
 - **Thumbnails:** a lossless PNG of the visible layers at the largest integer scale that fits 256px, with no grid lines. Thumbnails saved by the old renderer (WebP or a fractional scale, which showed seams between pixels) are detected on gallery load (`isThumbnailCurrent`) and regenerated from the pixel data.
 
 ### Modal
@@ -388,7 +393,8 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 
 ### Theme Toggle
 
-- `src/features/shared/components/ThemeToggle.tsx`: a segmented native radio group, **Light / Dark**; the theme on screen is checked (the OS theme on a first visit). It sits in the gallery header and as a "Theme" row in the editor settings drawer.
+- `src/features/shared/components/ThemeToggle.tsx`: a segmented native radio group, **Light / Dark**; the theme on screen is checked (the OS theme on a first visit). It is the "Theme" row in the editor settings drawer and in the phone menu sheet (`variant="row"`).
+- In the site header the theme is an icon button instead (moon in light, sun in dark; its label names the theme it switches to), shown from `sm`. It stays invisible, with its layout kept, until hydration, because the server cannot know the stored theme and a wrong icon would flash.
 
 ### Switch
 
@@ -400,14 +406,37 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 
 ### Feedback
 
-- **Error line** (gallery): `danger-surface` fill, `danger-fg` text, `rounded-lg`, `px-4 py-3 text-sm`.
+- **Error line** (gallery): `danger-surface` fill, `danger-fg` text, `rounded-lg`, `px-4 py-3 text-sm`, `role="alert"`.
 - **Toasts:** a stack at the bottom on phones and top-centered from `sm`, each toast `rounded-lg`, 1px border, `py-2 pr-2 pl-4`, `shadow-lg`, message in `text-sm font-medium`, an optional text action (Undo) and an `x-mark` icon dismiss, both 32px targets. Tones: neutral (`surface`, `line`, `fg`), success (`success-surface`, `success-line`, `success-fg`), error (`danger-surface`, `danger-line`, `danger-fg-strong`). Errors are announced as alerts, the rest politely; errors and toasts with an action stay 8 s, others 4.5 s, and every timer pauses while the stack is hovered or focused.
-- **Empty state** (gallery): dashed `line-strong` border, `rounded-xl`, `p-12`, centered `muted` text.
+- **Empty state** (gallery): dashed `line-strong` border, `rounded-xl`, `p-12`, centered: a 32px `muted` icon, a `text-base font-semibold` title, a `text-sm muted` line, then "New artwork" (primary) and "Import file (.json)" (outline) side by side.
+- **Skeleton** (gallery): until the first load settles, four card-shaped placeholders (`GallerySkeleton`: square well, title bar, meta bar) pulse on the same grid as the cards; the pulse stops under `prefers-reduced-motion`. A `role="status"` line carries the loading text for screen readers, and the artwork count stays hidden until the load settles.
 
 ### Layers Drawer Rows
 
 - Borderless drag handle (grip, `muted`), then the preview (the only bordered box), the name, and ghost `IconButton` actions (visibility, duplicate, rename, delete). Delete opens `ConfirmDialog` naming the layer and is disabled while it is the only layer; when the active layer is deleted, the row that takes its place becomes active.
 - Idle row: `surface` with a `line` border, `surface-subtle` on hover. Active row: `surface-muted` with an `accent` border, the one place the accent marks a selection outside the swatch rings.
+
+### Site header and footer
+
+- `src/features/shared/site/`: `SiteShell` wraps every page except the editor (skip link first, then header, `<main id="main">`, footer). Each page passes its own **primary action**; the default is a "Start drawing" link to `/gallery`, the gallery passes a "New artwork" button. On phones the labels shorten to "Start" and "New" so the header never wraps.
+- **Header.** A bottom `line` border on `bg`, one row at `max-w-6xl`: the logo (a link to `/`), the links Gallery, Help and About from `sm` (the current page has `aria-current="page"` and a `line-strong` underline; others are `fg-soft`), a flexible spacer, the theme icon button (from `sm`), then the primary action, the only accent on the page (The One Accent Rule).
+- **Phone menu.** Under `sm` a menu icon button opens a bottom-sheet `Modal` (size sm) holding the links, Contact included, as 48px rows (the current one on `surface-muted`), then the theme row. Choosing a link closes the sheet, and so does navigating any other way (Back, Forward), so a sheet never reopens by itself.
+- **Footer.** A top `line` border on `bg`, `text-sm muted`: the pencil mark with the tagline, the links (Gallery, Help, About, Contact, GitHub; 44px targets on coarse pointers), then the credit and copyright on one wrapping line.
+- **Overflow menus.** `Menu` renders as a bottom sheet when the viewport is under `sm` or the pointer is coarse (`(max-width: 639px), (pointer: coarse)`), as 48px rows. Otherwise it is a dropdown that opens below its trigger and flips above it when it would not fit; it is measured before it is painted, so it never jumps.
+
+### Site pages
+
+- **Home** (`/`). A hero, then three promise cards, a feature chip line, three numbered steps, a storage note and a closing call to action. The hero is one column on phones, with the banner first; from `lg` it becomes two columns (text left, banner right). The banner is the brand pencil (`BrandLogo` banner variant) on the `.pixel-grid-panel` utility in `globals.css`: a `line` grid with one cell per logo pixel, drawn at an integer scale: 5× (250px) under 360px, 6× (300px) up to `lg`, 8× (400px) from `lg`, with the grid cell size following the scale so cells and pixels line up. The panel has a `line` border on `surface`, `rounded-lg`, no shadow or gradient. The grid sits behind the logo, never behind a user's artwork.
+- **Help** (`/help`). Reading layout with a table of contents of in-page links and `scroll-mt-24` sections; the keyboard shortcuts are a table with key chips (`font-mono text-xs`, `control-border` outline), showing ⌘ / ⇧ on Apple platforms and Ctrl / Shift elsewhere. The gallery's storage note links to its `#saving` section.
+- **About** (`/about`). Reading layout: title, lead, sections and a signature line.
+- **Contact** (`/contact`, "Feedback & contact"). Reading layout with two option cards (`sm:grid-cols-2`), each a `Card` with an icon, section-style title, text and an outline action; the address is set in mono.
+- **404 and error.** One `StatusScreen`: page title, lead, then a primary link to the gallery (or "Try again" for errors) and a plain link home. They use the same shell as every other page.
+
+### Reading-page rules
+
+- One `h1` per page, in the page-title style (the home page uses Display); sections use `h2` in the section style. Every page sets its own tab title: `<page> · PixelHB`, except Home, which reads "PixelHB · …".
+- Body text is `text-base fg-secondary`; links are `fg` with an underline offset of 4px (`siteType.link`), never the accent. Cards and bands are `surface` or bordered with `line`, not shadowed.
+- Copy lives in `src/content` and states what the product does and where the data lives; no testimonials, counts or showcase claims (see PRODUCT.md, Evidence on Hand).
 
 ### Planned
 

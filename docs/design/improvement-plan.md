@@ -93,6 +93,8 @@ Gallery: an app header (logo/name, theme in a menu, "New artwork" as the single 
 
 ### PR 3 · App shell + gallery redesign
 
+**Covered by [`docs/design/presentation.md`](presentation.md).**
+
 - Shared `AppHeader`: brand, theme control moved into a menu (out of the action row), primary action. Fixes the phone header where "New artwork" wraps alone onto its own row. (G-08, GA-07)
 - `ArtworkCard`: full-bleed thumbnail, no card-in-card, title + mono metadata (size, last edited), the whole card links to the editor, one `⋯` Menu, inline rename that fits the card, accessible names include the artwork title. (GA-01, GA-05, GA-06, G-04, G-06, G-11)
 - Empty state with an illustration-free mark, "New artwork" + "Import JSON"; skeleton loading; error banner with Retry; clone toast. (G-07, GA-03, G-09, G-10, G-13)
