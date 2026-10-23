@@ -22,6 +22,7 @@ export const editor: IEditorContent = {
     redo: { label: "Redo", shortcut: "Ctrl+Shift+Z" },
     pan: { label: "Pan mode", shortcut: "hold Space" },
     bucket: { label: "Paint bucket mode" },
+    picker: { label: "Color picker", shortcut: "hold Alt" },
     zoomOut: { label: "Zoom out" },
     zoomIn: { label: "Zoom in" },
     shift: { label: "Shift pixels" },
@@ -37,6 +38,9 @@ export const editor: IEditorContent = {
   paletteRow: {
     groupLabel: "Palette colors",
     edit: "Edit palette",
+  },
+  picker: {
+    releaseToCancel: "Release to cancel",
   },
   paletteModal: {
     title: "Edit palette",

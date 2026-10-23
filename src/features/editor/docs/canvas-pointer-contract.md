@@ -18,6 +18,13 @@ In `EditorWorkspace`, call **`useEditorPointerContacts` first**, then `useViewpo
 - **Touch:** Painting may proceed only while **exactly one** touch contact exists. A second finger anywhere on the screen ends the current stroke immediately (capture listener in `usePixelPainting` after the registry update).
 - Internal stroke state uses `painting` / `activePaintingPointerId`; conceptually this is “draw permission” tied to the active pointer.
 
+## Color picker
+
+- **`useColorPickerHold`** takes a canvas press before painting does: the workspace calls its `onPickPointerDown` first and passes the press to `usePixelPainting` only when it returns false.
+- A press starts a pick hold when the picker is armed or Alt is held (`shouldStartPickHold`). Pan still wins: with Space held or pan mode on, the main button pans. Touch needs exactly one contact.
+- While holding, nothing changes; release over a color fills the slot (the right button fills the other slot). Release over an empty spot or off the canvas, Escape, `pointercancel`, a second touch and window blur all end the hold without picking.
+- Register it after `useEditorPointerContacts`, like painting, so its second-touch capture listener sees the updated touch Set.
+
 ## Pan (drag viewport)
 
 - Touch pan follows the same single-contact rule: pan updates apply only while `touchPointersRef.size === 1`.

@@ -4,7 +4,8 @@
  *
  * Notes:
  * One icon family: every file is a 24-grid, 1.5-stroke `currentColor` outline (enforced by publicIcons.test.ts).
- * One meaning per glyph: `move` shifts pixels, `resize` is canvas size, `download` exports, `photo` loads an image.
+ * One meaning per glyph: `move` shifts pixels, `resize` is canvas size, `download` exports, `photo` loads an image,
+ * `pipette` picks a color from the canvas.
  */
 
 export const PUBLIC_ICONS = {
@@ -18,6 +19,7 @@ export const PUBLIC_ICONS = {
   grip: "/icons/grip.svg",
   pencil: "/icons/pencil.svg",
   bucket: "/icons/bucket.svg",
+  pipette: "/icons/pipette.svg",
   copy: "/icons/copy.svg",
   undo: "/icons/undo.svg",
   redo: "/icons/redo.svg",

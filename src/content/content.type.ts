@@ -228,6 +228,7 @@ export interface IEditorContent {
     redo: IIconControl;
     pan: IIconControl;
     bucket: IIconControl;
+    picker: IIconControl;
     zoomOut: IIconControl;
     zoomIn: IIconControl;
     shift: IIconControl;
@@ -243,6 +244,10 @@ export interface IEditorContent {
   paletteRow: {
     groupLabel: string;
     edit: string;
+  };
+  picker: {
+    /** Next to the pointer when a pick hold leaves the canvas. */
+    releaseToCancel: string;
   };
   paletteModal: {
     title: string;
@@ -413,7 +418,7 @@ export interface IContactContent {
 
 /** A keyboard combination, described independently of platform. `mod` is Cmd on Apple devices and Ctrl elsewhere. */
 export interface IKeyCombo {
-  /** A single letter ("z"), "Space" or "Arrows". */
+  /** A single letter ("z"), "Space", "Arrows" or "Alt" (Option on Apple). */
   key: string;
   mod?: boolean;
   shift?: boolean;
@@ -423,7 +428,7 @@ export interface IKeyCombo {
 export interface IHelpShortcut {
   action: string;
   combo: IKeyCombo;
-  effect: "undo" | "redo" | "toggleGrid" | "spacePan" | "arrowPan";
+  effect: "undo" | "redo" | "toggleGrid" | "spacePan" | "arrowPan" | "altPick";
   note?: string;
 }
 
@@ -440,7 +445,7 @@ export interface IHelpContent {
   shortcutsIntro: string;
   shortcutColumns: { action: string; keys: string };
   /** Display names of the keys that have no glyph. */
-  keyNames: { ctrl: string; shift: string; space: string; arrows: string };
+  keyNames: { ctrl: string; shift: string; space: string; arrows: string; alt: string };
   shortcuts: IHelpShortcut[];
   contactPrompt: string;
   contactLink: string;
