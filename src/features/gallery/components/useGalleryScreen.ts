@@ -21,6 +21,7 @@ export function useGalleryScreen() {
   const {
     artworks,
     loading,
+    loaded,
     error,
     loadArtworks,
     createArtwork,
@@ -69,11 +70,11 @@ export function useGalleryScreen() {
   return {
     artworks,
     now,
-    loading,
+    loaded,
     error,
     count: artworks.length,
     countLabel: gallery.screen.countLabel(artworks.length),
-    showSkeleton: loading && artworks.length === 0,
+    showSkeleton: !loaded || (loading && artworks.length === 0),
     renameArtwork,
     /** The grid only awaits the clone; the store reloads the list itself. */
     cloneArtwork: async (id: string) => {

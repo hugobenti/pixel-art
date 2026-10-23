@@ -9,6 +9,8 @@ export type TCreateArtworkResult =
 export interface IGalleryState {
   artworks: IArtwork[];
   loading: boolean;
+  /** True once the first load has settled, so the empty state never shows before it. */
+  loaded: boolean;
   error: string | null;
   loadArtworks: () => Promise<void>;
   createArtwork: (input: ICreateArtworkInput) => Promise<TCreateArtworkResult>;

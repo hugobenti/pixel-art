@@ -11,16 +11,17 @@ import type { IGalleryState } from "./useGalleryStore.type";
 export const useGalleryStore = create<IGalleryState>((set, get) => ({
   artworks: [],
   loading: false,
+  loaded: false,
   error: null,
 
   loadArtworks: async () => {
     set({ loading: true, error: null });
     try {
       const artworks = await artworkService.listArtworks();
-      set({ artworks, loading: false });
+      set({ artworks, loading: false, loaded: true });
     } catch {
       const message = gallery.errors.load;
-      set({ error: message, loading: false });
+      set({ error: message, loading: false, loaded: true });
     }
   },
 

@@ -24,6 +24,7 @@ export function GalleryScreen() {
   const {
     artworks,
     now,
+    loaded,
     showSkeleton,
     error,
     count,
@@ -48,10 +49,14 @@ export function GalleryScreen() {
           <div className={galleryScreen.headingRow}>
             <div className={galleryScreen.titleGroup}>
               <h1 className={siteType.pageTitle}>{gallery.screen.heading}</h1>
-              <span aria-hidden className={galleryScreen.count}>
-                {count}
-              </span>
-              <span className={galleryScreen.srOnly}>{countLabel}</span>
+              {loaded ? (
+                <>
+                  <span aria-hidden className={galleryScreen.count}>
+                    {count}
+                  </span>
+                  <span className={galleryScreen.srOnly}>{countLabel}</span>
+                </>
+              ) : null}
             </div>
             <input
               ref={importInputRef}

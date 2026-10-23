@@ -7,7 +7,7 @@ export const gallery: IGalleryContent = {
     storageNote: "Saved in this browser only.",
     storageLink: "Learn more",
     importFile: "Import file",
-    importLabel: "Import an artwork file (.json)",
+    importLabel: "Import file (.json)",
     newArtwork: "New artwork",
     newCompact: "New",
   },
