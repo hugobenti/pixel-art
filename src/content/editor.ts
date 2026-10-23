@@ -35,7 +35,7 @@ export const editor: IEditorContent = {
     },
   },
   paletteRow: {
-    groupLabel: "Palette colors and edit",
+    groupLabel: "Palette colors",
     edit: "Edit palette",
   },
   paletteModal: {
@@ -47,6 +47,7 @@ export const editor: IEditorContent = {
     newColorLabel: "Pick new color to append",
     addButton: "Add color",
     paletteFull: "Palette full (256 colors maximum).",
+    colorExists: "This color is already in the palette.",
   },
   shiftOverlay: {
     closeLabel: "Close shift controls",

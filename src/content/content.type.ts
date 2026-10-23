@@ -254,6 +254,7 @@ export interface IEditorContent {
     /** Outline button that appends the new color. */
     addButton: string;
     paletteFull: string;
+    colorExists: string;
   };
   shiftOverlay: {
     closeLabel: string;

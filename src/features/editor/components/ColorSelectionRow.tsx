@@ -1,6 +1,6 @@
 /**
  * Purpose:
- * Single horizontal row: scrollable palette swatches plus an edit control after the last swatch.
+ * Single horizontal row: scrollable palette swatches, then an edit control pinned at the row end.
  */
 "use client";
 
@@ -24,7 +24,7 @@ export function ColorSelectionRow(props: IColorSelectionRowProps) {
       >
         <ul className={colorSelectionRow.swatchList}>
           {palette.map((color, index) => (
-            <li key={index}>
+            <li key={index} className={colorSelectionRow.swatchItem}>
               <ColorSwatch
                 density="comfortable"
                 color={color}
@@ -37,15 +37,15 @@ export function ColorSelectionRow(props: IColorSelectionRowProps) {
             </li>
           ))}
         </ul>
-        <Button
-          type="button"
-          variant="outline"
-          className={colorSelectionRow.editButton}
-          onClick={onOpenPaletteModal}
-        >
-          {editor.paletteRow.edit}
-        </Button>
       </div>
+      <Button
+        type="button"
+        variant="outline"
+        className={colorSelectionRow.editButton}
+        onClick={onOpenPaletteModal}
+      >
+        {editor.paletteRow.edit}
+      </Button>
     </div>
   );
 }

@@ -34,8 +34,19 @@ export function setPaletteColorAt(palette: string[], index: number, hex: string)
   return next;
 }
 
+/**
+ * True when the palette already holds this color; compares normalized hex, so case and #RGB shorthand match.
+ */
+export function paletteHasColor(palette: string[], hex: string): boolean {
+  const target = normalizeHexColor(hex);
+  return palette.some((entry) => normalizeHexColor(entry) === target);
+}
+
+/**
+ * Appends a color; null when the palette is full or already holds the color.
+ */
 export function appendPaletteColor(palette: string[], hex: string): string[] | null {
-  if (palette.length >= MAX_PALETTE_ENTRIES) {
+  if (palette.length >= MAX_PALETTE_ENTRIES || paletteHasColor(palette, hex)) {
     return null;
   }
   return [...palette, normalizeHexColor(hex)];

@@ -69,14 +69,6 @@ export function EditorWorkspace(props: IEditorWorkspaceProps) {
   return (
     <div className={editorWorkspace.shell}>
       <header className={editorWorkspace.chrome}>
-        <ColorSelectionRow
-          palette={artwork.palette}
-          primaryIndex={primaryPaint}
-          secondaryIndex={secondaryPaint}
-          focusedSwatchIndex={paletteUi.focusedSwatchIndex}
-          onSwatchPick={paletteUi.assignSwatchToActiveSlot}
-          onOpenPaletteModal={openPaletteModal}
-        />
         <EditorActionsBar
           title={artwork.title}
           canUndo={canUndo}
@@ -99,6 +91,14 @@ export function EditorWorkspace(props: IEditorWorkspaceProps) {
           onToggleLayersDrawer={toggleLayersDrawer}
           settingsDrawerOpen={settingsDrawerOpen}
           onToggleSettingsDrawer={toggleSettingsDrawer}
+        />
+        <ColorSelectionRow
+          palette={artwork.palette}
+          primaryIndex={primaryPaint}
+          secondaryIndex={secondaryPaint}
+          focusedSwatchIndex={paletteUi.focusedSwatchIndex}
+          onSwatchPick={paletteUi.assignSwatchToActiveSlot}
+          onOpenPaletteModal={openPaletteModal}
         />
       </header>
 
