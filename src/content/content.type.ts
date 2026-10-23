@@ -138,6 +138,8 @@ export interface IGalleryContent {
     intro: string;
     importJson: string;
     newArtwork: string;
+    /** Phone label of the header's primary action. */
+    newCompact: string;
   };
   grid: {
     empty: string;
@@ -267,7 +269,6 @@ export interface IEditorContent {
     };
     canvasSize: {
       hint: string;
-
     };
     imageDetail: {
       noIntersection: string;
