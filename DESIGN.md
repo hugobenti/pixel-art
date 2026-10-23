@@ -17,12 +17,13 @@ colors:
   fg-secondary: "#3a3c46"
   muted: "#52535c"
   subtle: "#66666c"
-  accent: "#2b3a9e"
-  accent-hover: "#202c7d"
+  accent: "#b4500f"
+  accent-hover: "#94410c"
   on-accent: "#fcfbf7"
-  focus: "#2b3a9e"
-  pick-primary: "#2b3a9e"
-  pick-secondary: "#b4500f"
+  focus: "#b4500f"
+  pick-primary: "#b4500f"
+  pick-secondary: "#2b3a9e"
+  brand-hb: "#b4500f"
   danger: "#b3261e"
   danger-hover: "#8e1d17"
   on-danger: "#fcfbf7"
@@ -59,6 +60,7 @@ colors:
   focus-dark: "#f5bb64"
   pick-primary-dark: "#eda743"
   pick-secondary-dark: "#7cb2ff"
+  brand-hb-dark: "#eda743"
   danger-dark: "#f0605f"
   danger-hover-dark: "#ff7d7a"
   on-danger-dark: "#1d0707"
@@ -165,7 +167,7 @@ components:
 
 **Creative North Star: "The Sketchbook and the Darkroom"**
 
-PixelHB is one studio seen under two lighting conditions. By day it is a sketchbook on a desk: warm off-white paper, ink-dark text and a single ultramarine ink accent. By night it is a darkroom: warm graphite chrome that steps back so the work glows, with amber as the only warm signal. The furniture never moves between the two; only the light changes. Whatever the lighting, the artwork is always the brightest, most saturated thing on screen.
+PixelHB is one studio seen under two lighting conditions. By day it is a sketchbook on a desk: warm off-white paper, ink-dark text and a single burnt-amber accent. By night it is a darkroom: warm graphite chrome that steps back so the work glows, with amber as the only warm signal. The furniture never moves between the two; only the light changes. Whatever the lighting, the artwork is always the brightest, most saturated thing on screen.
 
 The chrome is quiet, low-chroma and compact enough to leave the canvas room on a phone. Users stare at arbitrary, saturated palette colors for long stretches, so every neutral is a warm gray close to true neutral, every surface is flat, and there is exactly one accent per theme. One type system serves both themes: Schibsted Grotesk for the interface, JetBrains Mono for numbers. Switching theme changes color only, never metrics, so there is no layout shift.
 
@@ -176,7 +178,7 @@ This system replaces the earlier blue-gray theme (a `#cfd9df` page that tinted t
 - Two themes, one set of semantic token names; light is "Paper & Ink", dark is "Studio Dark".
 - Default theme follows the OS; the user can override it, and the choice persists.
 - Warm, low-chroma neutrals; never a tinted surface behind the artwork.
-- One accent per theme: ultramarine `#2b3a9e` in light, amber `#eda743` in dark.
+- One accent per theme: burnt amber `#b4500f` in light, studio amber `#eda743` in dark.
 - Depth by a soft shadow in light, by surface steps in dark.
 - Every token pair meets WCAG 2.2 AA in both themes, enforced by a test.
 
@@ -190,11 +192,11 @@ Warm paper and ink by day, warm graphite and amber by night: neutrals that stay 
 
 ### Primary
 
-- **Ultramarine Ink** (`#2b3a9e`, light) / **Studio Amber** (`#eda743`, dark): `accent`. The fill of the primary button and the primary-slot swatch ring (`pick-primary`). In light, the focus ring is the same ultramarine; in dark, focus uses the brighter amber `#f5bb64` (`accent-hover`) so it reads on graphite.
+- **Burnt Amber** (`#b4500f`, light) / **Studio Amber** (`#eda743`, dark): `accent`. The fill of the primary button and the primary-slot swatch ring (`pick-primary`). In light, the focus ring is the same burnt amber; in dark, focus uses the brighter amber `#f5bb64` (`accent-hover`) so it reads on graphite.
 
 ### Secondary
 
-- **Burnt Orange** (`#b4500f`, light) / **Sky Blue** (`#7cb2ff`, dark): `pick-secondary`. Only the ring around the secondary-slot swatch. Never a button, link or text color.
+- **Ultramarine** (`#2b3a9e`, light) / **Sky Blue** (`#7cb2ff`, dark): `pick-secondary`. Only the ring around the secondary-slot swatch. Never a button, link or text color.
 
 ### Neutral
 
@@ -228,12 +230,13 @@ Every color token, as declared in `src/app/globals.css`. Light values are the `@
 | `fg-secondary`     | `#3a3c46`                                              | `#c3bdb4`                                                 | Form labels                                                             |
 | `muted`            | `#52535c`                                              | `#a7a198`                                                 | Secondary copy, intro lines, empty states                               |
 | `subtle`           | `#66666c`                                              | `#948e85`                                                 | Hints, placeholders, captions                                           |
-| `accent`           | `#2b3a9e`                                              | `#eda743`                                                 | Primary button fill, "both slots" swatch ring, active layer row border  |
-| `accent-hover`     | `#202c7d`                                              | `#f5bb64`                                                 | Primary button hover (darker in light, brighter in dark)                |
+| `accent`           | `#b4500f`                                              | `#eda743`                                                 | Primary button fill, "both slots" swatch ring, active layer row border  |
+| `accent-hover`     | `#94410c`                                              | `#f5bb64`                                                 | Primary button hover (darker in light, brighter in dark)                |
 | `on-accent`        | `#fcfbf7`                                              | `#1b1307`                                                 | Text on `accent`                                                        |
-| `focus`            | `#2b3a9e`                                              | `#f5bb64`                                                 | Focus outlines and input focus ring                                     |
-| `pick-primary`     | `#2b3a9e`                                              | `#eda743`                                                 | Primary-slot swatch ring                                                |
-| `pick-secondary`   | `#b4500f`                                              | `#7cb2ff`                                                 | Secondary-slot swatch ring                                              |
+| `focus`            | `#b4500f`                                              | `#f5bb64`                                                 | Focus outlines and input focus ring                                     |
+| `pick-primary`     | `#b4500f`                                              | `#eda743`                                                 | Primary-slot swatch ring                                                |
+| `pick-secondary`   | `#2b3a9e`                                              | `#7cb2ff`                                                 | Secondary-slot swatch ring                                              |
+| `brand-hb`         | `#b4500f`                                              | `#eda743`                                                 | "HB" in the logo wordmark                                               |
 | `danger`           | `#b3261e`                                              | `#f0605f`                                                 | Destructive button fill                                                 |
 | `danger-hover`     | `#8e1d17`                                              | `#ff7d7a`                                                 | Destructive button hover                                                |
 | `on-danger`        | `#fcfbf7`                                              | `#1d0707`                                                 | Text on `danger`                                                        |
@@ -262,7 +265,7 @@ Every color token, as declared in `src/app/globals.css`. Light values are the `@
 
 **The Artwork Leads Rule.** The artwork is the brightest, most saturated thing on screen. Chrome stays low-chroma; surfaces are warm neutrals and are never tinted with a hue. No colored page backgrounds, gradients, glows or textures behind or around the canvas.
 
-**The One Accent Rule.** Ultramarine in light, amber in dark. The accent marks the primary action and the primary-slot swatch ring; the only other use is the border of the active layer row, which is a selection of the same kind. Never decoration, headings, links or body text. One primary button per view; everything else is ghost or outline.
+**The One Accent Rule.** Burnt amber in light, studio amber in dark. The accent marks the primary action and the primary-slot swatch ring; the only other use is the border of the active layer row, which is a selection of the same kind. Never decoration, headings, links or body text. One primary button per view; everything else is ghost or outline.
 
 **The Tokens Only Rule.** Both themes come from the same semantic token names. Components use the token utilities and never branch on theme: no `dark:` variants, no `if (theme === "dark")` in style files or renderers, no hex literals. A color that looks wrong in one theme is fixed in that theme's token value.
 
