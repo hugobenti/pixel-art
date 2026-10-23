@@ -13,7 +13,7 @@ export const siteHeader = {
   logo: cx("flex shrink-0 rounded-sm", focusRing),
   nav: "ml-2 hidden items-center gap-1 sm:flex",
   link: cx(
-    "inline-flex min-h-10 items-center rounded-sm border-b-2 px-2 text-sm font-medium transition-colors",
+    "inline-flex min-h-10 items-center rounded-sm border-b-2 px-2 text-sm font-medium transition-colors pointer-coarse:min-h-11",
     focusRing,
   ),
   linkState: {

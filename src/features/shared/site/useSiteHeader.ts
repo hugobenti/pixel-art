@@ -32,6 +32,10 @@ export function useSiteHeader() {
 
   /** The pathname the menu was opened on: navigating elsewhere closes it without an effect. */
   const [openedOn, setOpenedOn] = useState<string | null>(null);
+  if (openedOn !== null && openedOn !== pathname) {
+    // Navigated away (Link, Back, Forward): drop the stale open state so Forward cannot reopen it.
+    setOpenedOn(null);
+  }
 
   const isDark = theme === "dark";
 
