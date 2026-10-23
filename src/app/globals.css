@@ -35,13 +35,13 @@
   --color-muted: #52535c;
   --color-subtle: #66666c;
 
-  /* Primary action and selection: ultramarine ink */
-  --color-accent: #2b3a9e;
-  --color-accent-hover: #202c7d;
+  /* Primary action and selection: burnt amber (the logo's HB) */
+  --color-accent: #b4500f;
+  --color-accent-hover: #94410c;
   --color-on-accent: #fcfbf7;
-  --color-focus: #2b3a9e;
-  --color-pick-primary: #2b3a9e;
-  --color-pick-secondary: #b4500f;
+  --color-focus: #b4500f;
+  --color-pick-primary: #b4500f;
+  --color-pick-secondary: #2b3a9e;
 
   /* Brand: "HB" in the logo wordmark (docs/design/brand.md) */
   --color-brand-hb: #b4500f;
