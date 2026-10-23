@@ -12,6 +12,7 @@ import { useGalleryImport } from "@/features/gallery/hooks/useGalleryImport";
 import { useStaleThumbnailRefresh } from "@/features/gallery/hooks/useStaleThumbnailRefresh";
 import { editorPath } from "@/features/gallery/logic/artworkLinks";
 import { useGalleryStore } from "@/features/gallery/store/useGalleryStore";
+import { gallery } from "@/content/gallery";
 import type { ICreateArtworkInput } from "@/features/shared/artwork/artworkService.type";
 
 export function useGalleryScreen() {
@@ -72,6 +73,12 @@ export function useGalleryScreen() {
     deleteArtwork,
     modalOpen,
     setModalOpen,
+    primaryAction: {
+      kind: "button" as const,
+      label: gallery.screen.newArtwork,
+      compactLabel: gallery.screen.newCompact,
+      onClick: () => setModalOpen(true),
+    },
     createArtwork: createAndOpen,
     importInputRef,
     openImportPicker,

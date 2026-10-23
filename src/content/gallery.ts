@@ -5,6 +5,7 @@ export const gallery: IGalleryContent = {
     intro: "Local artworks stored in your browser (IndexedDB).",
     importJson: "Import JSON",
     newArtwork: "New artwork",
+    newCompact: "New",
   },
   grid: {
     empty: "No artworks yet. Create one to get started.",
