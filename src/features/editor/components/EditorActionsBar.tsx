@@ -31,6 +31,8 @@ export function EditorActionsBar(props: IEditorActionsBarProps) {
     onTogglePanMode,
     bucketMode,
     onToggleBucketMode,
+    pickerPressed,
+    onTogglePicker,
     canZoomOut,
     canZoomIn,
     onZoomOut,
@@ -81,6 +83,13 @@ export function EditorActionsBar(props: IEditorActionsBarProps) {
           label={toolbar.bucket.label}
           pressed={bucketMode}
           onClick={onToggleBucketMode}
+        />
+        <IconButton
+          icon={PUBLIC_ICONS.pipette}
+          label={toolbar.picker.label}
+          shortcut={toolbar.picker.shortcut}
+          pressed={pickerPressed}
+          onClick={onTogglePicker}
         />
         <IconButton
           icon={PUBLIC_ICONS.zoomOut}

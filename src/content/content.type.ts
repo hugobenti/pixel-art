@@ -228,6 +228,7 @@ export interface IEditorContent {
     redo: IIconControl;
     pan: IIconControl;
     bucket: IIconControl;
+    picker: IIconControl;
     zoomOut: IIconControl;
     zoomIn: IIconControl;
     shift: IIconControl;
@@ -243,6 +244,10 @@ export interface IEditorContent {
   paletteRow: {
     groupLabel: string;
     edit: string;
+  };
+  picker: {
+    /** Next to the pointer when a pick hold leaves the canvas. */
+    releaseToCancel: string;
   };
   paletteModal: {
     title: string;

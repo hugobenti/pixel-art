@@ -64,6 +64,9 @@
   --color-grid-line: color-mix(in srgb, var(--color-fg) 24%, transparent);
   --color-guide-horizontal: #c0261d;
   --color-guide-vertical: #2b3a9e;
+  /* Color picker loupe edges: fixed black and white so they read on any artwork color, in both themes */
+  --color-loupe-edge-dark: #000000;
+  --color-loupe-edge-light: #ffffff;
 
   /* Radius: sharp controls, softer sheets */
   --radius-sm: 4px;
@@ -129,6 +132,8 @@
   --color-grid-line: color-mix(in srgb, var(--color-muted) 34%, transparent);
   --color-guide-horizontal: #ff5c5c;
   --color-guide-vertical: #5fa8ff;
+  --color-loupe-edge-dark: #000000;
+  --color-loupe-edge-light: #ffffff;
 
   color-scheme: dark;
 }

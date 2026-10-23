@@ -4,11 +4,12 @@
  *
  * Notes:
  * useEditorWorkspace composes the editor hooks; this file only lays out toolbar, palette modal,
- * canvas, drawers and shift overlay.
+ * canvas, drawers, shift overlay and the color picker overlay.
  */
 "use client";
 
 import { CanvasContainer } from "@/features/editor/components/CanvasContainer";
+import { ColorPickerOverlay } from "@/features/editor/components/ColorPickerOverlay";
 import { ColorSelectionRow } from "@/features/editor/components/ColorSelectionRow";
 import { EditorActionsBar } from "@/features/editor/components/EditorActionsBar";
 import { EditorSettingsDrawer } from "@/features/editor/components/EditorSettingsDrawer";
@@ -33,6 +34,12 @@ export function EditorWorkspace(props: IEditorWorkspaceProps) {
     togglePanMode,
     bucketMode,
     toggleBucketMode,
+    pickerPressed,
+    togglePicker,
+    pickHold,
+    rowFocusedSwatchIndex,
+    primaryColor,
+    secondaryColor,
     canZoomIn,
     canZoomOut,
     onZoomIn,
@@ -81,6 +88,8 @@ export function EditorWorkspace(props: IEditorWorkspaceProps) {
           onTogglePanMode={togglePanMode}
           bucketMode={bucketMode}
           onToggleBucketMode={toggleBucketMode}
+          pickerPressed={pickerPressed}
+          onTogglePicker={togglePicker}
           canZoomOut={canZoomOut}
           canZoomIn={canZoomIn}
           onZoomOut={onZoomOut}
@@ -96,7 +105,7 @@ export function EditorWorkspace(props: IEditorWorkspaceProps) {
           palette={artwork.palette}
           primaryIndex={primaryPaint}
           secondaryIndex={secondaryPaint}
-          focusedSwatchIndex={paletteUi.focusedSwatchIndex}
+          focusedSwatchIndex={rowFocusedSwatchIndex}
           onSwatchPick={paletteUi.assignSwatchToActiveSlot}
           onOpenPaletteModal={openPaletteModal}
         />
@@ -167,6 +176,14 @@ export function EditorWorkspace(props: IEditorWorkspaceProps) {
         open={pixelShift.shiftOverlayOpen}
         onClose={pixelShift.closeShiftOverlay}
         onShift={pixelShift.applyShift}
+      />
+
+      <ColorPickerOverlay
+        hold={pickHold}
+        artwork={artwork}
+        viewport={viewport}
+        primaryColor={primaryColor}
+        secondaryColor={secondaryColor}
       />
     </div>
   );
