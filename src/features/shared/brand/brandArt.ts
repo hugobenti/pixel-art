@@ -111,3 +111,6 @@ export const HORIZONTAL_LOCKUP: readonly IBrandLockupPart[] = [
 ];
 
 export const BANNER_LOCKUP: readonly IBrandLockupPart[] = [{ grid: BRAND_PENCIL_GRID, x: 0, y: 0 }];
+
+/** The 33 × 7 pencil alone. */
+export const PENCIL_LOCKUP: readonly IBrandLockupPart[] = [{ grid: PENCIL_GRID, x: 0, y: 0 }];
