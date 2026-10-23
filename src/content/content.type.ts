@@ -407,3 +407,36 @@ export interface IContactContent {
   email: { title: string; cta: string };
   tip: string;
 }
+
+/** A keyboard combination, described independently of platform. `mod` is Cmd on Apple devices and Ctrl elsewhere. */
+export interface IKeyCombo {
+  /** A single letter ("z"), "Space" or "Arrows". */
+  key: string;
+  mod?: boolean;
+  shift?: boolean;
+}
+
+/** One documented keyboard shortcut; `effect` ties it to behavior checked against the editor's key handling. */
+export interface IHelpShortcut {
+  action: string;
+  combo: IKeyCombo;
+  effect: "undo" | "redo" | "toggleGrid" | "spacePan" | "arrowPan";
+  note?: string;
+}
+
+/** Copy for the Help page. */
+export interface IHelpContent {
+  metaTitle: string;
+  metaDescription: string;
+  h1: string;
+  intro: string;
+  sections: { id: string; title: string; paragraphs: string[] }[];
+  shortcutsTitle: string;
+  shortcutsIntro: string;
+  shortcutColumns: { action: string; keys: string };
+  /** Display names of the keys that have no glyph. */
+  keyNames: { ctrl: string; shift: string; space: string; arrows: string };
+  shortcuts: IHelpShortcut[];
+  contactPrompt: string;
+  contactLink: string;
+}
