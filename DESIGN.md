@@ -265,7 +265,7 @@ Every color token, as declared in `src/app/globals.css`. Light values are the `@
 
 **The Artwork Leads Rule.** The artwork is the brightest, most saturated thing on screen. Chrome stays low-chroma; surfaces are warm neutrals and are never tinted with a hue. No colored page backgrounds, gradients, glows or textures behind or around the canvas.
 
-**The One Accent Rule.** Burnt amber in light, studio amber in dark. The accent marks the primary action and the primary-slot swatch ring; the only other use is the border of the active layer row, which is a selection of the same kind. Never decoration, headings, links or body text. One primary button per view; everything else is ghost or outline.
+**The One Accent Rule.** Burnt amber in light, studio amber in dark. The accent marks the primary action and the primary-slot swatch ring; the only other use is the border of the active layer row, which is a selection of the same kind. Never decoration, headings, links or body text, with one exception: the Home "How it works" step numerals (01–03) use `text-accent` as decoration; nothing else does. One primary button per view; everything else is ghost or outline.
 
 **The Tokens Only Rule.** Both themes come from the same semantic token names. Components use the token utilities and never branch on theme: no `dark:` variants, no `if (theme === "dark")` in style files or renderers, no hex literals. A color that looks wrong in one theme is fixed in that theme's token value.
 
@@ -419,14 +419,14 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 ### Site header and footer
 
 - `src/features/shared/site/`: `SiteShell` wraps every page except the editor (skip link first, then header, `<main id="main">`, footer). Each page passes its own **primary action**; the default is a "Start drawing" link to `/gallery`, the gallery passes a "New artwork" button. On phones the labels shorten to "Start" and "New" so the header never wraps.
-- **Header.** A bottom `line` border on `bg`, one row at `max-w-6xl`: the logo (a link to `/`), the links Gallery, Help and About from `sm` (the current page has `aria-current="page"` and a `line-strong` underline; others are `fg-soft`), a flexible spacer, the theme icon button (from `sm`), then the primary action, the only accent on the page (The One Accent Rule).
+- **Header.** A bottom `line` border on `bg`, one row at `max-w-6xl`: the logo (a link to `/`), the links Gallery, Help and About from `sm` (the current page has `aria-current="page"` and a `line-strong` underline; others are `fg-soft`), a flexible spacer, the theme icon button (from `sm`), then the primary action, the only accent on the page apart from the Home step numerals (The One Accent Rule).
 - **Phone menu.** Under `sm` a menu icon button opens a bottom-sheet `Modal` (size sm) holding the links, Contact included, as 48px rows (the current one on `surface-muted`), then the theme row. Choosing a link closes the sheet, and so does navigating any other way (Back, Forward), so a sheet never reopens by itself.
 - **Footer.** A top `line` border on `bg`, `text-sm muted`: the pencil mark with the tagline, the links (Gallery, Help, About, Contact, GitHub; 44px targets on coarse pointers), then the credit and copyright on one wrapping line.
 - **Overflow menus.** `Menu` renders as a bottom sheet when the viewport is under `sm` or the pointer is coarse (`(max-width: 639px), (pointer: coarse)`), as 48px rows. Otherwise it is a dropdown that opens below its trigger and flips above it when it would not fit; it is measured before it is painted, so it never jumps.
 
 ### Site pages
 
-- **Home** (`/`). A hero, then three promise cards, a "What’s inside" grid of eight feature cards (icon, title, one line; 2 columns on phones, 4 from `lg`), three numbered steps (44px `01`–`03` badges joined by a dashed `line-strong` connector: horizontal from `sm`, vertical on phones), a storage note and a closing panel (`.pixel-grid-panel`, centered pencil logo, heading, one line and the primary call to action). The hero is one column on phones, with the banner first; from `lg` it becomes two columns (text left, banner right). The banner is the brand pencil (`BrandLogo` banner variant) on the `.pixel-grid-panel` utility in `globals.css`: a `line` grid with one cell per logo pixel, drawn at an integer scale: 5× (250px) under 360px, 6× (300px) up to `lg`, 8× (400px) from `lg`, with the grid cell size following the scale so cells and pixels line up. The panel has a `line` border on `surface`, `rounded-lg`, no shadow or gradient. The grid sits behind the logo, never behind a user's artwork.
+- **Home** (`/`). A hero, then three promise cards, a "What’s inside" grid of eight feature cards (icon, title, one line; 2 columns below `lg`, 4 from `lg`), three numbered steps (44px `01`–`03` badges joined by a dashed `line-strong` connector: horizontal from `sm`, vertical on phones), a storage note and a closing panel (`.pixel-grid-panel`, centered pencil logo, heading, one line and the primary call to action). The hero is one column on phones, with the banner first; from `lg` it becomes two columns (text left, banner right). The banner is the brand pencil (`BrandLogo` banner variant) on the `.pixel-grid-panel` utility in `globals.css`: a `line` grid with one cell per logo pixel, drawn at an integer scale: 5× (250px) under 360px, 6× (300px) up to `lg`, 8× (400px) from `lg`, with the grid cell size following the scale so cells and pixels line up. The panel has a `line` border on `surface`, `rounded-lg`, no shadow or gradient. The grid sits behind the logo, never behind a user's artwork.
 - **Help** (`/help`). Reading layout with a table of contents of in-page links and `scroll-mt-24` sections; the keyboard shortcuts are a table with key chips (`font-mono text-xs`, `control-border` outline), showing ⌘ / ⇧ on Apple platforms and Ctrl / Shift elsewhere. The gallery's storage note links to its `#saving` section.
 - **About** (`/about`). Reading layout: title, lead, sections and a signature line.
 - **Contact** (`/contact`, "Feedback & contact"). Reading layout with two option cards (`sm:grid-cols-2`), each a `Card` with an icon, section-style title, text and an outline action; the address is set in mono.
@@ -450,7 +450,7 @@ Agreed follow-ups, not yet in the code:
 ### Do:
 
 - **Do** style only through semantic token utilities (`bg-surface`, `text-muted`, `ring-pick-primary`); one class works in both themes.
-- **Do** keep one `accent` element per view: the primary button.
+- **Do** keep one `accent` element per view: the primary button (plus the Home step numerals).
 - **Do** use ghost or outline buttons for everything that is not the primary action.
 - **Do** set numbers the user measures in JetBrains Mono.
 - **Do** express depth in dark with the surface ramp (`bg` → `surface` → `surface-muted` → `surface-strong`).
@@ -464,6 +464,6 @@ Agreed follow-ups, not yet in the code:
 - **Don't** use pure black (`#000`) as a surface; it is only the dark `scrim`, under transparency.
 - **Don't** branch on theme in components or renderers (`dark:` variants, theme conditionals, hex literals).
 - **Don't** put texture, pattern or color behind the artwork; the checkerboard is the only thing under the canvas.
-- **Don't** use `pick-secondary` as a button or text color, or use the accent as body text.
+- **Don't** use `pick-secondary` as a button or text color, or use the accent as body text (exception: the Home "How it works" step numerals (01–03) use `text-accent` as decoration; nothing else does).
 - **Don't** change font size, weight or spacing between themes.
 - **Don't** fill a destructive action red outside its confirmation dialog.
