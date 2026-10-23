@@ -187,7 +187,7 @@ xxxxx.xx.xxx.x.x..xxxxxx.xxx.....
 - Gallery header: the shared site header carries the logo (the horizontal lockup, a link to `/`, accessible name "PixelHB"); the gallery page's `<h1>` is "Your artworks".
 - Editor: no logo. Its top bar stays a tool surface; the "Gallery" back link is unchanged.
 - README: brand pencil banner at the top.
-- The shared site header and footer (`SiteHeader`, `SiteFooter`) use the same logo component; the footer uses the brand pencil.
+- The shared site header and footer (`SiteHeader`, `SiteFooter`) use the same logo component; the footer uses the "pencil alone" mark (`variant="pencil"`).
 
 ## Rename rules
 

@@ -356,12 +356,12 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 - **Corner Style:** `rounded-xl` (12px).
 - **Background:** `surface` with a `line` border.
 - **Shadow Strategy:** `shadow-sm` (see Elevation & Depth).
-- **Artwork card:** a square thumbnail link on a `surface-muted` well (`rounded-lg`, image `object-contain` with `image-rendering: pixelated`), a body with a title row (title link in `font-medium fg`, truncated, and the `Menu` overflow trigger `⋯` for Rename, Clone and Delete at its right) and a meta line under it (`text-xs muted`: size in `font-mono`, then "Edited …"). The whole card is `overflow-hidden` with a `p-3` body, and the thumbnail runs full-bleed to the card edge. Delete opens `ConfirmDialog`; danger styling appears only on the confirmation button.
+- **Artwork card:** a square thumbnail link on a `surface-muted` full-bleed well (`rounded-t-xl`, clipped by the card's `overflow-hidden`; image `object-contain` with `image-rendering: pixelated`), a body with a title row (title link in `font-medium fg`, truncated, and the `Menu` overflow trigger `⋯` for Rename, Clone and Delete at its right) and a meta line under it (`text-xs muted`: size in `font-mono`, then "Edited …"). The whole card is `overflow-hidden` with a `p-3` body. Delete opens `ConfirmDialog`; danger styling appears only on the confirmation button.
 - **Thumbnails:** a lossless PNG of the visible layers at the largest integer scale that fits 256px, with no grid lines. Thumbnails saved by the old renderer (WebP or a fractional scale, which showed seams between pixels) are detected on gallery load (`isThumbnailCurrent`) and regenerated from the pixel data.
 
 ### Modal
 
-- `src/features/shared/components/Modal.tsx`: one skeleton for every dialog. Header: the title as a section heading (`text-base font-semibold fg`, wired to `aria-labelledby`) and a ghost X icon button; then the content; then an optional footer of right-aligned actions (Cancel ghost, primary last). Form dialogs pass `onSubmit`, so Enter in a field submits.
+- `src/features/shared/components/Modal.tsx`: one skeleton for every dialog. Header: the title as a panel heading (`text-base font-semibold fg`, wired to `aria-labelledby`) and a ghost X icon button; then the content; then an optional footer of right-aligned actions (Cancel ghost, primary last). Form dialogs pass `onSubmit`, so Enter in a field submits.
 - Panel: `surface`, `line` border, `rounded-xl` (`rounded-t-xl` as a phone sheet), sized sm / md / lg (see Layout), `shadow-xl`.
 - Overlay: `scrim` at 40% with a small backdrop blur by default (`dim="scrim"` drops the blur, `dim="none"` the scrim); clicking the backdrop dismisses, Escape covers the keyboard.
 - Motion: overlay and panel fade in and out (the panel also rises 8px); opacity only under `prefers-reduced-motion`.
@@ -408,7 +408,7 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 
 - **Error line** (gallery): `danger-surface` fill, `danger-fg` text, `rounded-lg`, `px-4 py-3 text-sm`, `role="alert"`.
 - **Toasts:** a stack at the bottom on phones and top-centered from `sm`, each toast `rounded-lg`, 1px border, `py-2 pr-2 pl-4`, `shadow-lg`, message in `text-sm font-medium`, an optional text action (Undo) and an `x-mark` icon dismiss, both 32px targets. Tones: neutral (`surface`, `line`, `fg`), success (`success-surface`, `success-line`, `success-fg`), error (`danger-surface`, `danger-line`, `danger-fg-strong`). Errors are announced as alerts, the rest politely; errors and toasts with an action stay 8 s, others 4.5 s, and every timer pauses while the stack is hovered or focused.
-- **Empty state** (gallery): dashed `line-strong` border, `rounded-xl`, `p-12`, centered: a 32px `muted` icon, a `text-base font-semibold` title, a `text-sm muted` line, then "New artwork" (primary) and "Import file (.json)" (outline) side by side.
+- **Empty state** (gallery): dashed `line-strong` border, `rounded-xl`, `p-12`, centered: a 32px `muted` icon, a `text-base font-semibold` title, a `text-sm muted` line, then "New artwork" (primary) and "Import file" (outline) side by side. Only the Import button in the gallery header row carries the longer accessible name "Import file (.json)".
 - **Skeleton** (gallery): until the first load settles, four card-shaped placeholders (`GallerySkeleton`: square well, title bar, meta bar) pulse on the same grid as the cards; the pulse stops under `prefers-reduced-motion`. A `role="status"` line carries the loading text for screen readers, and the artwork count stays hidden until the load settles.
 
 ### Layers Drawer Rows
@@ -430,11 +430,11 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 - **Help** (`/help`). Reading layout with a table of contents of in-page links and `scroll-mt-24` sections; the keyboard shortcuts are a table with key chips (`font-mono text-xs`, `control-border` outline), showing ⌘ / ⇧ on Apple platforms and Ctrl / Shift elsewhere. The gallery's storage note links to its `#saving` section.
 - **About** (`/about`). Reading layout: title, lead, sections and a signature line.
 - **Contact** (`/contact`, "Feedback & contact"). Reading layout with two option cards (`sm:grid-cols-2`), each a `Card` with an icon, section-style title, text and an outline action; the address is set in mono.
-- **404 and error.** One `StatusScreen`: page title, lead, then a primary link to the gallery (or "Try again" for errors) and a plain link home. They use the same shell as every other page.
+- **404 and error.** One `StatusScreen`: page title, lead, then the primary "Go to your gallery" link (always), an outline "Try again" button (error page only) and a plain link home. They use the same shell as every other page.
 
 ### Reading-page rules
 
-- One `h1` per page, in the page-title style (the home page uses Display); sections use `h2` in the section style. Every page sets its own tab title: `<page> · PixelHB`, except Home, which reads "PixelHB · …".
+- One `h1` per page, in the page-title style (the home page uses Display); sections use `h2` in the section style. Every route that exports `metadata` sets its own tab title: `<page> · PixelHB`, except Home, which reads "PixelHB · …"; the client error page cannot export metadata.
 - Body text is `text-base fg-secondary`; links are `fg` with an underline offset of 4px (`siteType.link`), never the accent. Cards and bands are `surface` or bordered with `line`, not shadowed.
 - Copy lives in `src/content` and states what the product does and where the data lives; no testimonials, counts or showcase claims (see PRODUCT.md, Evidence on Hand).
 
