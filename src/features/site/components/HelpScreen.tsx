@@ -18,11 +18,11 @@ export function HelpScreen() {
         <p className={helpScreen.intro}>{help.intro}</p>
       </header>
 
-      <nav aria-label={help.h1}>
+      <nav aria-label={help.tocLabel}>
         <ul className={helpScreen.toc}>
           {HELP_TOC.map((entry) => (
             <li key={entry.href}>
-              <a href={entry.href} className={helpScreen.link}>
+              <a href={entry.href} className={helpScreen.tocLink}>
                 {entry.title}
               </a>
             </li>

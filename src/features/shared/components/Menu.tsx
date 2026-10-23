@@ -13,6 +13,8 @@ export function Menu(props: IMenuProps) {
   const {
     open,
     sheet,
+    triggerPopup,
+    triggerControls,
     dropdownClass,
     toneClass,
     close,
@@ -32,9 +34,9 @@ export function Menu(props: IMenuProps) {
         id={triggerId}
         icon={PUBLIC_ICONS.moreHorizontal}
         label={label}
-        aria-haspopup="menu"
+        aria-haspopup={triggerPopup}
         aria-expanded={open}
-        aria-controls={open ? menuId : undefined}
+        aria-controls={triggerControls}
         onClick={toggle}
         onKeyDown={onTriggerKeyDown}
       />

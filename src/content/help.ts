@@ -4,6 +4,7 @@ export const help: IHelpContent = {
   metaTitle: "Help",
   metaDescription: "How to create, save, export and draw with PixelHB, plus its keyboard shortcuts.",
   h1: "Help",
+  tocLabel: "On this page",
   intro: "Everything you need to start drawing, and where your work lives.",
   sections: [
     {
@@ -17,8 +18,8 @@ export const help: IHelpContent = {
       id: "saving",
       title: "Where your work is saved",
       paragraphs: [
-        "PixelHB saves every change automatically in this browser. There's no account, and nothing is uploaded.",
-        "Your artworks stay in this browser on this device. Clearing your browsing data deletes them, and they don't show up in a private window, another browser or another device.",
+        "PixelHB saves every change automatically in this browser. There’s no account, and nothing is uploaded.",
+        "Your artworks stay in this browser on this device. Clearing your browsing data deletes them, and they don’t show up in a private window, another browser or another device.",
         "To keep a copy or move an artwork, open it, go to Settings › Export and choose Export JSON. Open that file later with Import file in your gallery.",
       ],
     },
@@ -40,7 +41,7 @@ export const help: IHelpContent = {
       id: "limits",
       title: "Limits",
       paragraphs: [
-        "Canvases go up to 1000 × 1000 pixels, and each artwork's palette holds up to 256 colors.",
+        "Canvases go up to 1000 × 1000 pixels, and each artwork’s palette holds up to 256 colors.",
       ],
     },
   ],

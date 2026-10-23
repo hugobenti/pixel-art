@@ -7,7 +7,7 @@ export const contact: IContactContent = {
   intro: "Found a bug or have an idea? I read every message.",
   issue: {
     title: "Report a bug or suggest a feature",
-    text: "Open an issue on GitHub. You'll need a GitHub account.",
+    text: "Open an issue on GitHub. You’ll need a GitHub account.",
     cta: "Open an issue",
   },
   email: { title: "Write to me", cta: "Send an email" },

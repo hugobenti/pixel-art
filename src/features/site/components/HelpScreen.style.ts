@@ -15,6 +15,7 @@ export const helpScreen = {
   sectionTitle: siteType.section,
   prose: siteType.prose,
   link: siteType.link,
+  tocLink: siteType.linkStandalone,
   tableWrap: "overflow-x-auto",
   table: "w-full max-w-prose border-collapse text-left text-base",
   headCell: "border-b border-control-border py-2 pr-4 text-sm font-semibold text-muted",

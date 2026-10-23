@@ -14,6 +14,7 @@ import type { IGalleryGridProps } from "./GalleryGrid.type";
 
 export function GalleryGrid({
   artworks,
+  showEmpty,
   now,
   onRename,
   onClone,
@@ -22,6 +23,7 @@ export function GalleryGrid({
   onImport,
 }: IGalleryGridProps) {
   if (artworks.length === 0) {
+    if (!showEmpty) return null;
     return (
       <div className={galleryGrid.empty}>
         <PublicMaskIcon src={PUBLIC_ICONS.pencil} className={galleryGrid.emptyIcon} />

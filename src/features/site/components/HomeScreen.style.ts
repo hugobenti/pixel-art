@@ -32,6 +32,6 @@ export const homeScreen = {
   step: "flex flex-col gap-1",
   stepNumber: "font-mono text-sm text-muted",
   note: "flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg bg-surface px-5 py-4 text-sm text-muted",
-  noteLink: siteType.link,
+  noteLink: siteType.linkStandalone,
   closing: "flex flex-col items-start gap-4",
 };

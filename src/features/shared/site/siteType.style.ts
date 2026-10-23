@@ -13,4 +13,9 @@ export const siteType = {
   pageTitle: "text-2xl font-semibold text-fg",
   prose: "max-w-prose text-base text-fg-secondary",
   link: cx("rounded-sm text-fg underline underline-offset-4 hover:text-fg-soft", focusRing),
+  /** A link that stands alone (not inside a sentence): 44px tall on touch screens. */
+  linkStandalone: cx(
+    "rounded-sm text-fg underline underline-offset-4 hover:text-fg-soft pointer-coarse:inline-flex pointer-coarse:min-h-11 pointer-coarse:items-center",
+    focusRing,
+  ),
 };
