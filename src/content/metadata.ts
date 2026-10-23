@@ -3,6 +3,6 @@ import { site } from "./site";
 
 /** Page metadata for the whole app, derived from the site content. */
 export const siteMetadata: Metadata = {
-  title: site.name,
-  description: site.description,
+  title: { default: site.name, template: `%s · ${site.name}` },
+  description: site.metaDescription,
 };

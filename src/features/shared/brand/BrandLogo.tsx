@@ -1,28 +1,35 @@
 /**
  * Purpose:
- * The PixelHB horizontal logo (stamped pencil + pixel wordmark) as an inline SVG named "PixelHB".
+ * The PixelHB logo as an inline SVG named "PixelHB": the horizontal lockup (stamped pencil + pixel
+ * wordmark), the banner pencil or the plain pencil.
  *
  * Notes:
  * Pencil colors are fixed; the wordmark and the drawn pixel use theme tokens, so the logo follows the
- * light and dark themes without re-rendering.
+ * light and dark themes without re-rendering. A decorative logo is hidden from assistive tech.
  */
 
 import { site } from "@/content/site";
 import { cx } from "@/features/shared/utils/cx";
+import { BRAND_LOGO_DRAWINGS } from "./BrandLogo.data";
 import { brandLogo } from "./BrandLogo.style";
 import type { IBrandLogoProps } from "./BrandLogo.type";
-import { HORIZONTAL_LOGO } from "./logoDrawing";
 
-export function BrandLogo({ className }: IBrandLogoProps) {
+export function BrandLogo({
+  variant = "horizontal",
+  decorative = false,
+  className,
+}: IBrandLogoProps) {
+  const drawing = BRAND_LOGO_DRAWINGS[variant];
   return (
     <svg
-      viewBox={HORIZONTAL_LOGO.viewBox}
-      role="img"
-      aria-label={site.name}
+      viewBox={drawing.viewBox}
+      role={decorative ? undefined : "img"}
+      aria-label={decorative ? undefined : site.name}
+      aria-hidden={decorative ? true : undefined}
       shapeRendering="crispEdges"
-      className={cx(brandLogo.svg, className)}
+      className={cx(brandLogo.svg, brandLogo.variant[variant], className)}
     >
-      {HORIZONTAL_LOGO.rects.map((rect) => (
+      {drawing.rects.map((rect) => (
         <rect key={rect.id} x={rect.x} y={rect.y} width={rect.width} height={1} fill={rect.fill} />
       ))}
     </svg>

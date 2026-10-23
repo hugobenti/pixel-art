@@ -2,6 +2,28 @@
 export interface ISiteContent {
   name: string;
   description: string;
+  metaDescription: string;
+  author: string;
+  email: string;
+  repoUrl: string;
+  issuesUrl: string;
+}
+
+/** Copy for the site shell: header, menu, theme toggle and footer. */
+export interface IShellContent {
+  skipToContent: string;
+  nav: {
+    gallery: string;
+    help: string;
+    about: string;
+    contact: string;
+    github: string;
+    label: string;
+  };
+  menu: { open: string; title: string };
+  theme: { toDark: string; toLight: string };
+  primary: { start: string; startCompact: string };
+  footer: { tagline: string; credit: string; copyright: string; linksLabel: string };
 }
 
 /** An icon control: its accessible name and its tooltip. */

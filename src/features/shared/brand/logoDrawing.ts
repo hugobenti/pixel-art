@@ -1,10 +1,11 @@
 /**
  * Purpose:
- * The horizontal lockup as SVG rects for the in-app logo, with the theme keys mapped to tokens so the
- * wordmark and the drawn pixel follow the light or dark theme.
+ * The lockups as SVG rects for the in-app logo, with the theme keys mapped to tokens so the wordmark
+ * and the drawn pixel follow the light or dark theme.
  */
 
-import { BRAND_FIXED_COLORS, HORIZONTAL_LOCKUP } from "./brandArt";
+import type { IBrandLockupPart } from "./brandPixels.type";
+import { BANNER_LOCKUP, BRAND_FIXED_COLORS, HORIZONTAL_LOCKUP, PENCIL_LOCKUP } from "./brandArt";
 import type { IBrandLogoDrawing } from "./BrandLogo.type";
 import { lockup } from "./brandPixels";
 
@@ -15,15 +16,20 @@ const UI_COLORS: Readonly<Record<string, string>> = {
   h: "var(--color-brand-hb)",
 };
 
-const horizontal = lockup(HORIZONTAL_LOCKUP);
+export function logoDrawing(parts: readonly IBrandLockupPart[]): IBrandLogoDrawing {
+  const art = lockup(parts);
+  return {
+    viewBox: `0 0 ${art.width} ${art.height}`,
+    rects: art.runs.map((run) => ({
+      id: `${run.x}-${run.y}`,
+      x: run.x,
+      y: run.y,
+      width: run.length,
+      fill: UI_COLORS[run.key],
+    })),
+  };
+}
 
-export const HORIZONTAL_LOGO: IBrandLogoDrawing = {
-  viewBox: `0 0 ${horizontal.width} ${horizontal.height}`,
-  rects: horizontal.runs.map((run) => ({
-    id: `${run.x}-${run.y}`,
-    x: run.x,
-    y: run.y,
-    width: run.length,
-    fill: UI_COLORS[run.key],
-  })),
-};
+export const HORIZONTAL_LOGO = logoDrawing(HORIZONTAL_LOCKUP);
+export const BANNER_LOGO = logoDrawing(BANNER_LOCKUP);
+export const PENCIL_LOGO = logoDrawing(PENCIL_LOCKUP);
