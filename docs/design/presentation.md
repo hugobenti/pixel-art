@@ -104,8 +104,8 @@ On phones the links wrap into two rows with 44px targets.
   <line x1="0" y1="48" x2="560" y2="48" stroke="var(--border)"/>
   <text x="40" y="110" fill="currentColor" font-size="30" font-weight="bold">Pixel art, right in</text>
   <text x="40" y="146" fill="currentColor" font-size="30" font-weight="bold">your browser.</text>
-  <text x="40" y="178" fill="var(--muted)" font-size="14">Draw sprites, icons and tiles with layers, mirror guides</text>
-  <text x="40" y="198" fill="var(--muted)" font-size="14">and a reference image. No account, no install.</text>
+  <text x="40" y="178" fill="var(--muted)" font-size="14">Draw sprites, icons and tiles with layers, a reference</text>
+  <text x="40" y="198" fill="var(--muted)" font-size="14">image and your own palette. No account, no install.</text>
   <rect x="40" y="216" width="110" height="34" rx="6" fill="var(--accent)"/><text x="54" y="238" fill="var(--surface)">Start drawing</text>
   <rect x="160" y="216" width="110" height="34" rx="6" fill="none" stroke="var(--border)"/><text x="176" y="238" fill="currentColor">Read the guide</text>
   <rect x="300" y="72" width="230" height="170" rx="8" fill="none" stroke="var(--border)" stroke-dasharray="2 4"/>
@@ -147,7 +147,7 @@ Sections, top to bottom (copy below):
 
 1. **Hero.** Left: H1, lead, **Start drawing** (accent, → `/gallery`) and **Read the guide** (outline, → `/help`). Right (stacked above the text on phones): the brand pencil (banner mark) at a large whole-number scale on a faint pixel grid, the same composition as the social image. It is decorative (`aria-hidden`); no artwork is faked.
 2. **Three promises**, as three cards with an icon from the existing family: open and draw / stays on your device / ready for your game.
-3. **What's inside:** one line of the real features: Layers · Mirror guides · Reference image · Fill · Palettes up to 256 colors · Undo history · PNG export. Each item must exist in the app at launch.
+3. **What's inside:** one line of the real features: Layers · Reference image · Palettes up to 256 colors · Fill · Shift pixels · Pixel grid and center guides · Undo and redo · PNG export. Each item must exist in the app at launch. The center guides are lines only; nothing may call them mirror or symmetry drawing, which the app doesn't do.
 4. **How it works:** three numbered steps.
 5. **Storage note:** a quiet `surface` band saying where the work is saved and what deletes it, with a link to Help › Where your work is saved.
 6. **Closing call to action:** short heading and a **Start drawing** button.
@@ -224,12 +224,12 @@ Plus a tip on what to include in a bug report (browser, device, what you did).
 **Home**
 
 - H1: Pixel art, right in your browser.
-- Lead: Draw sprites, icons and tiles with layers, mirror guides and a reference image. No account, no install.
+- Lead: Draw sprites, icons and tiles with layers, a reference image and your own palette. No account, no install.
 - Buttons: Start drawing · Read the guide
 - Promise 1, "Open it and draw": No sign-up and no download. Pick a canvas size and start.
 - Promise 2, "Stays on your device": Your artworks save automatically in this browser. Nothing is uploaded.
 - Promise 3, "Ready for your game": Export crisp PNGs up to 1000 × 1000 pixels, with palettes of up to 256 colors.
-- How it works: 1. Create a canvas: choose any size up to 1000 × 1000. 2. Draw: pixel by pixel, with fill, layers and mirror guides, using a mouse, a trackpad or your finger. 3. Export: download a crisp PNG, ready for your game or your portfolio.
+- How it works: 1. Create a canvas: choose any size up to 1000 × 1000. 2. Draw: pixel by pixel, with fill, layers and a reference image, using a mouse, a trackpad or your finger. 3. Export: download a crisp PNG, ready for your game or your portfolio.
 - Storage note: Your artworks live in this browser only, so clearing your browsing data deletes them. *Where your work is saved*
 - Closing: Ready to draw? · Start drawing
 
@@ -249,10 +249,11 @@ Plus a tip on what to include in a bug report (browser, device, what you did).
 - H1: About PixelHB
 - PixelHB is a pixel-art editor that runs in your browser. It's made for drawing sprites, icons and tiles without accounts, downloads or waiting.
 - H2 "Your work stays with you": Everything happens on your device. Your artworks are saved in this browser, and nothing is sent to a server.
-- H2 "Who makes it" (Hugo's text, edited):
-  - I'm Hugo Bentivegna. I was working on an art project and couldn't find a pixel-art tool that did what I needed, so I built one.
-  - PixelHB is for everyone who loves pixels: artists, designers, game makers, and anyone who simply likes to draw.
+- H2 "Why PixelHB exists" (Hugo's story, edited; pending his OK):
+  - I was working on an art project and needed a complete pixel tool: layers I could organize, a reference image to draw from, a palette I fully control, and nothing to install. Every editor I tried was missing something, so I built my own.
+  - Now PixelHB is for anyone who loves pixels: artists, designers, game makers, and everyone who simply enjoys drawing.
   - It's made by an artist, for artists, and it grows with your feedback. Tell me what's missing, and let's build the best pixel tool together. *Send feedback* (→ `/contact`)
+  - Signed: Hugo Bentivegna
 - H2 "Source code": PixelHB's code is on GitHub. *View on GitHub*
 
 **Feedback & contact**
