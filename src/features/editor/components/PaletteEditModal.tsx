@@ -27,8 +27,9 @@ export function PaletteEditModal(props: IPaletteEditModalProps) {
     removal,
     newHex,
     setNewHex,
-    newColorValid,
-    setNewColorValid,
+    changeNewColorValidity,
+    addNote,
+    addDisabled,
     newColorFieldKey,
     addNewColor,
   } = usePaletteEditModal(props);
@@ -81,20 +82,18 @@ export function PaletteEditModal(props: IPaletteEditModalProps) {
             value={newHex}
             disabled={maxPaletteReached}
             onValueChange={setNewHex}
-            onValidityChange={setNewColorValid}
+            onValidityChange={changeNewColorValidity}
           />
           <Button
             type="button"
             variant="outline"
-            disabled={maxPaletteReached || !newColorValid}
+            disabled={addDisabled}
             onClick={addNewColor}
           >
             {editor.paletteModal.addButton}
           </Button>
         </div>
-        {maxPaletteReached ? (
-          <p className={paletteEditModal.fullNote}>{editor.paletteModal.paletteFull}</p>
-        ) : null}
+        {addNote ? <p className={paletteEditModal.fullNote}>{addNote}</p> : null}
       </fieldset>
       <ConfirmDialog {...removal.dialog}>
         <PaletteReplacementPicker

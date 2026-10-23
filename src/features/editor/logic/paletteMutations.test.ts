@@ -1,18 +1,21 @@
 /**
  * Purpose:
- * Unit tests for palette index clamping and the undoable palette-color removal.
+ * Unit tests for palette index clamping, the duplicate-color guard on append and the undoable
+ * palette-color removal.
  */
 
 import { describe, expect, it } from "vitest";
 
 import {
+  appendPaletteColor,
   clampPaletteIndex,
   countColorUsage,
   nearestPaletteIndex,
+  paletteHasColor,
   removePaletteColor,
   revertPaletteRemoval,
 } from "@/features/editor/logic/paletteMutations";
-import { TRANSPARENT_PIXEL_INDEX } from "@/features/shared/artwork/artworkService";
+import { MAX_PALETTE_ENTRIES, TRANSPARENT_PIXEL_INDEX } from "@/features/shared/artwork/artworkService";
 
 describe("clampPaletteIndex", () => {
   it("clamps to palette bounds", () => {
@@ -22,6 +25,27 @@ describe("clampPaletteIndex", () => {
 
   it("returns 0 when palette is empty", () => {
     expect(clampPaletteIndex(3, 0)).toBe(0);
+  });
+});
+
+describe("appendPaletteColor", () => {
+  it("appends a new color, normalized", () => {
+    expect(appendPaletteColor(["#000000"], "#ff8800")).toEqual(["#000000", "#FF8800"]);
+  });
+
+  it("rejects a color the palette already holds, whatever its case or shorthand", () => {
+    const palette = ["#000000", "#FF8800"];
+    expect(appendPaletteColor(palette, "#ff8800")).toBeNull();
+    expect(appendPaletteColor(["#ffffff"], "#FFF")).toBeNull();
+    expect(paletteHasColor(["#aabbcc"], "#ABC")).toBe(true);
+  });
+
+  it("rejects any color once the palette is full", () => {
+    const full = Array.from(
+      { length: MAX_PALETTE_ENTRIES },
+      (_, i) => `#${i.toString(16).padStart(6, "0")}`
+    );
+    expect(appendPaletteColor(full, "#ABCDEF")).toBeNull();
   });
 });
 
