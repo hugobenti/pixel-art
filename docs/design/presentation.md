@@ -33,6 +33,7 @@ Success: someone who has never heard of PixelHB lands on the site from a phone o
 
 - The editor screen: layout, tools, panels and its copy (later pass). The editor only inherits the light-accent change, as the color tokens are global.
 - Accounts, cloud sync, analytics, a newsletter, a blog, a changelog.
+- Backups. No "back up" action is added and no copy promises one. Hugo plans a Google Drive integration later; the storage note and Help get a backup section then.
 - A showcase of artwork. No such artwork exists (PRODUCT.md "Evidence on Hand").
 
 ## Anti-goals (failures even if it ships)
@@ -119,7 +120,7 @@ On phones the links wrap into two rows with 44px targets.
   <text x="40" y="430" fill="currentColor" font-weight="bold" font-size="16">How it works</text>
   <text x="40" y="456" fill="var(--muted)">1  Create a canvas     2  Draw     3  Export</text>
   <rect x="40" y="476" width="480" height="40" rx="8" fill="var(--surface)" stroke="var(--border)"/>
-  <text x="54" y="501" fill="var(--muted)" font-size="12">Your artworks live in this browser. Download a backup now and then.</text>
+  <text x="54" y="501" fill="var(--muted)" font-size="12">Your artworks live in this browser only. Clearing browsing data deletes them.</text>
   <line x1="0" y1="550" x2="560" y2="550" stroke="var(--border)"/>
   <text x="16" y="574" fill="var(--muted)" font-size="11">▰▸ Pixel-art editor for the browser.</text>
   <text x="16" y="592" fill="var(--muted)" font-size="11">Gallery · Help · About · Feedback &amp; contact · GitHub</text>
@@ -146,9 +147,9 @@ Sections, top to bottom (copy below):
 
 1. **Hero.** Left: H1, lead, **Start drawing** (accent, → `/gallery`) and **Read the guide** (outline, → `/help`). Right (stacked above the text on phones): the brand pencil (banner mark) at a large whole-number scale on a faint pixel grid, the same composition as the social image. It is decorative (`aria-hidden`); no artwork is faked.
 2. **Three promises**, as three cards with an icon from the existing family: open and draw / stays on your device / ready for your game.
-3. **What's inside:** one line of the real features: Layers · Mirror guides · Reference image · Fill · Palettes up to 256 colors · Undo history · PNG and backup export. Each item must exist in the app at launch.
+3. **What's inside:** one line of the real features: Layers · Mirror guides · Reference image · Fill · Palettes up to 256 colors · Undo history · PNG export. Each item must exist in the app at launch.
 4. **How it works:** three numbered steps.
-5. **Storage note:** a quiet `surface` band explaining where the work is saved and recommending backups, with a link to Help › Saving and backups.
+5. **Storage note:** a quiet `surface` band saying where the work is saved and what deletes it, with a link to Help › Where your work is saved.
 6. **Closing call to action:** short heading and a **Start drawing** button.
 7. Footer.
 
@@ -157,10 +158,10 @@ A returning user reaches the gallery from the header link or **Start drawing**; 
 ## Gallery (`/gallery`)
 
 - Site header with **New artwork** as the primary action.
-- Heading row: H1 **Your artworks**, the count in mono next to it, and **Import backup** (outline) on the right. At 390px they fit on one line; if a translation or zoom level doesn't, the button wraps under the heading. Import never moves into the ☰ sheet, so the header needs no page-specific slots (my call).
+- Heading row: H1 **Your artworks**, the count in mono next to it, and **Import file** (outline) on the right; its accessible name is "Import an artwork file (.json)". At 390px they fit on one line; if a translation or zoom level doesn't, the button wraps under the heading. Import never moves into the ☰ sheet, so the header needs no page-specific slots (my call).
 - Under the heading, one `text-sm muted` line: the data-safety note with a link to Help.
 - Cards: the thumbnail fills the card's top edge-to-edge (no inner frame); below it the title (truncated, full title in the accessible name) with the `⋯` on the same line, aligned right; under the title, `32 × 32 · Edited 2 hours ago` in `text-xs`, the size in mono. Relative time comes from `Intl.RelativeTimeFormat`.
-- Empty state: an icon, heading, one sentence, **New artwork** (accent) and **Import backup** (outline).
+- Empty state: an icon, heading, one sentence, **New artwork** (accent) and **Import file** (outline).
 - Loading: skeleton cards in place of "Loading…".
 
 ### Card menu (`⋯`)
@@ -183,7 +184,7 @@ What PixelHB is, the principles (no account, local, works offline, precise at an
 Sections, each an H2 with an anchor so the gallery and home page can link to them:
 
 1. Getting started: create a canvas, sizes, background color.
-2. Saving and backups: autosave, "this browser only", what clears it (clearing site data, private windows), how to download and import a backup file, moving work to another device with a backup.
+2. Where your work is saved: autosave, "this browser only", what deletes it (clearing site data, private windows, another browser or device). To keep a copy or move an artwork, export it from the editor's settings (today's **Export JSON**) and open it with **Import file** in the gallery. This describes what exists today; it is not called a backup.
 3. Exporting PNG.
 4. Keyboard shortcuts: a table in `src/content` next to the toolbar's existing shortcut strings (today: Ctrl/⌘ Z undo, redo, G grid, Space + drag pan, arrow keys pan). The editor's key handling is not changed in this project; instead a unit test runs every documented key through the editor's own key mapping (`editorShortcutForKey` and the pan helpers) and fails when the table and the code disagree. Show ⌘ on Apple platforms and Ctrl elsewhere (my call).
 5. On a phone: pinch to zoom, the pan tool, tapping to draw.
@@ -210,7 +211,7 @@ Plus a tip on what to include in a bug report (browser, device, what you did).
 ### Voice
 
 - Plain and calm, second person ("your artworks"), sentence case, short sentences.
-- No jargon: no "IndexedDB", "local storage", "JSON" in visible text. A JSON export is a **backup file**; the file picker still accepts `.json`, and Help names the format once.
+- No jargon: no "IndexedDB", "local storage", "JSON" in visible text on the site and gallery. A JSON export is an **artwork file**; the file picker still accepts `.json`, and Help names the format once. The editor's "Export JSON" label is renamed in the editor pass, not here.
 - Errors say what happened and what to do: "Couldn't rename the artwork. Try again."
 - Numbers and sizes in mono with `×` (U+00D7) and real spaces: `32 × 32`.
 - Curly quotes and the real ellipsis (`…`).
@@ -228,27 +229,30 @@ Plus a tip on what to include in a bug report (browser, device, what you did).
 - Promise 1, "Open it and draw": No sign-up and no download. Pick a canvas size and start.
 - Promise 2, "Stays on your device": Your artworks save automatically in this browser. Nothing is uploaded.
 - Promise 3, "Ready for your game": Export crisp PNGs up to 1000 × 1000 pixels, with palettes of up to 256 colors.
-- How it works: 1. Create a canvas: choose any size up to 1000 × 1000. 2. Draw: pixel by pixel, with fill, layers and mirror guides, using a mouse, a trackpad or your finger. 3. Export: download a PNG for your game, or a backup file to keep your work safe.
-- Storage note: Your artworks live in this browser only. Clearing your browsing data deletes them, so download a backup now and then. *How backups work*
+- How it works: 1. Create a canvas: choose any size up to 1000 × 1000. 2. Draw: pixel by pixel, with fill, layers and mirror guides, using a mouse, a trackpad or your finger. 3. Export: download a crisp PNG, ready for your game or your portfolio.
+- Storage note: Your artworks live in this browser only, so clearing your browsing data deletes them. *Where your work is saved*
 - Closing: Ready to draw? · Start drawing
 
 **Gallery**
 
 - H1: Your artworks
-- Note: Saved in this browser only. *Keep a backup*
+- Note: Saved in this browser only. *Learn more*
 - Empty heading: No artworks yet
-- Empty text: Create your first canvas or import a backup file.
-- Buttons: New artwork · Import backup
+- Empty text: Create your first canvas, or open an artwork file you exported before.
+- Buttons: New artwork · Import file
 - Card meta: `{w} × {h} · Edited {relative time}`
-- Errors: load "Couldn't open your artworks. Reload the page to try again." · create "Couldn't create the artwork. Try again." · import "This file isn't a PixelHB backup." · rename "Couldn't rename the artwork. Try again." · clone "Couldn't duplicate the artwork. Try again." · delete "Couldn't delete the artwork. Try again."
-- Toasts: "Backup imported." · "Artwork duplicated."
+- Errors: load "Couldn't open your artworks. Reload the page to try again." · create "Couldn't create the artwork. Try again." · import "This file isn't a PixelHB artwork." · rename "Couldn't rename the artwork. Try again." · clone "Couldn't duplicate the artwork. Try again." · delete "Couldn't delete the artwork. Try again."
+- Toasts: "Artwork imported." · "Artwork duplicated."
 
 **About**
 
 - H1: About PixelHB
 - PixelHB is a pixel-art editor that runs in your browser. It's made for drawing sprites, icons and tiles without accounts, downloads or waiting.
 - H2 "Your work stays with you": Everything happens on your device. Your artworks are saved in this browser, and nothing is sent to a server.
-- H2 "Who makes it": *(Hugo's paragraph)*
+- H2 "Who makes it" (Hugo's text, edited):
+  - I'm Hugo Bentivegna. I was working on an art project and couldn't find a pixel-art tool that did what I needed, so I built one.
+  - PixelHB is for everyone who loves pixels: artists, designers, game makers, and anyone who simply likes to draw.
+  - It's made by an artist, for artists, and it grows with your feedback. Tell me what's missing, and let's build the best pixel tool together. *Send feedback* (→ `/contact`)
 - H2 "Source code": PixelHB's code is on GitHub. *View on GitHub*
 
 **Feedback & contact**
@@ -288,11 +292,6 @@ Light `accent` becomes burnt amber `#B4500F` (the logo's "HB"; white text on it 
 5. `docs/presentation`: DESIGN.md (header, footer, pages, type additions), PRODUCT.md (surfaces now include the home and site pages), brand.md non-goal line, improvement-plan PR 3 marked as covered by this document.
 
 Each PR runs lint, typecheck, test, build, and `design:detect` on the live pages at 1440 and 390, and includes screenshots of both themes at both widths.
-
-## Open questions for Hugo
-
-1. **What a backup is.** Today one artwork exports as one JSON file, only from the editor's settings drawer, and the gallery imports one file at a time. The copy above promises easy backups. Options: (a) add **Download backup** to each card's `⋯` menu (small; reuses the existing export), or (b) also add **Back up everything** in one file and an import that handles many artworks (a new feature with its own PR).
-2. **"Who makes it" on About.** Two or three sentences from Hugo: who he is and why he built PixelHB. Without them, About ships with "Made by Hugo Bentivegna" and the GitHub link only.
 
 ## Left to the builder
 
