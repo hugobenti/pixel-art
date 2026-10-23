@@ -27,4 +27,9 @@ describe("formatKeyCombo", () => {
     expect(formatKeyCombo({ key: "Arrows" }, "apple", names)).toBe("Arrow keys");
     expect(formatKeyCombo({ key: "Arrows" }, "other", names)).toBe("Arrow keys");
   });
+
+  it("shows Alt as the Option glyph on Apple and by name elsewhere", () => {
+    expect(formatKeyCombo({ key: "Alt" }, "apple", names)).toBe("⌥");
+    expect(formatKeyCombo({ key: "Alt" }, "other", names)).toBe("Alt");
+  });
 });

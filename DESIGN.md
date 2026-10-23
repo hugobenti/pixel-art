@@ -39,6 +39,8 @@ colors:
   grid-line: "color-mix(in srgb, var(--color-fg) 24%, transparent)"
   guide-horizontal: "#c0261d"
   guide-vertical: "#2b3a9e"
+  loupe-edge-dark: "#000000"
+  loupe-edge-light: "#ffffff"
   bg-dark: "#141312"
   surface-dark: "#1c1b19"
   surface-subtle-dark: "#22211f"
@@ -76,6 +78,8 @@ colors:
   grid-line-dark: "color-mix(in srgb, var(--color-muted) 34%, transparent)"
   guide-horizontal-dark: "#ff5c5c"
   guide-vertical-dark: "#5fa8ff"
+  loupe-edge-dark-dark: "#000000"
+  loupe-edge-light-dark: "#ffffff"
 typography:
   page-title:
     fontFamily: "Schibsted Grotesk, ui-sans-serif, sans-serif"
@@ -252,6 +256,8 @@ Every color token, as declared in `src/app/globals.css`. Light values are the `@
 | `grid-line`        | `color-mix(in srgb, var(--color-fg) 24%, transparent)` | `color-mix(in srgb, var(--color-muted) 34%, transparent)` | Editor pixel grid (canvas renderer)                                     |
 | `guide-horizontal` | `#c0261d`                                              | `#ff5c5c`                                                 | Horizontal symmetry guide (canvas renderer)                             |
 | `guide-vertical`   | `#2b3a9e`                                              | `#5fa8ff`                                                 | Vertical symmetry guide (canvas renderer)                               |
+| `loupe-edge-dark`  | `#000000`                                              | `#000000`                                                 | Color picker: outer edge of the loupe and the picked-pixel outline      |
+| `loupe-edge-light` | `#ffffff`                                              | `#ffffff`                                                 | Color picker: inner edge, paired with `loupe-edge-dark` so it reads on any artwork color |
 
 ### Theming
 
@@ -315,7 +321,7 @@ Depth is quiet and differs by theme, while the classes stay the same (The Tokens
 Tailwind's default shadows, unchanged per theme:
 
 - **Resting** (`shadow-sm`): cards, outline buttons, inputs, button groups.
-- **Floating** (`shadow-lg`): toasts, the editor's shift-direction pad.
+- **Floating** (`shadow-lg`): toasts, the editor's shift-direction pad, the color picker's loupe (`drop-shadow-lg`, it is round) and its "Release to cancel" pill.
 - **Dialog** (`shadow-xl`): modals.
 - **Drawer** (`shadow-2xl`): side drawers.
 
@@ -346,8 +352,8 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 - **Outline:** `surface` fill, `control-border` border, `fg-soft` text, `shadow-sm`; `surface-subtle` on hover, `surface-muted` when pressed (Import file).
 - **Danger:** `danger` fill, `on-danger` text, `danger-hover` on hover.
 - **Step size:** 36 × 36 (`rounded-md`, `text-lg`), with ghost steps dimming to 40% when disabled.
-- **Icon button** (`IconButton`): ghost, 40 × 40 (44 × 44 on coarse pointers), `rounded-lg`, 20px icon in `fg-soft`; its label is the accessible name and the tooltip, plus the shortcut when there is one ("Undo (Ctrl+Z)"). Toggles (pan, bucket, panels) set `pressed`: `surface-strong` fill, `fg` icon and an inset 1px `control-border` ring, with `aria-pressed`. A pressed state never uses the accent (The One Accent Rule).
-- **Icons:** one family in `public/icons`: 24-grid, 1.5 stroke, `currentColor` outlines (tested), rendered through `PublicMaskIcon` at 20px in toolbars, drawer headers and menus. One meaning per glyph: Export downloads, Load image is a photo, Shift pixels is the four-way move arrow, Canvas size the outward corners. No text glyphs (`←`, `↑`) as icons.
+- **Icon button** (`IconButton`): ghost, 40 × 40 (44 × 44 on coarse pointers), `rounded-lg`, 20px icon in `fg-soft`; its label is the accessible name and the tooltip, plus the shortcut when there is one ("Undo (Ctrl+Z)"). Toggles (pan, bucket, color picker, panels) set `pressed`: `surface-strong` fill, `fg` icon and an inset 1px `control-border` ring, with `aria-pressed`. A pressed state never uses the accent (The One Accent Rule). The color picker also shows pressed while Alt is held.
+- **Icons:** one family in `public/icons`: 24-grid, 1.5 stroke, `currentColor` outlines (tested), rendered through `PublicMaskIcon` at 20px in toolbars, drawer headers and menus. One meaning per glyph: Export downloads, Load image is a photo, Shift pixels is the four-way move arrow, Canvas size the outward corners, Color picker the pipette. No text glyphs (`←`, `↑`) as icons.
 - **Focus:** 2px outline, offset 2px, on `:focus-visible` only (`focus.style.ts`). Every variant uses the `focus` color; the outline never falls back to the browser's default ring.
 - **Disabled:** 50% opacity, no pointer events.
 
@@ -389,7 +395,15 @@ Restrained and tactile: flat fills, 1px borders, color changes on hover, no moti
 - **Rings:** idle 1px `control-border`; primary slot 2px `pick-primary`; secondary slot 2px `pick-secondary`; both slots 2px `accent`; selected (single-slot pickers) 2px `pick-primary` offset over `surface`. Rings offset by 2px over `bg` (the row's background) so the swatch color is never touched; a ring therefore reaches 4px past its swatch, so the palette row spaces swatches 10px apart (`gap-2.5`) and adjacent primary and secondary rings never touch; the scroller pads 4px so the first ring is not clipped.
 - **Starter palette:** new artworks start with Sweetie 16 (by GrafxKid), ordered darkest (`#1A1C2C`, primary slot), lightest (`#F4F4F4`, secondary slot and default background), then the palette's warm-to-cool ramp. Growing the canvas fills new cells with the lightest palette color.
 - **Removing a color:** an unused color is removed at once (with an Undo toast). If pixels use it, a ConfirmDialog names the color, says how many pixels use it, and asks what they become: transparent (a checkerboard chip) or any remaining palette color, with the closest one preselected. Pixels never silently switch to another color; Undo restores the color and its pixels.
-- **Roving keyboard position:** a 2px dashed `focus` outline, offset 2px, distinct from the selection ring.
+- **Roving keyboard position:** a 2px dashed `focus` outline, offset 2px, distinct from the selection ring. While a color pick is held over a color, this marker moves to that color's swatch and the row scrolls it into view; it goes back if the pick is cancelled.
+
+### Color Picker Loupe
+
+- Shown only while a pick is held (`ColorPickerOverlay`, a fixed full-window layer that never takes pointer events and is `aria-hidden`).
+- A 114px circle: a 12px ring split horizontally (top half: the color under the pointer; bottom half: the current color of the slot the pick fills), around a lens of 5 × 5 magnified pixels (18px cells) with the target cell outlined. Empty cells and an empty top half show the transparency checkerboard. No color name or hex.
+- Edges: `loupe-edge-dark` outside and `loupe-edge-light` inside, so the ring reads on any artwork color in both themes. The pixel under the pointer gets the same black-and-white outline on the canvas.
+- Placement: above and to the right of the pointer (16px gap, 48px on touch so a finger never covers it), flipping sides near the window edges. It may draw over the toolbar and palette row.
+- Off the canvas the loupe hides and a `surface` pill with a `line-strong` border reads "Release to cancel".
 
 ### Theme Toggle
 

@@ -21,6 +21,7 @@ PixelHB is a local-first pixel-art editor that runs in the browser. You don't ne
 
 - Paint with a primary and a secondary color slot. The main button (or touch) paints with the active slot, and on desktop the right mouse button paints with the other one.
 - Paint bucket mode, plus pan mode (or hold Space and drag).
+- Color picker: press and drag on the canvas to pick a palette color from what you see, with a loupe that compares it with your current color; release to paint with it. Toolbar button, or hold Alt (Option on a Mac).
 - Zoom with the toolbar buttons, the mouse wheel or a pinch gesture. Pan by dragging, or with the arrow keys while the canvas is focused.
 - Undo and redo.
 - Toggle the pixel grid.
@@ -56,9 +57,10 @@ PixelHB is a local-first pixel-art editor that runs in the browser. You don't ne
 | `Ctrl+Shift+Z` / `Cmd+Shift+Z`      | Redo                                                |
 | `G`                                 | Toggle the pixel grid                               |
 | `Space` (hold) + drag               | Pan the canvas (while the pointer is over the canvas or it has focus) |
+| `Alt` / `Option` (hold) + drag      | Pick a color from the canvas; release over a color to use it |
 | Arrow keys                          | Pan the canvas while it has focus (32 px per step)  |
 | `Shift` + arrow keys                | Pan in larger steps (128 px)                        |
-| `Esc`                               | Close the layers drawer, the settings drawer or the shift-pixels controls |
+| `Esc`                               | Close the layers drawer, the settings drawer or the shift-pixels controls; cancel a color pick or turn off the color picker |
 
 Shortcuts are ignored while focus is in a text field.
 

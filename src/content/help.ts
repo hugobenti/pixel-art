@@ -38,6 +38,14 @@ export const help: IHelpContent = {
       ],
     },
     {
+      id: "color-picker",
+      title: "Picking a color from the canvas",
+      paragraphs: [
+        "Turn on the color picker in the toolbar (or hold Alt, Option on a Mac), press on the canvas and drag. The circle next to your pointer or finger magnifies the pixels under it: the top of its ring is the color you would pick, the bottom is the color you have now. Let go to paint with it.",
+        "Letting go on an empty spot or outside the canvas changes nothing, so you can always back out.",
+      ],
+    },
+    {
       id: "limits",
       title: "Limits",
       paragraphs: [
@@ -48,12 +56,18 @@ export const help: IHelpContent = {
   shortcutsTitle: "Keyboard shortcuts",
   shortcutsIntro: "These work in the editor on a computer.",
   shortcutColumns: { action: "Action", keys: "Keys" },
-  keyNames: { ctrl: "Ctrl", shift: "Shift", space: "Space", arrows: "Arrow keys" },
+  keyNames: { ctrl: "Ctrl", shift: "Shift", space: "Space", arrows: "Arrow keys", alt: "Alt" },
   shortcuts: [
     { action: "Undo", combo: { key: "z", mod: true }, effect: "undo" },
     { action: "Redo", combo: { key: "z", mod: true, shift: true }, effect: "redo" },
     { action: "Show or hide the pixel grid", combo: { key: "g" }, effect: "toggleGrid" },
     { action: "Pan while dragging", combo: { key: "Space" }, effect: "spacePan", note: "hold" },
+    {
+      action: "Pick a color from the canvas",
+      combo: { key: "Alt" },
+      effect: "altPick",
+      note: "hold, then press and drag on the canvas",
+    },
     {
       action: "Move the canvas",
       combo: { key: "Arrows" },

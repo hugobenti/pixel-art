@@ -6,4 +6,5 @@ export interface IKeyNames {
   shift: string;
   space: string;
   arrows: string;
+  alt: string;
 }

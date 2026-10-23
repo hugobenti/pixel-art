@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { shouldStartPickHold } from "@/features/editor/logic/colorPicker";
 import { editorShortcutForKey, shouldClaimSpaceForCanvasPan } from "@/features/editor/logic/editorKeyboardGuards";
 import type { IShortcutKeyLike } from "@/features/editor/logic/editorKeyboardGuards.type";
 import { KEYBOARD_PAN_FAST_STEP_PX, keyboardPanDelta } from "@/features/editor/logic/keyboardPan";
@@ -19,7 +20,7 @@ function eventFor(combo: { key: string; mod?: boolean; shift?: boolean }, modifi
 describe("help shortcuts match the editor's key handling", () => {
   it("documents every effect", () => {
     expect(help.shortcuts.map((s) => s.effect).sort()).toEqual(
-      ["arrowPan", "redo", "spacePan", "toggleGrid", "undo"],
+      ["altPick", "arrowPan", "redo", "spacePan", "toggleGrid", "undo"],
     );
   });
 
@@ -49,6 +50,18 @@ describe("help shortcuts match the editor's key handling", () => {
           }
           expect(keyboardPanDelta("ArrowLeft", true)?.dx).toBe(-KEYBOARD_PAN_FAST_STEP_PX);
           expect(KEYBOARD_PAN_FAST_STEP_PX).toBe(128);
+          break;
+        case "altPick":
+          expect(
+            shouldStartPickHold({
+              armed: false,
+              altKey: true,
+              button: 0,
+              pointerType: "mouse",
+              touchCount: 0,
+              panDeferred: false,
+            }),
+          ).toBe(true);
           break;
       }
     });
