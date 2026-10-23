@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { about } from "./about";
 import { contact } from "./contact";
 import { gallery } from "./gallery";
+import { help } from "./help";
 import { home } from "./home";
 import { site } from "./site";
+import { statusPages } from "./statusPages";
 
 /** Page metadata for the whole app, derived from the site content. */
 export const siteMetadata: Metadata = {
@@ -26,3 +28,10 @@ export const contactMetadata: Metadata = {
   title: contact.metaTitle,
   description: contact.metaDescription,
 };
+
+export const helpMetadata: Metadata = {
+  title: help.metaTitle,
+  description: help.metaDescription,
+};
+
+export const notFoundMetadata: Metadata = { title: statusPages.metaTitle };
